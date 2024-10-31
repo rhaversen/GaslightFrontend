@@ -31,7 +31,7 @@ export default function Page (): ReactElement {
 			<div className='text-white text-6xl font-light p-2'>
 				{timeString}
 			</div>
-			<div className="border-2 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black">
+			<div className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black">
 				<div className='font-semibold p-5'>
 					{'JOIN TOURNAMENT'}
 				</div>
