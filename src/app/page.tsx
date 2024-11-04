@@ -24,7 +24,7 @@ export default function Page (): ReactElement {
 
 	return (
 		<main className="flex flex-col items-center justify-center h-screen">
-			<Halo/>
+			<Halo />
 			<div className='text-white font-semibold p-2'>
 				{'NEXT RANKED TOURNAMENT'}
 			</div>
