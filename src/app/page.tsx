@@ -31,11 +31,14 @@ export default function Page (): ReactElement {
 			<div className='text-white text-6xl font-light p-2'>
 				{timeString}
 			</div>
-			<div className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black">
+			<button className="border-2 m-3 rounded-full border-white transition duration-300 hover:scale-110 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black"
+				onClick={() => { console.log('Joining tournament') }}
+				type='button'
+			>
 				<div className='font-semibold p-5'>
 					{'JOIN TOURNAMENT'}
 				</div>
-			</div>
+			</button>
 		</main>
 	)
 }
