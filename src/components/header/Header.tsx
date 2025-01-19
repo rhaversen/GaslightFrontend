@@ -20,6 +20,7 @@ const Header = (): ReactElement => {
 
 	const unauthenticatedButtons: Record<string, string> = {
 		Login: '/login',
+		'Sign Up': '/signup',
 		'Overall Ranking': '/',
 		'Last Tournament': '/'
 	}
