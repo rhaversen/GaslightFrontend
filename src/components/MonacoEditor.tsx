@@ -161,9 +161,9 @@ const MonacoEditor = ({
 		}
 	}
 
-	async function handleEditorWillMount (monaco: Monaco): Promise<void> {
+	function handleEditorWillMount (monaco: Monaco): void {
 		monaco.languages.typescript.typescriptDefaults.addExtraLib(apiTypes, 'ts:filename/MeyerStrategyAPI.d.ts')
-		await initializeShiki(monaco)
+		initializeShiki(monaco).catch(console.error)
 	}
 
 	function handleEditorDidMount (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco): void {
