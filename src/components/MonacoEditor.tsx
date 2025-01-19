@@ -109,60 +109,60 @@ export default main
 // Commented out themes are found to be not working with Shiki 1.27.2
 // https://shiki.style/themes#bundled-themes
 const MONACO_THEMES = [
-	{ label: 'Andromeeda', value: 'andromeeda' },
-	{ label: 'Aurora X', value: 'aurora-x' },
-	{ label: 'Ayu Dark', value: 'ayu-dark' },
-	{ label: 'Catppuccin Frappé', value: 'catppuccin-frappe' },
-	{ label: 'Catppuccin Latte', value: 'catppuccin-latte' },
-	{ label: 'Catppuccin Macchiato', value: 'catppuccin-macchiato' },
-	{ label: 'Catppuccin Mocha', value: 'catppuccin-mocha' },
-	{ label: 'Dark Plus', value: 'dark-plus' },
-	{ label: 'Dracula Theme', value: 'dracula' },
-	{ label: 'Dracula Theme Soft', value: 'dracula-soft' },
-	{ label: 'Everforest Dark', value: 'everforest-dark' },
-	{ label: 'Everforest Light', value: 'everforest-light' },
-	{ label: 'GitHub Dark', value: 'github-dark' },
+	{ label: 'Andromeeda', value: 'andromeeda', bg: '23262e' },
+	{ label: 'Aurora X', value: 'aurora-x', bg: '07090f' },
+	{ label: 'Ayu Dark', value: 'ayu-dark', bg: '0b0e14' },
+	{ label: 'Catppuccin Frappé', value: 'catppuccin-frappe', bg: '303446' },
+	{ label: 'Catppuccin Latte', value: 'catppuccin-latte', bg: 'eff1f5' },
+	{ label: 'Catppuccin Macchiato', value: 'catppuccin-macchiato', bg: '24273a' },
+	{ label: 'Catppuccin Mocha', value: 'catppuccin-mocha', bg: '1e1e2e' },
+	{ label: 'Dark Plus', value: 'dark-plus', bg: '1e1e1e' },
+	{ label: 'Dracula Theme', value: 'dracula', bg: '282a36' },
+	{ label: 'Dracula Theme Soft', value: 'dracula-soft', bg: '282a36' },
+	{ label: 'Everforest Dark', value: 'everforest-dark', bg: '2d353b' },
+	{ label: 'Everforest Light', value: 'everforest-light', bg: 'fdf6e3' },
+	{ label: 'GitHub Dark', value: 'github-dark', bg: '24292e' },
 	// { label: 'GitHub Dark Default', value: 'github-dark-default' },
 	// { label: 'GitHub Dark Dimmed', value: 'github-dark-dimmed' },
 	// { label: 'GitHub Dark High Contrast', value: 'github-dark-high-contrast' },
-	{ label: 'GitHub Light', value: 'github-light' },
-	{ label: 'GitHub Light Default', value: 'github-light-default' },
-	{ label: 'GitHub Light High Contrast', value: 'github-light-high-contrast' },
-	{ label: 'Houston', value: 'houston' },
-	{ label: 'Kanagawa Dragon', value: 'kanagawa-dragon' },
-	{ label: 'Kanagawa Lotus', value: 'kanagawa-lotus' },
-	{ label: 'Kanagawa Wave', value: 'kanagawa-wave' },
-	{ label: 'LaserWave', value: 'laserwave' },
-	{ label: 'Light Plus', value: 'light-plus' },
-	{ label: 'Material Theme', value: 'material-theme' },
-	{ label: 'Material Theme Darker', value: 'material-theme-darker' },
-	{ label: 'Material Theme Lighter', value: 'material-theme-lighter' },
-	{ label: 'Material Theme Ocean', value: 'material-theme-ocean' },
-	{ label: 'Material Theme Palenight', value: 'material-theme-palenight' },
-	{ label: 'Min Dark', value: 'min-dark' },
-	{ label: 'Min Light', value: 'min-light' },
-	{ label: 'Monokai', value: 'monokai' },
-	{ label: 'Night Owl', value: 'night-owl' },
-	{ label: 'Nord', value: 'nord' },
-	{ label: 'One Dark Pro', value: 'one-dark-pro' },
-	{ label: 'One Light', value: 'one-light' },
-	{ label: 'Plastic', value: 'plastic' },
-	{ label: 'Poimandres', value: 'poimandres' },
-	{ label: 'Red', value: 'red' },
-	{ label: 'Rosé Pine', value: 'rose-pine' },
-	{ label: 'Rosé Pine Dawn', value: 'rose-pine-dawn' },
-	{ label: 'Rosé Pine Moon', value: 'rose-pine-moon' },
-	{ label: 'Slack Dark', value: 'slack-dark' },
-	{ label: 'Slack Ochin', value: 'slack-ochin' },
-	{ label: 'Snazzy Light', value: 'snazzy-light' },
-	{ label: 'Solarized Dark', value: 'solarized-dark' },
-	{ label: 'Solarized Light', value: 'solarized-light' },
-	{ label: 'Synthwave \'84', value: 'synthwave-84' },
-	{ label: 'Tokyo Night', value: 'tokyo-night' },
+	{ label: 'GitHub Light', value: 'github-light', bg: 'ffffff' },
+	{ label: 'GitHub Light Default', value: 'github-light-default', bg: 'ffffff' },
+	{ label: 'GitHub Light High Contrast', value: 'github-light-high-contrast', bg: 'ffffff' },
+	{ label: 'Houston', value: 'houston', bg: '17191e' },
+	{ label: 'Kanagawa Dragon', value: 'kanagawa-dragon', bg: '181616' },
+	{ label: 'Kanagawa Lotus', value: 'kanagawa-lotus', bg: 'f2ecbc' },
+	{ label: 'Kanagawa Wave', value: 'kanagawa-wave', bg: '1f1f28' },
+	{ label: 'LaserWave', value: 'laserwave', bg: '27212e' },
+	{ label: 'Light Plus', value: 'light-plus', bg: 'ffffff' },
+	{ label: 'Material Theme', value: 'material-theme', bg: '263238' },
+	{ label: 'Material Theme Darker', value: 'material-theme-darker', bg: '212121' },
+	{ label: 'Material Theme Lighter', value: 'material-theme-lighter', bg: 'fafafa' },
+	{ label: 'Material Theme Ocean', value: 'material-theme-ocean', bg: '0f111a' },
+	{ label: 'Material Theme Palenight', value: 'material-theme-palenight', bg: '292d3e' },
+	{ label: 'Min Dark', value: 'min-dark', bg: '1f1f1f' },
+	{ label: 'Min Light', value: 'min-light', bg: 'ffffff' },
+	{ label: 'Monokai', value: 'monokai', bg: '272822' },
+	{ label: 'Night Owl', value: 'night-owl', bg: '011627' },
+	{ label: 'Nord', value: 'nord', bg: '2e3440' },
+	{ label: 'One Dark Pro', value: 'one-dark-pro', bg: '282c34' },
+	{ label: 'One Light', value: 'one-light', bg: 'fafafa' },
+	{ label: 'Plastic', value: 'plastic', bg: '21252b' },
+	{ label: 'Poimandres', value: 'poimandres', bg: '1b1e28' },
+	{ label: 'Red', value: 'red', bg: '390000' },
+	{ label: 'Rosé Pine', value: 'rose-pine', bg: '191724' },
+	{ label: 'Rosé Pine Dawn', value: 'rose-pine-dawn', bg: 'faf4ed' },
+	{ label: 'Rosé Pine Moon', value: 'rose-pine-moon', bg: '232136' },
+	{ label: 'Slack Dark', value: 'slack-dark', bg: '222222' },
+	{ label: 'Slack Ochin', value: 'slack-ochin', bg: 'ffffff' },
+	{ label: 'Snazzy Light', value: 'snazzy-light', bg: 'fafbfc' },
+	{ label: 'Solarized Dark', value: 'solarized-dark', bg: '002b36' },
+	{ label: 'Solarized Light', value: 'solarized-light', bg: 'fdf6e3' },
+	{ label: 'Synthwave \'84', value: 'synthwave-84', bg: '262335' },
+	{ label: 'Tokyo Night', value: 'tokyo-night', bg: '1a1b26' },
 	// { label: 'Vesper', value: 'vesper' },
-	{ label: 'Vitesse Black', value: 'vitesse-black' },
-	{ label: 'Vitesse Dark', value: 'vitesse-dark' },
-	{ label: 'Vitesse Light', value: 'vitesse-light' }
+	{ label: 'Vitesse Black', value: 'vitesse-black', bg: '000000' },
+	{ label: 'Vitesse Dark', value: 'vitesse-dark', bg: '121212' },
+	{ label: 'Vitesse Light', value: 'vitesse-light', bg: 'ffffff' }
 ] as const
 
 async function initializeShiki (monaco: Monaco): Promise<void> {
@@ -189,7 +189,8 @@ const MonacoEditor = ({
 	height?: string
 	onChange?: (value: string | undefined, event: any) => void
 }): JSX.Element => {
-	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>()
+	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
+	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
 
 	function handleEditorChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent): void {
 		if (onChange !== null && onChange !== undefined) {
@@ -215,7 +216,10 @@ const MonacoEditor = ({
 	}
 
 	return (
-		<div className="flex flex-col gap-4">
+		<div
+			className="flex flex-col gap-4 rounded-md shadow-md"
+			style={{ backgroundColor: `#${bgColor}` }}
+		>
 			<div className="flex justify-end px-4">
 				<label htmlFor="theme-select" className="sr-only">{'Select Theme'}</label>
 				<select
