@@ -198,7 +198,9 @@ const MonacoEditor = ({
 	}
 
 	function handleEditorWillMount (monaco: Monaco): void {
-		monaco.languages.typescript.typescriptDefaults.addExtraLib(apiTypes, 'ts:filename/MeyerStrategyAPI.d.ts')
+		// Having two instances of Monaco in the same page will automatically share the same worker, so we don't need to worry about adding extra libs
+		// If we want to add extra libs, we can do so like this:
+		// monaco.languages.typescript.typescriptDefaults.addExtraLib(apiTypes, 'ts:filename/MeyerStrategyAPI.d.ts')
 		initializeShiki(monaco).catch(console.error)
 	}
 
