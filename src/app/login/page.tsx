@@ -81,7 +81,14 @@ export default function Page (): ReactElement {
 					</button>
 				</div>
 			</form>
-			<div className="mt-5">
+			<div className="flex justify-center flex-col items-center mt-5 space-y-2">
+				<p className="text-sm text-gray-600">
+					{'Don\'t have an account?'}{' '}
+					<button type="button" onClick={() => { router.push('/signup') }}
+						className="font-medium text-indigo-600 hover:text-indigo-900">
+						{'Sign up\r'}
+					</button>
+				</p>
 				<button type="button" onClick={() => { router.push('/') }}
 					className="text-sm text-indigo-600 hover:text-indigo-900">
 					{'Back to home'}

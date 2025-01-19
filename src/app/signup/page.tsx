@@ -90,12 +90,10 @@ export default function Page (): ReactElement {
 						{'Log in\r'}
 					</button>
 				</p>
-				<p className="text-sm text-gray-600">
-					<button type="button" onClick={() => { router.push('/') }}
-						className="text-sm text-indigo-600 hover:text-indigo-900">
-						{'Back to home'}
-					</button>
-				</p>
+				<button type="button" onClick={() => { router.push('/') }}
+					className="text-sm text-indigo-600 hover:text-indigo-900">
+					{'Back to home'}
+				</button>
 			</div>
 		</main>
 	)
