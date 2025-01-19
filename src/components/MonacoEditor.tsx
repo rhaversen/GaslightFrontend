@@ -72,6 +72,7 @@ const apiTypes = `interface MeyerStrategyAPI {
 }`
 
 // Commented out themes are found to be not working with Shiki 1.27.2
+// https://shiki.style/themes#bundled-themes
 const MONACO_THEMES = [
 	{ label: 'Andromeeda', value: 'andromeeda' },
 	{ label: 'Aurora X', value: 'aurora-x' },
