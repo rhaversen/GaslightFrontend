@@ -11,8 +11,8 @@ export const Halo = (): JSX.Element => {
 		if (vantaRef.current !== null) {
 			vantaEffect = HALO({
 				el: vantaRef.current,
-				mouseControls: false,
-				touchControls: false,
+				mouseControls: true,
+				touchControls: true,
 				gyroControls: false,
 				minHeight: 200.0,
 				minWidth: 200.0,
