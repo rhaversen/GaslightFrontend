@@ -20,7 +20,7 @@ export default function Page (): ReactElement {
 				user: UserType
 			}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
 			setCurrentUser(response.data.user)
-			router.push('/')
+			router.push('/profile')
 		} catch (error: any) {
 			setCurrentUser(null)
 			addError(error)
@@ -29,7 +29,7 @@ export default function Page (): ReactElement {
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true }).then(() => {
-			router.push('/')
+			router.push('/profile')
 		}).catch(() => {
 			// Do nothing
 		})
@@ -39,7 +39,7 @@ export default function Page (): ReactElement {
 		event.preventDefault() // Prevent default form submission
 		const formData = new FormData(event.currentTarget)
 		const credentials = {
-			email: formData.get('username'),
+			email: formData.get('email'),
 			password: formData.get('password'),
 			stayLoggedIn: formData.get('stayLoggedIn') === 'on' // Convert on to boolean
 		}
@@ -50,10 +50,10 @@ export default function Page (): ReactElement {
 		<main className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black">
 			<form className="w-full max-w-sm flex flex-col justify-between space-y-5" onSubmit={handleSubmit}>
 				<div className="space-y-2">
-					<label htmlFor="username" className="block text-sm font-medium text-gray-700">
+					<label htmlFor="email" className="block text-sm font-medium text-gray-700">
 						{'Email address'}
 					</label>
-					<input type="username" id="username" name="username"
+					<input type="email" id="email" name="email" autoComplete="username"
 						className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 						required />
 				</div>
@@ -61,7 +61,7 @@ export default function Page (): ReactElement {
 					<label htmlFor="password" className="block text-sm font-medium text-gray-700">
 						{'Password'}
 					</label>
-					<input type="password" id="password" name="password"
+					<input type="password" id="password" name="password" autoComplete="current-password"
 						className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 						required />
 				</div>

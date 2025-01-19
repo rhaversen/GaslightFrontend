@@ -2,11 +2,11 @@ import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
 	title: {
-		template: '%s | Ny Skivehus Kantine',
-		default: 'Log Ind Admin'
+		template: '%s | Gaslight',
+		default: 'Log In'
 	},
 	alternates: {
-		canonical: 'https://life-stats.net/admin/login-admin'
+		canonical: 'https://www.gaslight.fun/login'
 	}
 }
 
