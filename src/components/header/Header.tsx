@@ -1,12 +1,34 @@
-import React, { type ReactElement } from 'react'
+'use client'
+
+import React, { type ReactElement, useState, useEffect } from 'react'
 import Button from './Button'
+import { useUser } from '@/contexts/UserProvider'
 
 const Header = (): ReactElement => {
-	const buttons: Record<string, string> = {
-		Profile: '/',
-		'Overall Ranking': '/about',
-		'Last Tournament': '/contact'
+	const { currentUser } = useUser()
+	const [mounted, setMounted] = useState(false)
+
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+
+	const authenticatedButtons: Record<string, string> = {
+		Profile: '/profile',
+		'Overall Ranking': '/',
+		'Last Tournament': '/'
 	}
+
+	const unauthenticatedButtons: Record<string, string> = {
+		Login: '/login',
+		'Overall Ranking': '/',
+		'Last Tournament': '/'
+	}
+
+	if (!mounted) {
+		return <div className='p-5 absolute'></div> // Return empty container while mounting
+	}
+
+	const buttons = currentUser !== null ? authenticatedButtons : unauthenticatedButtons
 
 	return (
 		<div className='p-5 absolute'>
