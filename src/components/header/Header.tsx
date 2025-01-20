@@ -18,7 +18,7 @@ const Header = (): ReactElement => {
 		'Last Tournament': '/'
 	}
 	const authenticatedButtonsRight: Record<string, string> = {
-		Profile: '/profile'
+		Profile: '/user/' + currentUser?._id
 	}
 
 	// Authenticated buttons

@@ -20,7 +20,7 @@ export default function Page (): ReactElement {
 				user: UserType
 			}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
 			setCurrentUser(response.data.user)
-			router.push('/profile')
+			router.push(`/user/${response.data.user._id}`)
 		} catch (error: any) {
 			setCurrentUser(null)
 			addError(error)
@@ -29,7 +29,7 @@ export default function Page (): ReactElement {
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true }).then(() => {
-			router.push('/profile')
+			router.push('/user')
 		}).catch(() => {
 			// Do nothing
 		})
