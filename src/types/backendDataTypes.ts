@@ -25,7 +25,7 @@ export interface ISubmission extends Document {
 	/** Title of the submission */
 	title: string
 	/** Code submitted by the user */
-	code: string
+	code: string | null
 	/** User who submitted the code */
 	user: UserType['_id']
 	/** Decides if the submission is part of the tournament (Can only have one active submission per user) */
