@@ -169,6 +169,9 @@ export default function Page ({ params }: Readonly<{
 
 	const renderEvaluationResults = (): ReactElement | null => {
 		if ((strategy?.evaluation) === undefined) return null
+		if (strategy.evaluation.strategyExecutionTimings == null) return null
+		if (strategy.evaluation.strategyLoadingTimings == null) return null
+		if (strategy.evaluation.averageExecutionTime == null) return null
 
 		const LOADING_TIME_LIMIT = 100 // ms
 		const EXECUTION_TIME_LIMIT = 1 // ms
@@ -313,11 +316,11 @@ export default function Page ({ params }: Readonly<{
 								)}
 
 								{strategy?.evaluation !== undefined && !hasChanges && (
-									<span className={`px-4 py-2 rounded-md text-sm font-medium ${strategy.passedEvaluation
+									<span className={`px-4 py-2 rounded-md text-sm font-medium ${(strategy.passedEvaluation ?? false)
 										? 'bg-green-100 text-green-800'
 										: 'bg-red-100 text-red-800'
 									}`}>
-										{strategy.passedEvaluation ? '✓ Passed Evaluation' : '✗ Failed Evaluation'}
+										{(strategy.passedEvaluation ?? false) ? '✓ Passed Evaluation' : '✗ Failed Evaluation'}
 									</span>
 								)}
 

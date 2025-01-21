@@ -225,8 +225,8 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 											</button>
 										</>
 									)}
-									<span className={`px-3 py-1 rounded-full text-sm ${strategy.passedEvaluation ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-										{strategy.passedEvaluation ? 'Passing' : 'Not Passing'}
+									<span className={`px-3 py-1 rounded-full text-sm ${(strategy.passedEvaluation ?? false) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+										{(strategy.passedEvaluation ?? false) ? 'Passing' : 'Not Passing'}
 									</span>
 								</div>
 							</div>
@@ -248,7 +248,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 												</div>
 											)}
 											<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
-												{'Execution: '}{strategy.evaluation.averageExecutionTime.toFixed(3)}{'ms\r'}
+												{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ?? 'N/A'}{'ms\r'}
 											</span>
 											{(strategy.evaluation.disqualified != null) && (
 												<span className="text-red-600">

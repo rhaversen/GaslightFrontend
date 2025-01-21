@@ -30,8 +30,8 @@ export interface ISubmission {
 	user: UserType['_id']
 	/** Decides if the submission is part of the tournament (Can only have one active submission per user) */
 	active: boolean
-	/** Decides if the submission has passed an evaluation and is ready for tournaments */
-	passedEvaluation: boolean
+	/** Decides if the submission has passed an evaluation and is ready for tournaments. Null if not evaluated yet */
+	passedEvaluation: boolean | null
 	/** The lines of code in the submission */
 	loc: number
 	/** Evaluation of the submission */
@@ -50,11 +50,11 @@ export interface ISubmission {
 		/** If the loading time exceeded the limit */
 		loadingTimeExceeded: boolean
 		/** Time taken to load the strategy */
-		strategyLoadingTimings: number
+		strategyLoadingTimings: number | undefined
 		/** Time taken to execute the strategy */
-		strategyExecutionTimings: number[]
+		strategyExecutionTimings: number[] | undefined
 		/** Averate time taken to execute the strategy */
-		averageExecutionTime: number
+		averageExecutionTime: number | undefined
 	}
 
 	// Timestamps
