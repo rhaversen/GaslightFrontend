@@ -144,12 +144,25 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								</Link>
 								<div className="flex items-center space-x-4">
 									{isOwnProfile && (
-										<label className={`flex items-center space-x-2 ${activeStrategyId !== null && activeStrategyId !== strategy._id ? 'opacity-50' : ''}`}>
+										<label
+											className={`flex items-center space-x-2 ${
+												(activeStrategyId !== null && activeStrategyId !== strategy._id) || !strategy.passedEvaluation
+													? 'opacity-50'
+													: ''
+											}`}
+											title={
+												!strategy.passedEvaluation
+													? 'Strategy must pass evaluation before it can be activated'
+													: (activeStrategyId !== null && activeStrategyId !== strategy._id)
+														? 'Only one strategy can be active at a time'
+														: ''
+											}
+										>
 											<input
 												type="checkbox"
 												checked={strategy.active}
 												onChange={(e) => { void (async () => { await toggleActive(strategy._id, e.target.checked) })() }}
-												disabled={activeStrategyId !== null && activeStrategyId !== strategy._id}
+												disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !strategy.passedEvaluation}
 												className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
 											/>
 											<span className="text-sm text-gray-600">{'Active'}</span>
