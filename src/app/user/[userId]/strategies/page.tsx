@@ -211,7 +211,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 												</div>
 											)}
 											<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
-												{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ?? 'N/A'}{'ms\r'}
+												{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
 											</span>
 										</div>
 									</div>
