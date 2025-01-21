@@ -136,6 +136,21 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		}
 	}
 
+	const handleDelete = async (strategyId: string): Promise<void> => {
+		if (!window.confirm('Are you sure you want to delete this strategy? It cannot be recovered.')) {
+			return
+		}
+
+		try {
+			await axios.delete(`${API_URL}/v1/submissions/${strategyId}`, {
+				withCredentials: true
+			})
+			setStrategies(prev => prev.filter(s => s._id !== strategyId))
+		} catch (error) {
+			console.error('Error deleting strategy:', error)
+		}
+	}
+
 	if (isLoading) {
 		return (
 			<main className="container mx-auto p-6 max-w-4xl">
@@ -188,20 +203,29 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								</Link>
 								<div className="flex items-center space-x-4">
 									{isOwnProfile && (
-										<label className={`flex items-center space-x-2 ${activeStrategyId !== null && activeStrategyId !== strategy._id ? 'opacity-50' : ''
-										}`}>
-											<input
-												type="checkbox"
-												checked={strategy.active}
-												onChange={(e) => { void (async () => { await toggleActive(strategy._id, e.target.checked) })() }}
-												disabled={activeStrategyId !== null && activeStrategyId !== strategy._id}
-												className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
-											/>
-											<span className="text-sm text-gray-600">{'Active'}</span>
-										</label>
+										<>
+											<label className={`flex items-center space-x-2 ${activeStrategyId !== null && activeStrategyId !== strategy._id ? 'opacity-50' : ''}`}>
+												<input
+													type="checkbox"
+													checked={strategy.active}
+													onChange={(e) => { void (async () => { await toggleActive(strategy._id, e.target.checked) })() }}
+													disabled={activeStrategyId !== null && activeStrategyId !== strategy._id}
+													className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
+												/>
+												<span className="text-sm text-gray-600">{'Active'}</span>
+											</label>
+											<button
+												onClick={() => { void handleDelete(strategy._id) }}
+												className="text-red-600 hover:text-red-800 transition-colors"
+												title="Delete strategy"
+											>
+												<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+												</svg>
+											</button>
+										</>
 									)}
-									<span className={`px-3 py-1 rounded-full text-sm ${strategy.passedEvaluation ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-									}`}>
+									<span className={`px-3 py-1 rounded-full text-sm ${strategy.passedEvaluation ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
 										{strategy.passedEvaluation ? 'Passing' : 'Not Passing'}
 									</span>
 								</div>

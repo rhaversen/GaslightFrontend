@@ -5,6 +5,7 @@ import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
 import React, { type ReactElement, useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -45,6 +46,7 @@ const createTimeBuckets = (
 export default function Page ({ params }: Readonly<{
 	params: { userId: string, strategyId: string }
 }>): ReactElement {
+	const router = useRouter()
 	const [strategy, setStrategy] = useState<ISubmission | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [message, setMessage] = useState('')
@@ -103,6 +105,22 @@ export default function Page ({ params }: Readonly<{
 		})
 
 		setIsSubmitting(false)
+	}
+
+	const handleDelete = async (): Promise<void> => {
+		if (!window.confirm('Are you sure you want to delete this strategy? It cannot be recovered.')) {
+			return
+		}
+
+		try {
+			await axios.delete(`${API_URL}/v1/submissions/${params.strategyId}`, {
+				withCredentials: true
+			})
+			router.push(`/user/${params.userId}/strategies`)
+		} catch (error) {
+			console.error('Error deleting strategy:', error)
+			setMessage('Error deleting strategy')
+		}
 	}
 
 	const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement => {
@@ -247,19 +265,30 @@ export default function Page ({ params }: Readonly<{
 	return (
 		<main className="container mx-auto p-6 max-w-7xl">
 			<div className="bg-white shadow-lg rounded-lg p-6">
-				<div className="flex items-center gap-4 mb-6">
-					<Link
-						href={`/user/${params.userId}/strategies`}
-						className="text-gray-600 hover:text-gray-800 transition-colors"
+				<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center gap-4">
+						<Link
+							href={`/user/${params.userId}/strategies`}
+							className="text-gray-600 hover:text-gray-800 transition-colors"
+						>
+							<span className="inline-flex items-center">
+								<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+								</svg>
+								{'Back to Strategies\r'}
+							</span>
+						</Link>
+						<h1 className="text-3xl font-bold text-gray-800">{'Strategy Details'}</h1>
+					</div>
+					<button
+						onClick={() => { void handleDelete() }}
+						className="text-red-600 hover:text-red-800 transition-colors flex items-center gap-2"
 					>
-						<span className="inline-flex items-center">
-							<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-							</svg>
-							{'Back to Strategies\r'}
-						</span>
-					</Link>
-					<h1 className="text-3xl font-bold text-gray-800">{'Strategy Details'}</h1>
+						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+						</svg>
+						{'Delete Strategy\r'}
+					</button>
 				</div>
 				{(strategy != null) && (
 					<div className="space-y-6">
