@@ -49,7 +49,6 @@ export default function Page ({ params }: Readonly<{
 	const router = useRouter()
 	const [strategy, setStrategy] = useState<ISubmission | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
-	const [message, setMessage] = useState('')
 	const [hasChanges, setHasChanges] = useState(false)
 	const [originalStrategy, setOriginalStrategy] = useState<ISubmission | null>(null)
 
@@ -87,7 +86,6 @@ export default function Page ({ params }: Readonly<{
 	const handleSubmit = (): void => {
 		if (strategy == null) return
 		setIsSubmitting(true)
-		setMessage('Submitting strategy...')
 
 		axios.patch<ISubmission>(
 			`${API_URL}/v1/submissions/${params.strategyId}`,
@@ -97,15 +95,8 @@ export default function Page ({ params }: Readonly<{
 			setStrategy(response.data)
 			setOriginalStrategy(response.data)
 			setHasChanges(false)
-			if (!(response.data.passedEvaluation ?? false)) {
-				setMessage('Strategy failed evaluation')
-				setTimeout(() => { setMessage('') }, 3000)
-			} else {
-				setMessage('')
-			}
 		}).catch(error => {
-			console.error('Error submitting strategy:', error)
-			setMessage('Error submitting strategy')
+			console.error('Error updating strategy:', error)
 		}).finally(() => {
 			setIsSubmitting(false)
 		})
@@ -123,7 +114,6 @@ export default function Page ({ params }: Readonly<{
 			router.push(`/user/${params.userId}/strategies`)
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
-			setMessage('Error deleting strategy')
 		}
 	}
 
@@ -292,7 +282,7 @@ export default function Page ({ params }: Readonly<{
 								/>
 
 								<div className="flex items-center gap-4 flex-wrap">
-									{(hasChanges || strategy.passedEvaluation === null) && !isSubmitting && (
+									{(hasChanges || strategy.passedEvaluation === null) && (
 										<button
 											type='button'
 											onClick={() => { handleSubmit() }}
@@ -309,15 +299,6 @@ export default function Page ({ params }: Readonly<{
 											: 'bg-red-100 text-red-800'
 										}`}>
 											{(strategy.passedEvaluation ?? false) ? '✓ Passed Evaluation' : '✗ Failed Evaluation'}
-										</span>
-									)}
-
-									{(message.length > 0) && (
-										<span className={`px-4 py-2 rounded-md text-sm font-medium ${message.toLowerCase().includes('error')
-											? 'bg-red-100 text-red-800'
-											: 'bg-blue-100 text-blue-800'
-										}`}>
-											{message}
 										</span>
 									)}
 								</div>
