@@ -58,7 +58,7 @@ export interface ISubmission {
 
 		// Timestamps
 		createdAt: Date
-		updatedAt: Date		
+		updatedAt: Date
 	}
 
 	// Timestamps

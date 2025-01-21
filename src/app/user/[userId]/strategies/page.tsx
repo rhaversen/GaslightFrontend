@@ -18,7 +18,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	const isEvaluationRecent = (evaluation: ISubmission['evaluation']): boolean => {
 		const daysBeforeStale = 7
 		try {
-			if (!evaluation?.updatedAt) return false
+			if (evaluation.updatedAt == null) return false
 
 			const evaluationDate = new Date(evaluation.updatedAt)
 			if (isNaN(evaluationDate.getTime())) return false
@@ -171,12 +171,12 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 										{isOwnProfile && (
 											<label
 												className={`flex items-center space-x-2 ${
-													(activeStrategyId !== null && activeStrategyId !== strategy._id) || !strategy.passedEvaluation
+													(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)
 														? 'opacity-50'
 														: ''
 												}`}
 												title={
-													!strategy.passedEvaluation
+													!(strategy.passedEvaluation ?? false)
 														? 'Strategy must pass evaluation before it can be activated'
 														: (activeStrategyId !== null && activeStrategyId !== strategy._id)
 															? 'Only one strategy can be active at a time'
@@ -187,7 +187,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 													type="checkbox"
 													checked={strategy.active}
 													onChange={(e) => { void (async () => { await toggleActive(strategy._id, e.target.checked) })() }}
-													disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !strategy.passedEvaluation}
+													disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)}
 													className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
 												/>
 												<span className="text-sm text-gray-600">{'Active'}</span>
@@ -238,7 +238,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 															</div>
 														)}
 														<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
-															{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
+															{'Execution: '}{strategy.evaluation?.averageExecutionTime != null ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
 														</span>
 													</div>
 												)}
