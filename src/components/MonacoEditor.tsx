@@ -148,11 +148,15 @@ async function initializeShiki (monaco: Monaco): Promise<void> {
 const MonacoEditor = ({
 	defaultValue,
 	height = '90vh',
-	onChange
+	onChange,
+	onToggleMaximize,
+	isMaximized
 }: {
 	defaultValue: string
 	height?: string
 	onChange?: (value: string | undefined, event: any) => void
+	onToggleMaximize?: () => void
+	isMaximized?: boolean
 }): JSX.Element => {
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
 	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
@@ -183,7 +187,7 @@ const MonacoEditor = ({
 			className="flex flex-col gap-4 rounded-md shadow-md"
 			style={{ backgroundColor: `#${bgColor}` }}
 		>
-			<div className="flex justify-end px-4">
+			<div className="flex justify-end gap-2 px-4 pt-2">
 				<label htmlFor="theme-select" className="sr-only">{'Select Theme'}</label>
 				<select
 					id="theme-select"
@@ -195,6 +199,26 @@ const MonacoEditor = ({
 						<option key={value} value={value}>{label}</option>
 					))}
 				</select>
+				{onToggleMaximize !== null && onToggleMaximize !== undefined && (
+					<button
+						type='button'
+						onClick={onToggleMaximize}
+						className="bg-gray-700 text-white px-3 py-1 rounded-md"
+						title={isMaximized === true ? 'Minimize' : 'Maximize'}
+					>
+						{isMaximized === true
+							? (
+								<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 14h7m0 0v7m0-7l-7 7m17-11h-7m0 0V3m0 7l7-7" />
+								</svg>
+							)
+							: (
+								<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+								</svg>
+							)}
+					</button>
+				)}
 			</div>
 			<div className="flex gap-4">
 				<div className="flex-1 flex-shrink flex-grow-[1] w-[60%]">
