@@ -19,7 +19,7 @@ export interface UserType {
 	updatedAt: Date
 }
 
-export interface ISubmission extends Document {
+export interface ISubmission {
 	/** ID of the submission */
 	_id: string
 	/** Title of the submission */
