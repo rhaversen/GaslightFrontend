@@ -97,7 +97,7 @@ export default function Page ({ params }: Readonly<{
 			setStrategy(response.data)
 			setOriginalStrategy(response.data)
 			setHasChanges(false)
-			setMessage(response.data.passedEvaluation ? 'Strategy passed evaluation!' : 'Strategy failed evaluation')
+			setMessage((response.data.passedEvaluation ?? false) ? 'Strategy passed evaluation!' : 'Strategy failed evaluation')
 			setTimeout(() => { setMessage('') }, 3000)
 		}).catch(error => {
 			console.error('Error submitting strategy:', error)
