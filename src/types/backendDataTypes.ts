@@ -24,7 +24,7 @@ export interface ISubmission {
 	_id: string
 	/** Title of the submission */
 	title: string
-	/** Code submitted by the user */
+	/** Code submitted by the user. Null if not requested by owner */
 	code: string | null
 	/** User who submitted the code */
 	user: UserType['_id']
@@ -34,6 +34,28 @@ export interface ISubmission {
 	passedEvaluation: boolean
 	/** The lines of code in the submission */
 	loc: number
+	/** Evaluation of the submission */
+	evaluation: {
+		// Properties
+		results: {
+			/** This submission's score */
+			candidate: number
+			/** Average score of all submissions */
+			average: number
+		} | undefined
+		/** Reason for disqualification */
+		disqualified: string | null
+		/** If the execution time exceeded the limit */
+		executionTimeExceeded: boolean
+		/** If the loading time exceeded the limit */
+		loadingTimeExceeded: boolean
+		/** Time taken to load the strategy */
+		strategyLoadingTimings: number
+		/** Time taken to execute the strategy */
+		strategyExecutionTimings: number[]
+		/** Averate time taken to execute the strategy */
+		averageExecutionTime: number
+	}
 
 	// Timestamps
 	createdAt: Date
