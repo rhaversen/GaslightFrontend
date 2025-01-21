@@ -215,26 +215,27 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								</div>
 								{strategy.evaluation != null && isEvaluationRecent(strategy.evaluation) && (
 									<div className="mt-3 border-t pt-3">
-										{strategy.evaluation.disqualified != null && (
+										{strategy.evaluation.disqualified != null ? (
 											<div className="text-red-600 mb-2 text-sm">
 												{'Disqualified: '}{strategy.evaluation.disqualified}
 											</div>
+										) : (
+											<div className="flex flex-wrap gap-4 text-sm">
+												{(strategy.evaluation.results != null) && (
+													<div className="flex gap-6">
+														<span>
+															{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
+														</span>
+														<span>
+															{'Avg: '}<span className="font-semibold">{strategy.evaluation.results.average.toFixed(2)}</span>
+														</span>
+													</div>
+												)}
+												<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
+													{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
+												</span>
+											</div>
 										)}
-										<div className="flex flex-wrap gap-4 text-sm">
-											{(strategy.evaluation.results != null) && (
-												<div className="flex gap-6">
-													<span>
-														{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
-													</span>
-													<span>
-														{'Avg: '}<span className="font-semibold">{strategy.evaluation.results.average.toFixed(2)}</span>
-													</span>
-												</div>
-											)}
-											<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
-												{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
-											</span>
-										</div>
 									</div>
 								)}
 							</div>
