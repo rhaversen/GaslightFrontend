@@ -168,7 +168,7 @@ export default function Page ({ params }: Readonly<{
 
 		return (
 			<div className="mt-4 p-4 bg-gray-50 rounded-lg border">
-				<h3 className="text-lg font-semibold mb-3 text-center">{'Evaluation Results'}</h3>
+				<h3 className="text-lg text-gray-700 font-semibold mb-3 text-center">{'Evaluation Results'}</h3>
 
 				{(strategy.evaluation.disqualified != null) && (
 					<div className="text-red-600 mb-2">
@@ -243,41 +243,44 @@ export default function Page ({ params }: Readonly<{
 	}
 
 	return (
-		<>
-			<main className="container mx-auto p-6 max-w-7xl">
-				<div className="bg-white shadow-lg rounded-lg p-6">
-					<div className="flex items-center justify-between">
+		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+			<div className="container mx-auto p-6 max-w-7xl">
+				<div className="backdrop-blur-sm bg-white/80 shadow-lg rounded-2xl p-8">
+					<div className="flex items-center justify-between mb-8">
 						<Link
 							href={`/user/${params.userId}/strategies`}
-							className="text-gray-600 hover:text-gray-800 transition-colors"
+							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 						>
 							<span className="inline-flex items-center">
-								<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
 								</svg>
-								{'Back to Strategies\r'}
+								{'Back\r'}
 							</span>
 						</Link>
-						<h1 className="text-3xl font-bold text-gray-800">{'Strategy Details'}</h1>
+						<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+							{'Strategy Details\r'}
+						</h1>
 						<button
 							type='button'
 							onClick={() => { void handleDelete() }}
-							className="text-red-600 hover:text-red-800 transition-colors flex items-center gap-2"
+							className="text-red-500 hover:text-red-600 transition-all hover:scale-105 flex items-center gap-2"
 						>
 							<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 							</svg>
-							{'Delete Strategy\r'}
+							{'Delete\r'}
 						</button>
 					</div>
-					{(strategy != null) && (
-						<div className="space-y-6">
-							<div className="flex flex-col gap-4 text-gray-700">
+
+					{strategy != null && (
+						<div className="space-y-8">
+							<div className="flex flex-col gap-6">
 								<input
 									type="text"
 									value={strategy.title}
 									onChange={(e) => { setStrategy({ ...strategy, title: e.target.value }) }}
-									className="w-full p-3 text-2xl font-semibold border-b-2 border-gray-200 focus:border-blue-500 outline-none transition-colors"
+									className="w-full p-4 text-2xl text-gray-800 font-semibold bg-transparent border-b-2 border-gray-200 focus:border-blue-500 outline-none transition-all"
 									placeholder="Enter strategy title..."
 								/>
 
@@ -287,16 +290,17 @@ export default function Page ({ params }: Readonly<{
 											type='button'
 											onClick={() => { handleSubmit() }}
 											disabled={isSubmitting}
-											className="bg-purple-500 text-white px-6 py-2.5 rounded-md hover:bg-purple-600 disabled:bg-purple-300 transition-colors flex items-center gap-2"
+											className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
 										>
 											{isSubmitting ? 'Submitting...' : 'Submit'}
 										</button>
 									)}
 
 									{strategy?.evaluation !== undefined && !hasChanges && (
-										<span className={`px-4 py-2 rounded-md text-sm font-medium ${(strategy.passedEvaluation ?? false)
-											? 'bg-green-100 text-green-800'
-											: 'bg-red-100 text-red-800'
+										<span className={`px-4 py-2 rounded-lg text-sm font-medium ${
+											(strategy.passedEvaluation ?? false)
+												? 'bg-green-100 text-green-800'
+												: 'bg-red-100 text-red-800'
 										}`}>
 											{(strategy.passedEvaluation ?? false) ? '✓ Passed Evaluation' : '✗ Failed Evaluation'}
 										</span>
@@ -305,7 +309,7 @@ export default function Page ({ params }: Readonly<{
 								{renderEvaluationResults()}
 							</div>
 
-							<div className="min-h-[600px] border rounded-lg overflow-hidden shadow-sm relative">
+							<div className="min-h-[600px] border border-gray-100 rounded-xl overflow-hidden shadow-sm relative">
 								<MonacoEditor
 									defaultValue={strategy?.code ?? ''}
 									height="600px"
@@ -319,7 +323,7 @@ export default function Page ({ params }: Readonly<{
 						</div>
 					)}
 				</div>
-			</main>
-		</>
+			</div>
+		</main>
 	)
 }

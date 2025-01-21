@@ -39,18 +39,28 @@ const Header = (): ReactElement => {
 	const buttonsRight = currentUser !== null ? authenticatedButtonsRight : unauthenticatedButtonsRight
 
 	return (
-		<div className='p-5 absolute flex justify-between w-full'>
-			<div className='flex'>
-				{Object.entries(buttonsLeft).map(([title, path]) => (
-					<Button key={title} title={title} path={path} />
-				))}
-			</div>
-			<div className='flex'>
-				{Object.entries(buttonsRight).map(([title, path]) => (
-					<Button key={title} title={title} path={path} />
-				))}
-			</div>
-		</div>
+		<header className="p-6 absolute w-full z-10">
+			<nav className="max-w-7xl mx-auto backdrop-blur-sm bg-white/10 rounded-2xl p-4 flex justify-between items-center shadow-lg">
+				<div className="flex gap-4">
+					{Object.entries(buttonsLeft).map(([title, path]) => (
+						<Button
+							key={title}
+							title={title}
+							path={path}
+						/>
+					))}
+				</div>
+				<div className="flex gap-4">
+					{Object.entries(buttonsRight).map(([title, path]) => (
+						<Button
+							key={title}
+							title={title}
+							path={path}
+						/>
+					))}
+				</div>
+			</nav>
+		</header>
 	)
 }
 

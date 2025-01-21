@@ -30,22 +30,26 @@ export default function Page (): ReactElement {
 	return (
 		<>
 			<Header />
-			<main className="flex flex-col items-center justify-center h-screen">
+			<main className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
 				<Halo />
-				<div className='text-white font-semibold p-2'>
-					{'NEXT RANKED TOURNAMENT IN'}
-				</div>
-				<div className='text-white text-6xl font-light p-2'>
-					{timeString}
-				</div>
-				<button className="border-2 m-3 rounded-full border-white transition duration-300 hover:scale-110 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black"
-					onClick={() => { console.log('Joining tournament') }}
-					type='button'
-				>
-					<div className='font-semibold p-5'>
-						{'JOIN TOURNAMENT'}
+				<div className="z-10 text-center space-y-8">
+					<div className='text-white text-xl font-medium tracking-wide'>
+						{'NEXT RANKED TOURNAMENT IN\r'}
 					</div>
-				</button>
+					<div className='text-white text-7xl font-light tracking-wider'>
+						{timeString}
+					</div>
+					<button
+						className="bg-gradient-to-r from-blue-500/80 to-purple-500/80 px-10 py-4 rounded-xl
+								text-white text-xl font-medium tracking-wide transform transition-all duration-300
+								hover:scale-105 hover:shadow-[0_0_50px_rgba(167,139,250,1)]
+								active:scale-95"
+						onClick={() => { console.log('Joining tournament') }}
+						type='button'
+					>
+						{'JOIN TOURNAMENT\r'}
+					</button>
+				</div>
 			</main>
 		</>
 	)
