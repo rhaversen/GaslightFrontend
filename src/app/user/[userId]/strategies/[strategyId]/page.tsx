@@ -148,7 +148,6 @@ export default function Page ({ params }: Readonly<{
 		const svgHeight = 100
 		const barWidth = 5
 		const spacing = 1
-		const totalWidth = buckets.length * (barWidth + spacing)
 
 		return (
 			<div className="mt-4">
@@ -290,6 +289,7 @@ export default function Page ({ params }: Readonly<{
 							<h1 className="text-3xl font-bold text-gray-800">{'Strategy Details'}</h1>
 						</div>
 						<button
+							type='button'
 							onClick={() => { void handleDelete() }}
 							className="text-red-600 hover:text-red-800 transition-colors flex items-center gap-2"
 						>
@@ -313,6 +313,7 @@ export default function Page ({ params }: Readonly<{
 								<div className="flex items-center gap-4 flex-wrap">
 									{(hasChanges || strategy.passedEvaluation === null) && !isSubmitting && (
 										<button
+											type='button'
 											onClick={() => { handleSubmit() }}
 											disabled={isSubmitting}
 											className="bg-purple-500 text-white px-6 py-2.5 rounded-md hover:bg-purple-600 disabled:bg-purple-300 transition-colors flex items-center gap-2"
