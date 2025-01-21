@@ -8,6 +8,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
+const getWidthClass = (percentage: number): string => {
+    const clampedPercentage = Math.min(Math.max(Math.round(percentage), 0), 100)
+    return `w-[${clampedPercentage}%]`
+}
 
 const createTimeBuckets = (
 	times: number[]
@@ -134,9 +138,9 @@ export default function Page ({ params }: Readonly<{
 		return (
 			<div className="mt-4">
 				<h4 className="text-sm font-medium mb-2">{'Execution Time Distribution (ms)'}</h4>
-				<div className="relative overflow-x-auto pb-4" style={{ maxWidth: '100%' }}>
-					<div className="mx-auto" style={{ width: `${totalWidth}px`, minWidth: '100%' }}>
-						<svg width="100%" height={svgHeight + 20} preserveAspectRatio="xMidYMid meet">
+				<div className="relative overflow-x-auto pb-4 w-full">
+					<div className="mx-auto w-full min-w-full">
+						<svg className="w-full h-[120px]" preserveAspectRatio="xMidYMid meet">
 							{buckets.map((bucket, i) => (
 								<g key={i} className="group">
 									<rect
@@ -146,7 +150,7 @@ export default function Page ({ params }: Readonly<{
 										height={bucket.count / maxCount * svgHeight === 0 ? 1 : bucket.count / maxCount * svgHeight}
 										className="fill-blue-400 hover:fill-blue-500 transition-colors"
 									/>
-									{i % 5 === 0 && ( // Show every fifth label since we have more bars
+									{i % 5 === 0 && (
 										<text
 											x={i * (barWidth + spacing) + barWidth / 2}
 											y={svgHeight + 15}
@@ -216,10 +220,7 @@ export default function Page ({ params }: Readonly<{
 									<div className="h-2 bg-gray-200 rounded-full mt-1">
 										<div
 											className={`h-full rounded-full transition-all ${strategy.evaluation.loadingTimeExceeded ? 'bg-red-500' : 'bg-green-500'
-											}`}
-											style={{
-												width: `${Math.min((strategy.evaluation.strategyLoadingTimings / LOADING_TIME_LIMIT) * 100, 100)}%`
-											}}
+											} ${getWidthClass((strategy.evaluation.strategyLoadingTimings / LOADING_TIME_LIMIT) * 100)}`}
 										/>
 									</div>
 								</div>
@@ -235,10 +236,7 @@ export default function Page ({ params }: Readonly<{
 									<div className="h-2 bg-gray-200 rounded-full mt-1">
 										<div
 											className={`h-full rounded-full transition-all ${strategy.evaluation.executionTimeExceeded ? 'bg-red-500' : 'bg-green-500'
-											}`}
-											style={{
-												width: `${Math.min((strategy.evaluation.averageExecutionTime / EXECUTION_TIME_LIMIT) * 100, 100)}%`
-											}}
+											} ${getWidthClass((strategy.evaluation.averageExecutionTime / EXECUTION_TIME_LIMIT) * 100)}`}
 										/>
 									</div>
 								</div>
