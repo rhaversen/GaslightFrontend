@@ -179,6 +179,11 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								<p>{'Created: '}{new Date(strategy.createdAt).toLocaleDateString()}</p>
 								{strategy.evaluation != null && (
 									<div className="mt-3 border-t pt-3">
+										{strategy.evaluation.disqualified != null && (
+											<div className="text-red-600 mb-2 text-sm">
+												{'Disqualified: '}{strategy.evaluation.disqualified}
+											</div>
+										)}
 										<div className="flex flex-wrap gap-4 text-sm">
 											{(strategy.evaluation.results != null) && (
 												<div className="flex gap-6">
