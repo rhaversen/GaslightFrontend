@@ -140,7 +140,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto p-6 max-w-4xl">
-				<div className="backdrop-blur-sm bg-white/80 shadow-lg rounded-2xl p-8">
+				<div className="shadow-lg rounded-2xl p-8">
 					<div className="flex items-center mb-8">
 						<Link
 							href={`/user/${params.userId}`}

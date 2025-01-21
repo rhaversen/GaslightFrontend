@@ -43,7 +43,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		return (
 			<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 				<div className="container mx-auto p-6 max-w-4xl">
-					<div className="backdrop-blur-sm bg-white/80 shadow-lg rounded-2xl p-8">
+					<div className="shadow-lg rounded-2xl p-8">
 						<div className="animate-pulse space-y-6">
 							<div className="h-10 bg-gray-200 rounded-lg w-1/3 mx-auto"></div>
 							<div className="space-y-4 bg-gray-50 p-6 rounded-xl">
@@ -61,13 +61,13 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto p-6 max-w-4xl">
-				<div className="backdrop-blur-sm bg-white/80 shadow-lg rounded-2xl p-8">
+				<div className="shadow-lg rounded-2xl p-8">
 					<h1 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center">
 						{'User Profile\r'}
 					</h1>
 					{userData !== null && (
 						<div className="space-y-6">
-							<div className="bg-white/50 p-6 rounded-xl border border-gray-100 shadow-sm">
+							<div className="p-6 rounded-xl border border-gray-100 shadow-sm">
 								<div className="space-y-4">
 									<p className="flex justify-between items-center text-gray-600">
 										<span className="font-medium">{'Username'}</span>

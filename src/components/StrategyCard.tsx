@@ -76,13 +76,13 @@ export function StrategyCard ({
 				? (
 					<Link
 						href={`/user/${userId}/strategies/${strategy._id}`}
-						className="flex-1 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-white/50"
+						className="flex-1 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
 					>
 						<StrategyContent />
 					</Link>
 				)
 				: (
-					<div className="flex-1 border border-gray-100 rounded-xl p-6 backdrop-blur-sm bg-white/50">
+					<div className="flex-1 border border-gray-100 rounded-xl p-6">
 						<StrategyContent />
 					</div>
 				)}
