@@ -297,7 +297,7 @@ export default function Page ({ params }: Readonly<{
 							/>
 
 							<div className="flex items-center gap-4 flex-wrap">
-								{(hasChanges || strategy.passedEvaluation === null) && (
+								{(hasChanges || strategy.passedEvaluation === null) && !isSubmitting && (
 									<button
 										onClick={() => { handleSubmit() }}
 										disabled={isSubmitting}
