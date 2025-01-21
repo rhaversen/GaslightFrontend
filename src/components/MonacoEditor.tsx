@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Editor, { type Monaco } from '@monaco-editor/react'
 import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
@@ -159,7 +159,20 @@ const MonacoEditor = ({
 	isMaximized?: boolean
 }): JSX.Element => {
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
+	const [isFullscreen, setIsFullscreen] = useState(false)
 	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
+
+	useEffect(() => {
+		const handleEscape = (event: KeyboardEvent): void => {
+			if (event.key === 'Escape' && isFullscreen) {
+				setIsFullscreen(false)
+			}
+		}
+		window.addEventListener('keydown', handleEscape)
+		return () => {
+			window.removeEventListener('keydown', handleEscape)
+		}
+	}, [isFullscreen])
 
 	function handleEditorChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent): void {
 		if (onChange !== null && onChange !== undefined) {
@@ -182,10 +195,16 @@ const MonacoEditor = ({
 		// markers.forEach(marker => console.log('onValidate:', marker.message));
 	}
 
+	function toggleFullscreen (): void {
+		setIsFullscreen(!isFullscreen)
+	}
+
 	return (
 		<div
-			className="flex flex-col gap-4 rounded-md shadow-md"
-			style={{ backgroundColor: `#${bgColor}` }}
+			className={`flex flex-col gap-4 rounded-md shadow-md ${
+				isFullscreen ? 'fixed top-0 left-0 w-screen h-screen z-[9999]' : ''
+			}`}
+			style={{ backgroundColor: `#${bgColor}`, height: isFullscreen ? '100vh' : 'auto' }}
 		>
 			<div className="flex justify-end gap-2 px-4 pt-2">
 				<label htmlFor="theme-select" className="sr-only">{'Select Theme'}</label>
@@ -219,13 +238,20 @@ const MonacoEditor = ({
 							)}
 					</button>
 				)}
+				<button
+					type="button"
+					onClick={toggleFullscreen}
+					className="bg-gray-700 text-white px-3 py-1 rounded-md"
+				>
+					{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+				</button>
 			</div>
-			<div className="flex gap-4">
+			<div className={`flex gap-4 ${isFullscreen ? 'flex-1' : ''}`}>
 				<div className="flex-1 flex-shrink flex-grow-[1] w-[60%]">
 					<Editor
 						defaultLanguage="typescript"
 						defaultValue={defaultValue}
-						height={height}
+						height={isFullscreen ? '100%' : height}
 						onChange={handleEditorChange}
 						onMount={handleEditorDidMount}
 						beforeMount={handleEditorWillMount}
@@ -241,7 +267,7 @@ const MonacoEditor = ({
 					<Editor
 						defaultLanguage="typescript"
 						value={apiTypes}
-						height={height}
+						height={isFullscreen ? '100%' : height}
 						options={{
 							readOnly: true,
 							minimap: { enabled: true },

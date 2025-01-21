@@ -56,7 +56,6 @@ export default function Page ({ params }: Readonly<{
 	const [message, setMessage] = useState('')
 	const [hasChanges, setHasChanges] = useState(false)
 	const [originalStrategy, setOriginalStrategy] = useState<ISubmission | null>(null)
-	const [isEditorMaximized, setIsEditorMaximized] = useState(false)
 
 	useEffect(() => {
 		const fetchData = async (): Promise<void> => {
@@ -88,20 +87,6 @@ export default function Page ({ params }: Readonly<{
 
 		setHasChanges(hasChanges)
 	}, [strategy, originalStrategy])
-
-	// Add escape key handler
-	useEffect(() => {
-		const handleEscape = (event: KeyboardEvent): void => {
-			if (event.key === 'Escape' && isEditorMaximized) {
-				setIsEditorMaximized(false)
-			}
-		}
-
-		window.addEventListener('keydown', handleEscape)
-		return () => {
-			window.removeEventListener('keydown', handleEscape)
-		}
-	}, [isEditorMaximized])
 
 	const handleSubmit = (): void => {
 		if (strategy == null) return
@@ -343,44 +328,21 @@ export default function Page ({ params }: Readonly<{
 								{renderEvaluationResults()}
 							</div>
 
-							{!isEditorMaximized && (
-								<div className="min-h-[600px] border rounded-lg overflow-hidden shadow-sm relative">
-									<MonacoEditor
-										defaultValue={strategy?.code ?? ''}
-										height="600px"
-										onChange={(value) => {
-											if (value !== undefined) {
-												setStrategy({ ...strategy, code: value })
-											}
-										}}
-										onToggleMaximize={() => { setIsEditorMaximized(true) }}
-										isMaximized={false}
-									/>
-								</div>
-							)}
+							<div className="min-h-[600px] border rounded-lg overflow-hidden shadow-sm relative">
+								<MonacoEditor
+									defaultValue={strategy?.code ?? ''}
+									height="600px"
+									onChange={(value) => {
+										if (value !== undefined) {
+											setStrategy({ ...strategy, code: value })
+										}
+									}}
+								/>
+							</div>
 						</div>
 					)}
 				</div>
 			</main>
-
-			{isEditorMaximized && (
-				<>
-					<div className="fixed inset-0 bg-black bg-opacity-50 z-[9999]" />
-					<div className="fixed inset-0 z-[10000] bg-white">
-						<MonacoEditor
-							defaultValue={strategy?.code ?? ''}
-							height="100vh"
-							onChange={(value) => {
-								if (value !== undefined && strategy !== null) {
-									setStrategy({ ...strategy, code: value })
-								}
-							}}
-							onToggleMaximize={() => { setIsEditorMaximized(false) }}
-							isMaximized={true}
-						/>
-					</div>
-				</>
-			)}
 		</>
 	)
 }
