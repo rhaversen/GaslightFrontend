@@ -4,6 +4,7 @@ import { type ISubmission } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
 import React, { type ReactElement, useEffect, useState, useMemo } from 'react'
+import Link from 'next/link'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -246,7 +247,20 @@ export default function Page ({ params }: Readonly<{
 	return (
 		<main className="container mx-auto p-6 max-w-7xl">
 			<div className="bg-white shadow-lg rounded-lg p-6">
-				<h1 className="text-3xl font-bold mb-6 text-gray-800">{'Strategy Details'}</h1>
+				<div className="flex items-center gap-4 mb-6">
+					<Link
+						href={`/user/${params.userId}/strategies`}
+						className="text-gray-600 hover:text-gray-800 transition-colors"
+					>
+						<span className="inline-flex items-center">
+							<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+							</svg>
+							{'Back to Strategies\r'}
+						</span>
+					</Link>
+					<h1 className="text-3xl font-bold text-gray-800">{'Strategy Details'}</h1>
+				</div>
 				{(strategy != null) && (
 					<div className="space-y-6">
 						<div className="flex flex-col gap-4 text-gray-700">
