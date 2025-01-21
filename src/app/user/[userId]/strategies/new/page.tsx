@@ -73,7 +73,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 	return (
 		<main className="container mx-auto p-6 max-w-4xl">
 			<div className="bg-white shadow-lg rounded-lg p-6">
-				<div className="flex items-center gap-4 mb-8">
+				<div className="flex items-center justify-between mb-8">
 					<Link
 						href={`/user/${params.userId}/strategies`}
 						className="text-gray-600 hover:text-gray-800 transition-colors"
@@ -86,6 +86,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 						</span>
 					</Link>
 					<h1 className="text-3xl font-bold text-gray-800">{'Create New Strategy'}</h1>
+					<div className="w-[135px]"></div>
 				</div>
 
 				<div className="space-y-6">

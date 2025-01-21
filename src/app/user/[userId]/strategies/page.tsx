@@ -113,21 +113,19 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	return (
 		<main className="container mx-auto p-6 max-w-4xl">
 			<div className="bg-white shadow-lg rounded-lg p-6">
-				<div className="flex justify-between items-center mb-6">
-					<div className="flex items-center gap-4">
-						<Link
-							href={`/user/${params.userId}`}
-							className="text-gray-600 hover:text-gray-800 transition-colors"
-						>
-							<span className="inline-flex items-center">
-								<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-								</svg>
-								{'Back to Profile\r'}
-							</span>
-						</Link>
-						<h1 className="text-3xl font-bold text-gray-800">{'Strategies'}</h1>
-					</div>
+				<div className="flex items-center justify-between mb-5">
+					<Link
+						href={`/user/${params.userId}`}
+						className="text-gray-600 hover:text-gray-800 transition-colors"
+					>
+						<span className="inline-flex items-center">
+							<svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+							</svg>
+							{'Back to Profile\r'}
+						</span>
+					</Link>
+					<h1 className="text-3xl font-bold text-gray-800 text-center">{'Your Strategies'}</h1>
 					{isOwnProfile && (
 						<Link
 							href={`/user/${params.userId}/strategies/new`}
@@ -142,7 +140,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						<div key={strategy._id} className="border rounded-lg p-4 hover:bg-gray-50">
 							<div className="flex justify-between items-center">
 								<Link href={`/user/${params.userId}/strategies/${strategy._id}`}>
-									<h3 className="text-xl font-semibold text-gray-800">{strategy.title}</h3>
+									<h3 className="text-xl font-semibold text-gray-800 text-center">{strategy.title}</h3>
 								</Link>
 								<div className="flex items-center space-x-4">
 									{isOwnProfile && (

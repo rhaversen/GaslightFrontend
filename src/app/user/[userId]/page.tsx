@@ -58,7 +58,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	return (
 		<main className="container mx-auto p-6 max-w-4xl">
 			<div className="bg-white shadow-lg rounded-lg p-6">
-				<h1 className="text-3xl font-bold mb-6 text-gray-800">{'User Profile'}</h1>
+				<h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">{'User Profile'}</h1>
 				{userData !== null && (
 					<div className="space-y-4">
 						<div className="bg-gray-50 p-4 rounded-md">
