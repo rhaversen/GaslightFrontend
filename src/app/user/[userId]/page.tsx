@@ -29,7 +29,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 					`${API_URL}/v1/users/${params.userId}`,
 					{ withCredentials: true }
 				)
-				console.log('User data:', response.data)
 				setUserData(response.data)
 			} catch (error) {
 				console.error('Error fetching user:', error)

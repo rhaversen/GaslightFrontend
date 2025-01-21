@@ -170,9 +170,7 @@ const MonacoEditor = ({
 		initializeShiki(monaco).catch(console.error)
 	}
 
-	function handleEditorDidMount (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco): void {
-		console.log('onMount: the editor instance:', editor)
-		console.log('onMount: the monaco instance:', monaco)
+	function handleEditorDidMount (editor: monaco.editor.IStandaloneCodeEditor, _monaco: Monaco): void {
 	}
 
 	function handleEditorValidation (markers: monaco.editor.IMarker[]): void {

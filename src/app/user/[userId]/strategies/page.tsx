@@ -28,7 +28,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						withCredentials: true
 					}
 				)
-				console.log('Strategies:', response.data)
 				setStrategies(response.data)
 				// Set active strategy ID
 				const activeStrategy = response.data.find(s => s.active)
@@ -43,8 +42,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	}, [params.userId])
 
 	const toggleActive = async (strategyId: string, active: boolean): Promise<void> => {
-		console.log('Toggling active status:', strategyId, active)
-
 		// Store previous state
 		const previousActiveId = activeStrategyId
 
