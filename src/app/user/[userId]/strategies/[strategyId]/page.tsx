@@ -102,9 +102,9 @@ export default function Page ({ params }: Readonly<{
 		}).catch(error => {
 			console.error('Error submitting strategy:', error)
 			setMessage('Error submitting strategy')
+		}).finally(() => {
+			setIsSubmitting(false)
 		})
-
-		setIsSubmitting(false)
 	}
 
 	const handleDelete = async (): Promise<void> => {
