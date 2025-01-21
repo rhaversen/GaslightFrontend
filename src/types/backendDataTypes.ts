@@ -55,6 +55,10 @@ export interface ISubmission {
 		strategyExecutionTimings: number[] | undefined
 		/** Averate time taken to execute the strategy */
 		averageExecutionTime: number | undefined
+
+		// Timestamps
+		createdAt: Date
+		updatedAt: Date		
 	}
 
 	// Timestamps
