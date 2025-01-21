@@ -97,7 +97,7 @@ export default function Page ({ params }: Readonly<{
 			setStrategy(response.data)
 			setOriginalStrategy(response.data)
 			setHasChanges(false)
-			if (!response.data.passedEvaluation) {
+			if (!(response.data.passedEvaluation ?? false)) {
 				setMessage('Strategy failed evaluation')
 				setTimeout(() => { setMessage('') }, 3000)
 			} else {
