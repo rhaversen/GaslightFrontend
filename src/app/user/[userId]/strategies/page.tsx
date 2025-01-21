@@ -5,51 +5,14 @@ import { type ISubmission } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-const defaultCode = `const main = (api: MeyerStrategyAPI) => {
-	// If we're first in the round, we need to roll
-	if (api.isFirstInRound()) {
-		api.roll()
-		return
-	}
-
-	// Randomly reveal
-	if (Math.random() > 0.5) {
-		api.reveal()
-		return
-	}
-
-	// Get previous announced value
-	const lastScore = api.getPreviousAction()
-
-	// Roll the dice
-	const currentScore = api.roll()
-
-	// If our score is higher or equal, finish the turn
-	if (lastScore === null || currentScore >= lastScore) {
-		return
-	}
-
-	// If our score is lower, we can either lie or call "det eller derover"
-	if (Math.random() > 0.5) {
-		api.lie(lastScore)
-	} else {
-		api.detEllerDerover()
-	}
-}
-
-export default main
-`
 
 export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement {
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<ISubmission[]>([])
 	const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null)
 	const isOwnProfile = currentUser?._id === params.userId
-	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
@@ -78,23 +41,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		}
 		void fetchStrategies()
 	}, [params.userId])
-
-	const createNewStrategy = async (): Promise<void> => {
-		try {
-			const response = await axios.post<ISubmission>(
-				`${API_URL}/v1/submissions`,
-				{
-					title: 'New Strategy',
-					code: defaultCode
-				},
-				{ withCredentials: true }
-			)
-			console.log('Created strategy:', response.data)
-			router.push(`/user/${params.userId}/strategies/${response.data._id}`)
-		} catch (error) {
-			console.error('Error creating strategy:', error)
-		}
-	}
 
 	const toggleActive = async (strategyId: string, active: boolean): Promise<void> => {
 		console.log('Toggling active status:', strategyId, active)
@@ -186,12 +132,12 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						<h1 className="text-3xl font-bold text-gray-800">{'Strategies'}</h1>
 					</div>
 					{isOwnProfile && (
-						<button
+						<Link
+							href={`/user/${params.userId}/strategies/new`}
 							className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors"
-							onClick={() => { void createNewStrategy() }}
 						>
 							{'Create New Strategy\r'}
-						</button>
+						</Link>
 					)}
 				</div>
 				<div className="grid gap-4">
