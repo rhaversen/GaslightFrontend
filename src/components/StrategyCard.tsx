@@ -34,7 +34,7 @@ export function StrategyCard ({
 			<div className="mt-2 text-gray-600">
 				<div className="flex justify-between items-end">
 					<div>
-						<p>{'Lines of code: '}{strategy.loc}</p>
+						<p>{'Number of tokens: '}{strategy.tokenCount}</p>
 						<p>{'Last updated: '}{new Date(strategy.updatedAt).toLocaleDateString()}</p>
 						<p className="mb-0">{'Created: '}{new Date(strategy.createdAt).toLocaleDateString()}</p>
 					</div>

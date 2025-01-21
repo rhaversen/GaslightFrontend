@@ -33,7 +33,7 @@ export interface ISubmission {
 	/** Decides if the submission has passed an evaluation and is ready for tournaments. Null if not evaluated yet */
 	passedEvaluation: boolean | null
 	/** The lines of code in the submission */
-	loc: number
+	tokenCount: number
 	/** Evaluation of the submission */
 	evaluation: {
 		// Properties
