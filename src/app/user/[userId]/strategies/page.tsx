@@ -198,11 +198,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 											<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
 												{'Execution: '}{strategy.evaluation?.averageExecutionTime?.toFixed(3) ?? 'N/A'}{'ms\r'}
 											</span>
-											{(strategy.evaluation.disqualified != null) && (
-												<span className="text-red-600">
-													{'Disqualified: '}{strategy.evaluation.disqualified}
-												</span>
-											)}
 										</div>
 									</div>
 								)}
