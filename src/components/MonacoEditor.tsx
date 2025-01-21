@@ -147,12 +147,14 @@ async function initializeShiki (monaco: Monaco): Promise<void> {
 
 const MonacoEditor = ({
 	defaultValue,
+	value,
 	height = '90vh',
 	onChange,
 	onToggleMaximize,
 	isMaximized
 }: {
-	defaultValue: string
+	defaultValue?: string
+	value?: string
 	height?: string
 	onChange?: (value: string | undefined, event: any) => void
 	onToggleMaximize?: () => void
@@ -300,7 +302,7 @@ const MonacoEditor = ({
 				<div style={{ width: leftPaneWidth }}>
 					<Editor
 						defaultLanguage="typescript"
-						defaultValue={defaultValue}
+						value={value ?? defaultValue}
 						height="100%"
 						onChange={handleEditorChange}
 						onMount={handleEditorDidMount}

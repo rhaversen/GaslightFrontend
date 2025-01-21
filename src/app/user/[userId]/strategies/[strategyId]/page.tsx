@@ -286,14 +286,28 @@ export default function Page ({ params }: Readonly<{
 
 								<div className="flex items-center gap-4 flex-wrap">
 									{(hasChanges || strategy.passedEvaluation === null) && (
-										<button
-											type='button'
-											onClick={() => { handleSubmit() }}
-											disabled={isSubmitting}
-											className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
-										>
-											{isSubmitting ? 'Submitting...' : 'Submit'}
-										</button>
+										<>
+											<button
+												type='button'
+												onClick={() => { handleSubmit() }}
+												disabled={isSubmitting}
+												className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
+											>
+												{isSubmitting ? 'Submitting...' : 'Submit'}
+											</button>
+											<button
+												type='button'
+												onClick={() => {
+													if (originalStrategy != null) {
+														setStrategy(originalStrategy)
+														setHasChanges(false)
+													}
+												}}
+												className="bg-gray-100 text-gray-600 px-8 py-3 rounded-lg hover:bg-gray-200 hover:scale-105 transition-all"
+											>
+												{'Cancel\r'}
+											</button>
+										</>
 									)}
 
 									{strategy?.evaluation !== undefined && !hasChanges && (
@@ -311,7 +325,7 @@ export default function Page ({ params }: Readonly<{
 
 							<div className="min-h-[600px] border border-gray-100 rounded-xl overflow-hidden shadow-sm relative">
 								<MonacoEditor
-									defaultValue={strategy?.code ?? ''}
+									value={strategy?.code ?? ''}
 									height="600px"
 									onChange={(value) => {
 										if (value !== undefined) {
