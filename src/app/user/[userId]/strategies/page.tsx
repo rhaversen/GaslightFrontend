@@ -168,7 +168,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								{'Back to Profile\r'}
 							</span>
 						</Link>
-					<h1 className="text-3xl font-bold text-gray-800">{'Strategies'}</h1>
+						<h1 className="text-3xl font-bold text-gray-800">{'Strategies'}</h1>
 					</div>
 					{isOwnProfile && (
 						<button
@@ -210,6 +210,30 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								<p>{'Lines of code: '}{strategy.loc}</p>
 								<p>{'Last updated: '}{new Date(strategy.updatedAt).toLocaleDateString()}</p>
 								<p>{'Created: '}{new Date(strategy.createdAt).toLocaleDateString()}</p>
+								{strategy.evaluation != null && (
+									<div className="mt-3 border-t pt-3">
+										<div className="flex flex-wrap gap-4 text-sm">
+											{(strategy.evaluation.results != null) && (
+												<div className="flex gap-6">
+													<span>
+														{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
+													</span>
+													<span>
+														{'Avg: '}<span className="font-semibold">{strategy.evaluation.results.average.toFixed(2)}</span>
+													</span>
+												</div>
+											)}
+											<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
+												{'Execution: '}{strategy.evaluation.averageExecutionTime.toFixed(3)}{'ms\r'}
+											</span>
+											{(strategy.evaluation.disqualified != null) && (
+												<span className="text-red-600">
+													{'Disqualified: '}{strategy.evaluation.disqualified}
+												</span>
+											)}
+										</div>
+									</div>
+								)}
 							</div>
 						</div>
 					))}
