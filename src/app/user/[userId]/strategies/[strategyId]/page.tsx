@@ -8,10 +8,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-const getWidthClass = (percentage: number): string => {
-	const clampedPercentage = Math.min(Math.max(Math.round(percentage), 0), 100)
-	return `w-[${clampedPercentage}%]`
-}
 
 const createTimeBuckets = (
 	times: number[]
@@ -211,15 +207,14 @@ export default function Page ({ params }: Readonly<{
 								<div className="flex flex-col">
 									<div className="flex items-center justify-between">
 										<span className="text-sm text-gray-600">{'Loading Time Limit ('}{LOADING_TIME_LIMIT}{'ms)'}</span>
-										<span className={`text-sm font-medium ${strategy.evaluation.loadingTimeExceeded ? 'text-red-600' : 'text-green-600'
-										}`}>
+										<span className={`text-sm font-medium ${strategy.evaluation.loadingTimeExceeded ? 'text-red-600' : 'text-green-600'}`}>
 											{strategy.evaluation.strategyLoadingTimings.toFixed(2)}{'ms\r'}
 										</span>
 									</div>
 									<div className="h-2 bg-gray-200 rounded-full mt-1">
 										<div
-											className={`h-full rounded-full transition-all ${strategy.evaluation.loadingTimeExceeded ? 'bg-red-500' : 'bg-green-500'
-											} ${getWidthClass((strategy.evaluation.strategyLoadingTimings / LOADING_TIME_LIMIT) * 100)}`}
+											style={{ width: `${Math.min((strategy.evaluation.strategyLoadingTimings / LOADING_TIME_LIMIT) * 100, 100)}%` }}
+											className={`h-full rounded-full transition-all ${strategy.evaluation.loadingTimeExceeded ? 'bg-red-500' : 'bg-green-500'}`}
 										/>
 									</div>
 								</div>
@@ -227,15 +222,14 @@ export default function Page ({ params }: Readonly<{
 								<div className="flex flex-col">
 									<div className="flex items-center justify-between">
 										<span className="text-sm text-gray-600">{'Execution Time Limit ('}{EXECUTION_TIME_LIMIT}{'ms)'}</span>
-										<span className={`text-sm font-medium ${strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'
-										}`}>
+										<span className={`text-sm font-medium ${strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}`}>
 											{strategy.evaluation.averageExecutionTime.toFixed(3)}{'ms avg\r'}
 										</span>
 									</div>
 									<div className="h-2 bg-gray-200 rounded-full mt-1">
 										<div
-											className={`h-full rounded-full transition-all ${strategy.evaluation.executionTimeExceeded ? 'bg-red-500' : 'bg-green-500'
-											} ${getWidthClass((strategy.evaluation.averageExecutionTime / EXECUTION_TIME_LIMIT) * 100)}`}
+											style={{ width: `${Math.min((strategy.evaluation.averageExecutionTime / EXECUTION_TIME_LIMIT) * 100, 100)}%` }}
+											className={`h-full rounded-full transition-all ${strategy.evaluation.executionTimeExceeded ? 'bg-red-500' : 'bg-green-500'}`}
 										/>
 									</div>
 								</div>
