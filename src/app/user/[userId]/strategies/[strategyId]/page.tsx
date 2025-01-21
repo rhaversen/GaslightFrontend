@@ -315,7 +315,7 @@ export default function Page ({ params }: Readonly<{
 									)}
 
 									{(message.length > 0) && (
-										<span className={`px-4 py-2 rounded-md text-sm font-medium ${message.includes('Error')
+										<span className={`px-4 py-2 rounded-md text-sm font-medium ${message.toLowerCase().includes('error')
 											? 'bg-red-100 text-red-800'
 											: 'bg-blue-100 text-blue-800'
 										}`}>
