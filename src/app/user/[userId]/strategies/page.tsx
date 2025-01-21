@@ -1,10 +1,11 @@
 'use client'
 
 import { useUser } from '@/contexts/UserProvider'
-import { type ISubmission } from '@/types/backendDataTypes'
+import { type UserType, type ISubmission } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState } from 'react'
+import { StrategyCard } from '@/components/StrategyCard'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -12,6 +13,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<ISubmission[]>([])
 	const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null)
+	const [username, setUsername] = useState<string>('')
 	const isOwnProfile = currentUser?._id === params.userId
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -37,29 +39,33 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	}
 
 	useEffect(() => {
-		const fetchStrategies = async (): Promise<void> => {
+		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
 			try {
-				const response = await axios.get<ISubmission[]>(
-					`${API_URL}/v1/submissions`,
-					{
-						params: {
-							user: params.userId
-						},
+				const [strategiesResponse, userResponse] = await Promise.all([
+					axios.get<ISubmission[]>(`${API_URL}/v1/submissions`, {
+						params: { user: params.userId },
 						withCredentials: true
-					}
-				)
-				setStrategies(response.data)
+					}),
+					axios.get<UserType>(`${API_URL}/v1/users/${params.userId}`, {
+						withCredentials: true
+					})
+				])
+
+				setStrategies(strategiesResponse.data)
+				setUsername(userResponse.data.username ?? 'Unknown User')
+
 				// Set active strategy ID
-				const activeStrategy = response.data.find(s => s.active)
+				const activeStrategy = strategiesResponse.data.find(s => s.active)
 				setActiveStrategyId(activeStrategy?._id ?? null)
 			} catch (error) {
-				console.error('Error fetching strategies:', error)
+				console.error('Error fetching data:', error)
+				setUsername('Unknown User')
 			} finally {
 				setIsLoading(false)
 			}
 		}
-		void fetchStrategies()
+		void fetchData()
 	}, [params.userId])
 
 	const toggleActive = async (strategyId: string, active: boolean): Promise<void> => {
@@ -135,10 +141,10 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto p-6 max-w-4xl">
 				<div className="backdrop-blur-sm bg-white/80 shadow-lg rounded-2xl p-8">
-					<div className="flex items-center justify-between mb-8">
+					<div className="flex items-center mb-8">
 						<Link
 							href={`/user/${params.userId}`}
-							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
+							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105 min-w-[120px]"
 						>
 							<span className="inline-flex items-center">
 								<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,109 +153,32 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								{'Profile\r'}
 							</span>
 						</Link>
-						<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-							{'Your Strategies\r'}
+						<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 flex-1 text-center mx-4">
+							{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
 						</h1>
-						{isOwnProfile && (
-							<Link
-								href={`/user/${params.userId}/strategies/new`}
-								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-lg hover:scale-105 transition-all shadow-md"
-							>
-								{'Create Strategy\r'}
-							</Link>
-						)}
+						<div className="min-w-[120px] flex justify-end">
+							{isOwnProfile && (
+								<Link
+									href={`/user/${params.userId}/strategies/new`}
+									className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
+								>
+									{'Create Strategy'}
+								</Link>
+							)}
+						</div>
 					</div>
 					<div className="space-y-4">
 						{strategies.map((strategy) => (
-							<div key={strategy._id} className="flex">
-								<Link
-									href={`/user/${params.userId}/strategies/${strategy._id}`}
-									className="flex-1 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-white/50"
-								>
-									<div className="flex justify-between items-center">
-										<h3 className="text-xl font-semibold text-gray-800 text-center">{strategy.title}</h3>
-										<div className="flex items-center space-x-4">
-											<span className={`px-3 py-1 rounded-full text-sm ${(strategy.passedEvaluation ?? false) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-												{(strategy.passedEvaluation ?? false) ? 'Passing' : 'Not Passing'}
-											</span>
-										</div>
-									</div>
-									<div className="mt-2 text-gray-600">
-										<div className="flex justify-between items-end">
-											<div>
-												<p>{'Lines of code: '}{strategy.loc}</p>
-												<p>{'Last updated: '}{new Date(strategy.updatedAt).toLocaleDateString()}</p>
-												<p className="mb-0">{'Created: '}{new Date(strategy.createdAt).toLocaleDateString()}</p>
-											</div>
-										</div>
-										{strategy.evaluation != null && isEvaluationRecent(strategy.evaluation) && (
-											<div className="mt-3 border-t pt-3">
-												{strategy.evaluation.disqualified != null
-													? (
-														<div className="text-red-600 mb-2 text-sm">
-															{'Disqualified: '}{strategy.evaluation.disqualified}
-														</div>
-													)
-													: (
-														<div className="flex flex-wrap gap-4 text-sm">
-															{(strategy.evaluation.results != null) && (
-																<div className="flex gap-6">
-																	<span>
-																		{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
-																	</span>
-																	<span>
-																		{'Avg: '}<span className="font-semibold">{strategy.evaluation.results.average.toFixed(2)}</span>
-																	</span>
-																</div>
-															)}
-															<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
-																{'Execution: '}{strategy.evaluation?.averageExecutionTime != null ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
-															</span>
-														</div>
-													)}
-											</div>
-										)}
-									</div>
-								</Link>
-								<div className="flex flex-col justify-start items-center ml-4 mt-6 space-y-4">
-									{isOwnProfile && (
-										<label
-											className={`flex items-center space-x-2 ${
-												(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)
-													? 'opacity-50'
-													: ''
-											}`}
-											title={
-												!(strategy.passedEvaluation ?? false)
-													? 'Strategy must pass evaluation before it can be activated'
-													: (activeStrategyId !== null && activeStrategyId !== strategy._id)
-														? 'Only one strategy can be active at a time'
-														: ''
-											}
-										>
-											<input
-												type="checkbox"
-												checked={strategy.active}
-												onChange={(e) => { void (async () => { await toggleActive(strategy._id, e.target.checked) })() }}
-												disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)}
-												className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
-											/>
-											<span className="text-sm text-gray-600">{'Active'}</span>
-										</label>
-									)}
-									{isOwnProfile && (
-										<button
-											onClick={() => { void handleDelete(strategy) }}
-											className="text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
-											title="Delete strategy"
-										>
-											<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-											</svg>
-										</button>
-									)}
-								</div>
-							</div>
+							<StrategyCard
+								key={strategy._id}
+								strategy={strategy}
+								isOwnProfile={isOwnProfile}
+								userId={params.userId}
+								onToggleActive={toggleActive}
+								onDelete={handleDelete}
+								activeStrategyId={activeStrategyId}
+								isEvaluationRecent={isEvaluationRecent}
+							/>
 						))}
 					</div>
 				</div>
