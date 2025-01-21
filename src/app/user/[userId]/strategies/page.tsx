@@ -79,16 +79,16 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		}
 	}
 
-	const handleDelete = async (strategyId: string): Promise<void> => {
-		if (!window.confirm('Are you sure you want to delete this strategy? It cannot be recovered.')) {
+	const handleDelete = async (strategy: ISubmission): Promise<void> => {
+		if (!window.confirm(`Are you sure you want to delete "${strategy.title}"? It cannot be recovered.`)) {
 			return
 		}
 
 		try {
-			await axios.delete(`${API_URL}/v1/submissions/${strategyId}`, {
+			await axios.delete(`${API_URL}/v1/submissions/${strategy._id}`, {
 				withCredentials: true
 			})
-			setStrategies(prev => prev.filter(s => s._id !== strategyId))
+			setStrategies(prev => prev.filter(s => s._id !== strategy._id))
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
 		}
