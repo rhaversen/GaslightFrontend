@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 	}
 }
 
-export default function UserLayout ({
+export default function StrategyLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode
