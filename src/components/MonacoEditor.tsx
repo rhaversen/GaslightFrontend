@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Editor, { type Monaco } from '@monaco-editor/react'
 import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
@@ -160,7 +160,24 @@ const MonacoEditor = ({
 }): JSX.Element => {
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
 	const [isFullscreen, setIsFullscreen] = useState(false)
+	const [leftPaneWidth, setLeftPaneWidth] = useState('60%')
+	const isDraggingRef = useRef(false)
+	const containerRef = useRef<HTMLDivElement>(null)
 	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
+	const [showMinimap, setShowMinimap] = useState(true)
+
+	// Add function to determine if background is light
+	const isLightBackground = (hex: string): boolean => {
+		const rgb = parseInt(hex, 16)
+		const r = (rgb >> 16) & 0xff
+		const g = (rgb >> 8) & 0xff
+		const b = (rgb >> 0) & 0xff
+		const brightness = (r * 299 + g * 587 + b * 114) / 1000
+		return brightness > 128
+	}
+
+	// Determine divider color based on background
+	const dividerColor = isLightBackground(bgColor) ? '#000000' : '#ffffff'
 
 	useEffect(() => {
 		const handleEscape = (event: KeyboardEvent): void => {
@@ -199,10 +216,43 @@ const MonacoEditor = ({
 		setIsFullscreen(!isFullscreen)
 	}
 
+	const handleMouseDown = (e: React.MouseEvent): void => {
+		e.preventDefault() // Prevent text selection
+		isDraggingRef.current = true
+		setShowMinimap(false)
+		document.addEventListener('mousemove', handleMouseMove)
+		document.addEventListener('mouseup', handleMouseUp)
+		// Prevent text selection during drag
+		document.body.style.userSelect = 'none'
+		document.body.style.cursor = 'ew-resize'
+	}
+
+	const handleMouseMove = (e: MouseEvent): void => {
+		if (!isDraggingRef.current || containerRef.current === null) return
+
+		const containerRect = containerRef.current.getBoundingClientRect()
+		const containerWidth = containerRect.width
+		const mouseX = e.clientX - containerRect.left
+		const percentage = (mouseX / containerWidth) * 100
+
+		// Limit the resize between 20% and 80%
+		const clampedPercentage = Math.min(Math.max(percentage, 20), 80)
+		setLeftPaneWidth(`${clampedPercentage}%`)
+	}
+
+	const handleMouseUp = (): void => {
+		isDraggingRef.current = false
+		setShowMinimap(true)
+		document.removeEventListener('mousemove', handleMouseMove)
+		document.removeEventListener('mouseup', handleMouseUp)
+		// Restore text selection and cursor
+		document.body.style.userSelect = ''
+		document.body.style.cursor = ''
+	}
+
 	return (
 		<div
-			className={`flex flex-col gap-4 rounded-md shadow-md ${
-				isFullscreen ? 'fixed top-0 left-0 w-screen h-screen z-[9999]' : ''
+			className={`flex flex-col gap-4 rounded-md shadow-md ${isFullscreen ? 'fixed top-0 left-0 w-screen h-screen z-[9999]' : ''
 			}`}
 			style={{ backgroundColor: `#${bgColor}`, height: isFullscreen ? '100vh' : 'auto' }}
 		>
@@ -246,31 +296,51 @@ const MonacoEditor = ({
 					{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
 				</button>
 			</div>
-			<div className={`flex gap-4 ${isFullscreen ? 'flex-1' : ''}`}>
-				<div className="flex-1 flex-shrink flex-grow-[1] w-[60%]">
+			<div className="flex gap-4 relative" ref={containerRef} style={{ height: isFullscreen ? 'calc(100% - 3rem)' : height }}>
+				<div style={{ width: leftPaneWidth }}>
 					<Editor
 						defaultLanguage="typescript"
 						defaultValue={defaultValue}
-						height={isFullscreen ? '100%' : height}
+						height="100%"
 						onChange={handleEditorChange}
 						onMount={handleEditorDidMount}
 						beforeMount={handleEditorWillMount}
 						onValidate={handleEditorValidation}
 						options={{
-							minimap: { enabled: true },
+							minimap: { enabled: showMinimap },
 							scrollBeyondLastLine: true
 						}}
 						theme={theme}
 					/>
 				</div>
-				<div className="flex-1 flex-shrink flex-grow-[1] w-[40%]">
+				<div
+					className="relative select-none"
+					onMouseDown={handleMouseDown}
+					style={{
+						width: '12px',
+						margin: '0 -6px',
+						cursor: 'ew-resize',
+						zIndex: 10
+					}}
+				>
+					<div
+						className="absolute h-full"
+						style={{
+							left: '5px',
+							width: '2px',
+							background: dividerColor,
+							opacity: 0.5
+						}}
+					/>
+				</div>
+				<div style={{ width: `calc(100% - ${leftPaneWidth})` }}>
 					<Editor
 						defaultLanguage="typescript"
 						value={apiTypes}
-						height={isFullscreen ? '100%' : height}
+						height="100%"
 						options={{
 							readOnly: true,
-							minimap: { enabled: true },
+							minimap: { enabled: showMinimap },
 							scrollBeyondLastLine: true,
 							lineNumbers: 'off',
 							folding: true,
