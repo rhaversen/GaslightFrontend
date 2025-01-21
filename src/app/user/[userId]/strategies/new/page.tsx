@@ -7,6 +7,12 @@ import Link from 'next/link'
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const defaultCode = `const main = (api: MeyerStrategyAPI) => {
+	// YOUR CODE HERE
+
+	// This is an example strategy
+	// It will make some naive decisions based on the current state of the game
+	// You can use this as a starting point for your own strategy or write your own from scratch
+
 	// If we're first in the round, we need to roll
 	if (api.isFirstInRound()) {
 		api.roll()
@@ -38,6 +44,7 @@ const defaultCode = `const main = (api: MeyerStrategyAPI) => {
 	}
 }
 
+// END CODE
 export default main
 `
 
