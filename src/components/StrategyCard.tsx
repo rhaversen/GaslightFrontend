@@ -36,7 +36,7 @@ export function StrategyCard ({
 
 	const StrategyContent = (): ReactElement => (
 		<>
-			<div className="flex justify-between items-start">
+			<div className="flex justify-between items-center">
 				<h3 className="text-xl font-semibold text-gray-800">{strategy.title}</h3>
 				{isOwnProfile && (
 					<button
@@ -45,7 +45,7 @@ export function StrategyCard ({
 							e.preventDefault()
 							void handleEvaluate(strategy._id)
 						}}
-						className={`flex items-center text-sm gap-2 px-2 py-1 rounded-lg transition-all ${
+						className={`flex items-center text-sm gap-2 px-2 py-1 m-1 rounded-lg transition-all ${
 							isEvaluating
 								? 'bg-gray-100 text-gray-600'
 								: 'bg-blue-100 text-blue-700 hover:bg-blue-200'
@@ -128,55 +128,61 @@ export function StrategyCard ({
 	)
 
 	return (
-		<div className="flex">
+		<div className="flex flex-col lg:flex-row border border-gray-200 rounded-xl bg-white">
 			{isOwnProfile
 				? (
 					<Link
 						href={`/user/${userId}/strategies/${strategy._id}`}
-						className="flex-1 border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+						className="flex-1 p-6 hover:bg-gray-50 transition-all duration-300 rounded-xl"
 					>
 						<StrategyContent />
 					</Link>
 				)
 				: (
-					<div className="flex-1 border border-gray-200 rounded-xl p-6">
+					<div className="flex-1 p-6">
 						<StrategyContent />
 					</div>
 				)}
 			{isOwnProfile && (
-				<div className="flex flex-col justify-start items-center mt-6 ml-4 space-y-4">
-					<label
-						className={`flex items-center space-x-2 ${
-							(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)
-								? 'opacity-50'
-								: ''
-						}`}
-						title={
-							!(strategy.passedEvaluation ?? false)
-								? 'Strategy must pass evaluation before it can be activated'
-								: (activeStrategyId !== null && activeStrategyId !== strategy._id)
-									? 'Only one strategy can be active at a time'
-									: ''
-						}
-					>
-						<input
-							type="checkbox"
-							checked={strategy.active}
-							onChange={(e) => { void onToggleActive(strategy._id, e.target.checked) }}
-							disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)}
-							className="form-checkbox h-5 w-5 text-blue-600 disabled:text-gray-400"
-						/>
-						<span className="text-sm text-gray-600">{'Active'}</span>
-					</label>
-					<button
-						onClick={() => { void onDelete(strategy) }}
-						className="text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
-						title="Delete strategy"
-					>
-						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-						</svg>
-					</button>
+				<div className="flex gap-4 px-4 py-3 lg:w-1/5 border-t lg:border-t-0 lg:border-l border-gray-200 rounded-b-xl lg:rounded-bl-none lg:rounded-r-xl">
+					<div className="flex lg:flex-col gap-4 items-center w-full justify-between lg:items-end">
+						<label
+							className={`flex items-center cursor-pointer ${
+								(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)
+									? 'opacity-50 cursor-not-allowed'
+									: 'hover:bg-gray-100 rounded-lg p-2'
+							}`}
+							title={
+								!(strategy.passedEvaluation ?? false)
+									? 'Strategy must pass evaluation before it can be activated'
+									: (activeStrategyId !== null && activeStrategyId !== strategy._id)
+										? 'Only one strategy can be active at a time'
+										: ''
+							}
+						>
+							<div className="relative">
+								<input
+									type="checkbox"
+									checked={strategy.active}
+									onChange={(e) => { void onToggleActive(strategy._id, e.target.checked) }}
+									disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)}
+									className="sr-only"
+								/>
+								<div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:inset-y-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:my-auto peer-checked:bg-blue-600"></div>
+							</div>
+							<span className="ml-3 text-sm font-medium text-gray-700 select-none">{'Active'}</span>
+						</label>
+						<button
+							onClick={() => { void onDelete(strategy) }}
+							className="group p-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
+							title="Delete strategy"
+						>
+							<svg className="w-5 h-5 text-red-500 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+							</svg>
+							<span className="text-sm font-medium text-red-600 group-hover:text-red-700">{'Delete'}</span>
+						</button>
+					</div>
 				</div>
 			)}
 		</div>

@@ -296,109 +296,107 @@ export default function Page ({ params }: Readonly<{
 
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto p-6 max-w-7xl">
-				<div className="shadow-lg rounded-2xl p-8">
-					<div className="flex items-center justify-between mb-8">
-						<Link
-							href={`/user/${params.userId}/strategies`}
-							onClick={handleNavigateAway}
-							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
-						>
-							<span className="inline-flex items-center">
-								<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-								</svg>
-								{'Back\r'}
-							</span>
-						</Link>
-						<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-							{'Strategy Details\r'}
-						</h1>
+			<div className="container mx-auto max-w-4xl p-2">
+				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
+					<Link
+						href={`/user/${params.userId}/strategies`}
+						onClick={handleNavigateAway}
+						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
+					>
+						<span className="inline-flex items-center">
+							<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+							</svg>
+							{'Back'}
+						</span>
+					</Link>
+					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none">
+						{'Strategy Details'}
+					</h1>
+					<div className="w-[120px] flex justify-end">
 						<button
-							type='button'
+							type="button"
 							onClick={() => { void handleDelete() }}
 							className="text-red-500 hover:text-red-600 transition-all hover:scale-105 flex items-center gap-2"
 						>
 							<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 							</svg>
-							{'Delete\r'}
+							{'Delete'}
 						</button>
 					</div>
+				</div>
+				{strategy != null && (
+					<div className="space-y-8">
+						<div className="flex flex-col gap-6">
+							<input
+								type="text"
+								value={strategy.title}
+								onChange={(e) => { setStrategy({ ...strategy, title: e.target.value }) }}
+								className="w-full p-4 text-2xl text-gray-800 font-semibold bg-transparent border-b-2 border-gray-200 focus:border-blue-500 outline-none transition-all"
+								placeholder="Enter strategy title..."
+							/>
 
-					{strategy != null && (
-						<div className="space-y-8">
-							<div className="flex flex-col gap-6">
-								<input
-									type="text"
-									value={strategy.title}
-									onChange={(e) => { setStrategy({ ...strategy, title: e.target.value }) }}
-									className="w-full p-4 text-2xl text-gray-800 font-semibold bg-transparent border-b-2 border-gray-200 focus:border-blue-500 outline-none transition-all"
-									placeholder="Enter strategy title..."
-								/>
-
-								<div className="flex items-center gap-4 flex-wrap">
-									{(hasChanges || strategy.passedEvaluation === null) && (
-										<>
+							<div className="flex items-center gap-4 flex-wrap">
+								{(hasChanges || strategy.passedEvaluation === null) && (
+									<>
+										<button
+											type='button'
+											onClick={() => { handleSubmit() }}
+											disabled={isSubmitting}
+											className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
+										>
+											{isSubmitting ? 'Submitting...' : 'Submit'}
+										</button>
+										{((strategy.passedEvaluation !== null) || hasChanges) && (
 											<button
 												type='button'
-												onClick={() => { handleSubmit() }}
-												disabled={isSubmitting}
-												className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
+												onClick={() => {
+													if (hasChanges && !confirm('You have unsaved changes. Discard them?')) {
+														return
+													}
+													if (originalStrategy != null) {
+														setStrategy(originalStrategy)
+														setHasChanges(false)
+													}
+												}}
+												className="bg-gray-100 text-gray-600 px-8 py-3 rounded-lg hover:bg-gray-200 hover:scale-105 transition-all"
 											>
-												{isSubmitting ? 'Submitting...' : 'Submit'}
+												{'Cancel\r'}
 											</button>
-											{((strategy.passedEvaluation !== null) || hasChanges) && (
-												<button
-													type='button'
-													onClick={() => {
-														if (hasChanges && !confirm('You have unsaved changes. Discard them?')) {
-															return
-														}
-														if (originalStrategy != null) {
-															setStrategy(originalStrategy)
-															setHasChanges(false)
-														}
-													}}
-													className="bg-gray-100 text-gray-600 px-8 py-3 rounded-lg hover:bg-gray-200 hover:scale-105 transition-all"
-												>
-													{'Cancel\r'}
-												</button>
-											)}
-										</>
-									)}
+										)}
+									</>
+								)}
 
-									<span className={`px-4 py-2 rounded-lg text-sm font-medium ${
-										strategy.passedEvaluation === null
-											? 'bg-yellow-100 text-yellow-800'
-											: strategy.passedEvaluation
-												? 'bg-green-100 text-green-800'
-												: 'bg-red-100 text-red-800'
-									}`}>
-										{strategy.passedEvaluation === null
-											? 'Not Evaluated'
-											: strategy.passedEvaluation
-												? 'Passed Evaluation'
-												: 'Failed Evaluation'}
-									</span>
-								</div>
-								{renderEvaluationResults()}
+								<span className={`px-4 py-2 rounded-lg text-sm font-medium ${strategy.passedEvaluation === null
+									? 'bg-yellow-100 text-yellow-800'
+									: strategy.passedEvaluation
+										? 'bg-green-100 text-green-800'
+										: 'bg-red-100 text-red-800'
+								}`}>
+									{strategy.passedEvaluation === null
+										? 'Not Evaluated'
+										: strategy.passedEvaluation
+											? 'Passed Evaluation'
+											: 'Failed Evaluation'}
+								</span>
 							</div>
-
-							<div className="min-h-[600px] border border-gray-100 rounded-xl overflow-hidden shadow-sm relative">
-								<MonacoEditor
-									value={strategy?.code ?? ''}
-									height="600px"
-									onChange={(value) => {
-										if (value !== undefined) {
-											setStrategy({ ...strategy, code: value })
-										}
-									}}
-								/>
-							</div>
+							{renderEvaluationResults()}
 						</div>
-					)}
-				</div>
+
+						<div className="min-h-[600px] border border-gray-100 rounded-xl overflow-hidden shadow-sm relative">
+							<MonacoEditor
+								value={strategy?.code ?? ''}
+								height="600px"
+								onChange={(value) => {
+									if (value !== undefined) {
+										setStrategy({ ...strategy, code: value })
+									}
+								}}
+							/>
+						</div>
+					</div>
+				)}
 			</div>
 		</main>
 	)

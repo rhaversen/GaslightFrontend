@@ -138,13 +138,14 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 
 	if (isLoading) {
 		return (
-			<main className="container mx-auto p-6 max-w-4xl">
-				<div className="bg-white shadow-lg rounded-lg p-6">
-					<div className="animate-pulse">
-						<div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-						<div className="space-y-4">
-							<div className="h-24 bg-gray-200 rounded"></div>
-							<div className="h-24 bg-gray-200 rounded"></div>
+			<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+				<div className="container mx-auto max-w-4xl p-6">
+					<div className="animate-pulse space-y-6">
+						<div className="h-10 bg-gray-200 rounded-lg w-1/3 mx-auto"></div>
+						<div className="space-y-4 bg-gray-50 p-6 rounded-xl">
+							<div className="h-4 bg-gray-200 rounded w-3/4"></div>
+							<div className="h-4 bg-gray-200 rounded w-2/3"></div>
+							<div className="h-4 bg-gray-200 rounded w-1/2"></div>
 						</div>
 					</div>
 				</div>
@@ -154,49 +155,47 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto p-6 max-w-4xl">
-				<div className="shadow-lg rounded-2xl p-8">
-					<div className="flex items-center mb-8">
-						<Link
-							href={`/user/${params.userId}`}
-							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105 min-w-[120px]"
-						>
-							<span className="inline-flex items-center">
-								<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-								</svg>
-								{'Profile\r'}
-							</span>
-						</Link>
-						<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 flex-1 text-center mx-4">
-							{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
-						</h1>
-						<div className="min-w-[120px] flex justify-end">
-							{isOwnProfile && (
-								<Link
-									href={`/user/${params.userId}/strategies/new`}
-									className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
-								>
-									{'Create Strategy'}
-								</Link>
-							)}
-						</div>
+			<div className="container mx-auto max-w-4xl p-2">
+				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
+					<Link
+						href={`/user/${params.userId}`}
+						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
+					>
+						<span className="inline-flex items-center">
+							<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+							</svg>
+							{'Profile'}
+						</span>
+					</Link>
+					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none">
+						{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
+					</h1>
+					<div className="flex justify-end">
+						{isOwnProfile && (
+							<Link
+								href={`/user/${params.userId}/strategies/new`}
+								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
+							>
+								{'Create Strategy'}
+							</Link>
+						)}
 					</div>
-					<div className="space-y-4">
-						{strategies.map((strategy) => (
-							<StrategyCard
-								key={strategy._id}
-								strategy={strategy}
-								isOwnProfile={isOwnProfile}
-								userId={params.userId}
-								onToggleActive={toggleActive}
-								onDelete={handleDelete}
-								activeStrategyId={activeStrategyId}
-								isEvaluationRecent={isEvaluationRecent}
-								onEvaluate={handleEvaluate}
-							/>
-						))}
-					</div>
+				</div>
+				<div className="space-y-4">
+					{strategies.map((strategy) => (
+						<StrategyCard
+							key={strategy._id}
+							strategy={strategy}
+							isOwnProfile={isOwnProfile}
+							userId={params.userId}
+							onToggleActive={toggleActive}
+							onDelete={handleDelete}
+							activeStrategyId={activeStrategyId}
+							isEvaluationRecent={isEvaluationRecent}
+							onEvaluate={handleEvaluate}
+						/>
+					))}
 				</div>
 			</div>
 		</main>
