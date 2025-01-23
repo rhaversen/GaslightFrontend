@@ -121,6 +121,21 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 		}
 	}
 
+	const handleEvaluate = async (strategyId: string): Promise<void> => {
+		try {
+			const { data: updatedStrategy } = await axios.post<ISubmission>(
+				`${API_URL}/v1/submissions/${strategyId}/evaluate`,
+				{},
+				{ withCredentials: true }
+			)
+			setStrategies(prev => prev.map(strategy =>
+				strategy._id === strategyId ? updatedStrategy : strategy
+			))
+		} catch (error) {
+			console.error('Error evaluating strategy:', error)
+		}
+	}
+
 	if (isLoading) {
 		return (
 			<main className="container mx-auto p-6 max-w-4xl">
@@ -178,6 +193,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								onDelete={handleDelete}
 								activeStrategyId={activeStrategyId}
 								isEvaluationRecent={isEvaluationRecent}
+								onEvaluate={handleEvaluate}
 							/>
 						))}
 					</div>
