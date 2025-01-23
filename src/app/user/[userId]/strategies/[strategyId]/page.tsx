@@ -368,15 +368,19 @@ export default function Page ({ params }: Readonly<{
 										</>
 									)}
 
-									{strategy?.evaluation !== undefined && !hasChanges && (
-										<span className={`px-4 py-2 rounded-lg text-sm font-medium ${
-											(strategy.passedEvaluation ?? false)
+									<span className={`px-4 py-2 rounded-lg text-sm font-medium ${
+										strategy.passedEvaluation === null
+											? 'bg-yellow-100 text-yellow-800'
+											: strategy.passedEvaluation
 												? 'bg-green-100 text-green-800'
 												: 'bg-red-100 text-red-800'
-										}`}>
-											{(strategy.passedEvaluation ?? false) ? '✓ Passed Evaluation' : '✗ Failed Evaluation'}
-										</span>
-									)}
+									}`}>
+										{strategy.passedEvaluation === null
+											? 'Not Evaluated'
+											: strategy.passedEvaluation
+												? 'Passed Evaluation'
+												: 'Failed Evaluation'}
+									</span>
 								</div>
 								{renderEvaluationResults()}
 							</div>

@@ -26,8 +26,18 @@ export function StrategyCard ({
 			<div className="flex justify-between items-center">
 				<h3 className="text-xl font-semibold text-gray-800 text-center">{strategy.title}</h3>
 				<div className="flex items-center space-x-4">
-					<span className={`px-3 py-1 rounded-full text-sm ${(strategy.passedEvaluation ?? false) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-						{(strategy.passedEvaluation ?? false) ? 'Passing' : 'Not Passing'}
+					<span className={`px-3 py-1 rounded-full text-sm ${
+						strategy.passedEvaluation === null
+							? 'bg-yellow-100 text-yellow-800'
+							: strategy.passedEvaluation
+								? 'bg-green-100 text-green-800'
+								: 'bg-red-100 text-red-800'
+					}`}>
+						{strategy.passedEvaluation === null
+							? 'Not Evaluated'
+							: strategy.passedEvaluation
+								? 'Passing'
+								: 'Not Passing'}
 					</span>
 				</div>
 			</div>
