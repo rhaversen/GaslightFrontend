@@ -92,7 +92,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 							{'Back\r'}
 						</span>
 					</Link>
-					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none">
+					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
 						{'Create Strategy\r'}
 					</h1>
 					<div className="w-[100px]"></div>
