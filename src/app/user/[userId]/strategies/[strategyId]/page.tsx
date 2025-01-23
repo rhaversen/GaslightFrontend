@@ -3,7 +3,7 @@
 import { type ISubmission } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
-import React, { type ReactElement, useEffect, useState, useMemo, useCallback } from 'react'
+import React, { type ReactElement, useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
