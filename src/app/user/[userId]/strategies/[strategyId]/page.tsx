@@ -6,6 +6,7 @@ import axios from 'axios'
 import React, { type ReactElement, useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -52,9 +53,11 @@ export default function Page ({ params }: Readonly<{
 	const [hasChanges, setHasChanges] = useState(false)
 	const [originalStrategy, setOriginalStrategy] = useState<ISubmission | null>(null)
 	const didPushRef = React.useRef(false)
+	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		const fetchData = async (): Promise<void> => {
+			setIsLoading(true)
 			try {
 				const response = await axios.get<ISubmission>(
 					`${API_URL}/v1/submissions/${params.strategyId}`,
@@ -65,6 +68,8 @@ export default function Page ({ params }: Readonly<{
 				setHasChanges(false)
 			} catch (error) {
 				console.error('Error fetching data:', error)
+			} finally {
+				setIsLoading(false)
 			}
 		}
 		void fetchData()
@@ -292,6 +297,10 @@ export default function Page ({ params }: Readonly<{
 				)}
 			</div>
 		)
+	}
+
+	if (isLoading) {
+		return <LoadingPlaceholder />
 	}
 
 	return (
