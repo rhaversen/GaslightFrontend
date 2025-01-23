@@ -3,7 +3,7 @@
 import { type ISubmission } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
-import React, { type ReactElement, useEffect, useState, useMemo } from 'react'
+import React, { type ReactElement, useEffect, useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -51,6 +51,7 @@ export default function Page ({ params }: Readonly<{
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [hasChanges, setHasChanges] = useState(false)
 	const [originalStrategy, setOriginalStrategy] = useState<ISubmission | null>(null)
+	const didPushRef = React.useRef(false)
 
 	useEffect(() => {
 		const fetchData = async (): Promise<void> => {
@@ -82,6 +83,57 @@ export default function Page ({ params }: Readonly<{
 
 		setHasChanges(hasChanges)
 	}, [strategy, originalStrategy])
+
+	useEffect(() => {
+		const handleBeforeUnload = (e: BeforeUnloadEvent): string | undefined => {
+			if (hasChanges) {
+				e.preventDefault()
+				return 'You have unsaved changes. Are you sure you want to leave?'
+			}
+		}
+
+		window.addEventListener('beforeunload', handleBeforeUnload)
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload)
+		}
+	}, [hasChanges])
+
+	// Navigation blocking effect
+	useEffect(() => {
+		if (!hasChanges) {
+			didPushRef.current = false
+			return
+		}
+
+		// Push to history only once
+		if (!didPushRef.current) {
+			window.history.pushState(null, '', window.location.href)
+			didPushRef.current = true
+		}
+
+		const handlePopState = (e: PopStateEvent): void => {
+			e.preventDefault()
+			if (window.confirm('You have unsaved changes. Are you sure you want to leave?')) {
+				setHasChanges(false)
+				window.removeEventListener('popstate', handlePopState)
+				window.history.go(-1)
+			} else {
+				window.history.pushState(null, '', window.location.href)
+			}
+		}
+
+		window.addEventListener('popstate', handlePopState)
+		return () => {
+			window.removeEventListener('popstate', handlePopState)
+		}
+	}, [hasChanges])
+
+	// Link navigation handler
+	const handleNavigateAway = (e: React.MouseEvent): void => {
+		if (hasChanges && !window.confirm('You have unsaved changes. Are you sure you want to leave?')) {
+			e.preventDefault()
+		}
+	}
 
 	const handleSubmit = (): void => {
 		if (strategy == null) return
@@ -249,6 +301,7 @@ export default function Page ({ params }: Readonly<{
 					<div className="flex items-center justify-between mb-8">
 						<Link
 							href={`/user/${params.userId}/strategies`}
+							onClick={handleNavigateAway}
 							className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 						>
 							<span className="inline-flex items-center">
@@ -298,6 +351,9 @@ export default function Page ({ params }: Readonly<{
 											<button
 												type='button'
 												onClick={() => {
+													if (hasChanges && !confirm('You have unsaved changes. Discard them?')) {
+														return
+													}
 													if (originalStrategy != null) {
 														setStrategy(originalStrategy)
 														setHasChanges(false)
