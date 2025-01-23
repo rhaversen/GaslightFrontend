@@ -348,21 +348,23 @@ export default function Page ({ params }: Readonly<{
 											>
 												{isSubmitting ? 'Submitting...' : 'Submit'}
 											</button>
-											<button
-												type='button'
-												onClick={() => {
-													if (hasChanges && !confirm('You have unsaved changes. Discard them?')) {
-														return
-													}
-													if (originalStrategy != null) {
-														setStrategy(originalStrategy)
-														setHasChanges(false)
-													}
-												}}
-												className="bg-gray-100 text-gray-600 px-8 py-3 rounded-lg hover:bg-gray-200 hover:scale-105 transition-all"
-											>
-												{'Cancel\r'}
-											</button>
+											{((strategy.passedEvaluation !== null) || hasChanges) && (
+												<button
+													type='button'
+													onClick={() => {
+														if (hasChanges && !confirm('You have unsaved changes. Discard them?')) {
+															return
+														}
+														if (originalStrategy != null) {
+															setStrategy(originalStrategy)
+															setHasChanges(false)
+														}
+													}}
+													className="bg-gray-100 text-gray-600 px-8 py-3 rounded-lg hover:bg-gray-200 hover:scale-105 transition-all"
+												>
+													{'Cancel\r'}
+												</button>
+											)}
 										</>
 									)}
 
