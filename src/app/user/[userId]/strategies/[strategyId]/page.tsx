@@ -239,10 +239,9 @@ export default function Page ({ params }: Readonly<{
 							/>
 						</div>
 
-						<div className="min-h-[600px] border border-gray-100 rounded-xl overflow-hidden shadow-sm relative">
+						<div className="rounded-xl overflow-hidden shadow-sm relative">
 							<MonacoEditor
 								value={strategy?.code ?? ''}
-								height="600px"
 								onChange={(value) => {
 									if (value !== undefined) {
 										setStrategy({ ...strategy, code: value })
