@@ -4,7 +4,24 @@ import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
 import { createHighlighter } from 'shiki'
 
-const apiTypes = `interface MeyerStrategyAPI {
+const apiTypes = `/**
+ * Possible scores in Meyer:
+ *
+ * Special scores
+ * 1000, 999 (Meyer and Lille Meyer)
+ * 
+ *
+ * Pairs
+ * 600, 500, 400, 300, 200, 100
+ * 
+ * Regular scores
+ * 65, 64, 63, 62, 61
+ * 54, 53, 52, 51
+ * 43, 42, 41
+ * 32
+*/
+
+interface MeyerStrategyAPI {
 	/**
 	 * @param dice - A pair of dice
 	 * @returns The score of the dice
