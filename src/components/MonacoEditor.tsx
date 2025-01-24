@@ -242,6 +242,14 @@ const MonacoEditor = ({
 		}
 	}, [showDocumentation])
 
+	useEffect(() => {
+		if (isFullscreen) {
+			document.documentElement.style.overflow = 'hidden'
+		} else {
+			document.documentElement.style.overflow = ''
+		}
+	}, [isFullscreen])
+
 	function handleEditorChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent): void {
 		if (onChange !== null && onChange !== undefined) {
 			onChange(value, event)
@@ -286,7 +294,7 @@ const MonacoEditor = ({
 		if (!isDraggingRef.current || containerRef.current === null) return
 
 		const containerRect = containerRef.current.getBoundingClientRect()
-		
+
 		if (isVerticalLayout) {
 			const mouseY = e.clientY - containerRect.top
 			const percentage = (mouseY / containerRect.height) * 100
@@ -316,7 +324,7 @@ const MonacoEditor = ({
 			}`}
 			style={{ backgroundColor: `#${bgColor}`, height: isFullscreen ? '100vh' : 'auto' }}
 		>
-			<div className="flex flex-wrap justify-end gap-2 p-2 pr-10">
+			<div className="flex flex-wrap justify-end gap-2 p-2">
 				<label htmlFor="theme-select" className="sr-only">{'Select Theme'}</label>
 				<select
 					id="theme-select"
@@ -335,7 +343,7 @@ const MonacoEditor = ({
 				>
 					{showDocumentation ? 'Hide Docs' : 'Show Docs'}
 				</button>
-					{/* Remove button from top toolbar: */}
+				{/* Remove button from top toolbar: */}
 				{onToggleMaximize !== null && onToggleMaximize !== undefined && (
 					<button
 						type='button'
@@ -437,15 +445,15 @@ const MonacoEditor = ({
 										{preferVerticalLayout
 											? (
 												<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-												<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
-												<line x1="12" y1="4" x2="12" y2="20" strokeWidth="2" />
-											</svg>
+													<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
+													<line x1="12" y1="4" x2="12" y2="20" strokeWidth="2" />
+												</svg>
 											)
 											: (
 												<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-												<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
-												<line x1="4" y1="12" x2="20" y2="12" strokeWidth="2" />
-											</svg>
+													<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
+													<line x1="4" y1="12" x2="20" y2="12" strokeWidth="2" />
+												</svg>
 											)}
 									</button>
 								)}
