@@ -1,81 +1,101 @@
-import { type ReactElement, useMemo } from 'react'
+import { type ReactElement, useMemo, useRef, useState, useEffect } from 'react'
 
-const createTimeBuckets = (
-	times: number[]
-): Array<{ range: string, count: number, min: number, max: number }> => {
+const createTimeBuckets = (times: number[]): Array<{ range: string, count: number }> => {
 	if (times.length === 0) return []
 
-	const bucketSize = 0.001 // Fixed 0.001ms buckets
-	const min = 0 // Always start from 0
-	const max = Math.ceil(Math.max(...times) * 1000) / 1000
+	const bucketSize = 0.001
+	const maxTime = Math.ceil(Math.max(...times) * 1000) / 1000
+	const bucketCount = Math.min(Math.ceil(maxTime / bucketSize), 200)
 
-	// Calculate number of buckets needed
-	const bucketCount = Math.ceil((max - min) / bucketSize)
-
-	// Limit to prevent performance issues
-	const maxBuckets = 200 // Increased max buckets since we're using smaller size
-	const actualBucketCount = Math.min(bucketCount, maxBuckets)
-
-	const buckets = Array.from({ length: actualBucketCount }, (_, i) => ({
-		min: i * bucketSize,
-		max: (i + 1) * bucketSize,
-		count: 0,
-		range: `${(i * bucketSize).toFixed(3)}` // Show 3 decimal places
+	const buckets = Array.from({ length: bucketCount }, (_, i) => ({
+		range: (i * bucketSize).toFixed(3),
+		count: 0
 	}))
 
 	times.forEach(time => {
-		const bucketIndex = Math.min(
-			Math.floor(time / bucketSize),
-			actualBucketCount - 1
-		)
-		buckets[bucketIndex].count++
+		const index = Math.min(Math.floor(time / bucketSize), bucketCount - 1)
+		buckets[index].count++
 	})
 
 	return buckets
 }
 
-const ExecutionTimeHistogram = ({
-	times
-}: {
-	times: number[]
-}): ReactElement => {
+const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement => {
 	const buckets = useMemo(() => createTimeBuckets(times), [times])
 	const maxCount = Math.max(...buckets.map(b => b.count))
-	const svgHeight = 100
-	const barWidth = 5
-	const spacing = 1
+	const containerRef = useRef<HTMLDivElement>(null)
+	const labelInterval = 15
+	const [containerWidth, setContainerWidth] = useState(0)
+
+	useEffect(() => {
+		if (containerRef.current === null) return
+		const observer = new ResizeObserver(entries => { setContainerWidth(entries[0].contentRect.width) }
+		)
+		observer.observe(containerRef.current)
+		return () => { observer.disconnect() }
+	}, [])
+
+	const width = Math.max(300, containerWidth)
+	const barWidth = Math.min(10, Math.max(2, (width / buckets.length) * 0.8))
+	const spacing = barWidth * 0.25
+	const viewBoxWidth = (barWidth + spacing) * buckets.length + 15
+
+	const shouldShowLabel = (range: string, index: number): boolean => {
+		const value = Math.round(parseFloat(range) * 1000)
+		if (value % labelInterval !== 0) return false // 0.02ms intervals
+
+		// Check if this is the first bucket in this interval
+		const prevValue = index > 0 ? Math.round(parseFloat(buckets[index - 1].range) * 1000) : -1
+		return Math.floor(value / labelInterval) !== Math.floor(prevValue / labelInterval)
+	}
 
 	return (
 		<div className="mt-4">
 			<h4 className="text-sm font-medium mb-2">{'Execution Time Distribution (ms)'}</h4>
-			<div className="relative overflow-x-auto pb-4 w-full">
-				<div className="mx-auto w-full min-w-full">
-					<svg className="w-full h-[120px]" preserveAspectRatio="xMidYMid meet">
-						{buckets.map((bucket, i) => (
-							<g key={i} className="group">
+			<div ref={containerRef} className="relative w-full min-h-[120px] max-h-[200px]">
+				<svg
+					className="w-full h-full"
+					preserveAspectRatio="xMidYMid meet"
+					viewBox={`0 0 ${viewBoxWidth} 130`}
+				>
+					{buckets.map((bucket, i) => (
+						<g key={i} className="group">
+							{bucket.count > 0 && (
 								<rect
-									x={i * (barWidth + spacing)}
-									y={svgHeight - (bucket.count / maxCount * svgHeight)}
+									x={15 + i * (barWidth + spacing)}
+									y={100 - (bucket.count / maxCount * 100)}
 									width={barWidth}
-									height={bucket.count / maxCount * svgHeight === 0 ? 1 : bucket.count / maxCount * svgHeight}
+									height={bucket.count / maxCount * 100}
 									className="fill-blue-400 hover:fill-blue-500 transition-colors"
 								/>
-								{i % 5 === 0 && (
+							)}
+							{shouldShowLabel(bucket.range, i) && (
+								<>
+									<line
+										x1={15 + i * (barWidth + spacing) + barWidth / 2}
+										y1={101}
+										x2={15 + i * (barWidth + spacing) + barWidth / 2}
+										y2={106}
+										stroke="rgb(107 114 128)"
+										strokeWidth="1"
+									/>
 									<text
-										x={i * (barWidth + spacing) + barWidth / 2}
-										y={svgHeight + 15}
+										x={15 + i * (barWidth + spacing) + barWidth / 2}
+										y={115}
 										textAnchor="middle"
-										className="text-[8px] fill-gray-500"
-										transform={`rotate(45, ${i * (barWidth + spacing) + barWidth / 2}, ${svgHeight + 15})`}
+										className="text-[10px] fill-gray-500"
+										transform={`rotate(45, ${5 + i * (barWidth + spacing) + barWidth / 2}, 112)`}
 									>
 										{bucket.range}
 									</text>
-								)}
+								</>
+							)}
+							{bucket.count > 0 && (
 								<title>{`${bucket.range}ms: ${bucket.count} executions`}</title>
-							</g>
-						))}
-					</svg>
-				</div>
+							)}
+						</g>
+					))}
+				</svg>
 			</div>
 		</div>
 	)
