@@ -3,8 +3,13 @@ import { type ReactElement, useMemo, useRef, useState, useEffect } from 'react'
 const createTimeBuckets = (times: number[]): Array<{ range: string, count: number }> => {
 	if (times.length === 0) return []
 
+	// Sort times and remove the 50 largest or 10% of the data, whichever is smaller
+	const trimmedTimes = [...times].sort((a, b) => a - b)
+	const numToRemove = Math.min(50, Math.floor(times.length * 0.1))
+	trimmedTimes.splice(-numToRemove)
+
 	const bucketSize = 0.001
-	const maxTime = Math.ceil(Math.max(...times) * 1000) / 1000
+	const maxTime = Math.ceil(Math.max(...trimmedTimes) * 1000) / 1000
 	const bucketCount = Math.min(Math.ceil(maxTime / bucketSize), 200)
 
 	const buckets = Array.from({ length: bucketCount }, (_, i) => ({
@@ -12,7 +17,7 @@ const createTimeBuckets = (times: number[]): Array<{ range: string, count: numbe
 		count: 0
 	}))
 
-	times.forEach(time => {
+	trimmedTimes.forEach(time => {
 		const index = Math.min(Math.floor(time / bucketSize), bucketCount - 1)
 		buckets[index].count++
 	})
