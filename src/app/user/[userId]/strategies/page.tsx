@@ -172,6 +172,25 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						)}
 					</div>
 				</div>
+				{strategies.length > 0 && (
+					activeStrategyId !== null
+						? (
+							<div className="mb-4 p-4 border bg-white rounded-lg">
+								<p className="text-gray-700 text-sm text-center">
+									{'Currently active strategy: '}<span className="font-semibold">
+										{strategies.find(s => s._id === activeStrategyId)?.title ?? 'Unknown'}
+									</span>
+								</p>
+							</div>
+						)
+						: (
+							<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+								<p className="text-yellow-700 text-sm text-center">
+									{'No strategy is currently active. Activate a strategy to enter the tournament.'}
+								</p>
+							</div>
+						)
+				)}
 				<div className="space-y-4">
 					{strategies.map((strategy) => (
 						<StrategyCard
