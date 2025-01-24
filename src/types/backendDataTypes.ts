@@ -4,15 +4,13 @@ export interface UserType {
 	/** Username of the user */
 	username: string
 	/** Email of the user */
-	email: string
-	/** Hashed password of the user */
-	password: string
+	email: string | null
 	/** If the user has confirmed their email */
-	confirmed: boolean
+	confirmed: boolean | null
 	/** Date when the user will be deleted if not confirmed */
-	expirationDate?: Date
-	/** Date when the password reset code will expire */
-	passwordResetExpirationDate?: Date
+	expirationDate?: Date | null
+	/** Amount of user submissions */
+	submissionCount: number
 
 	// Timestamps
 	createdAt: Date
