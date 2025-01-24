@@ -147,10 +147,10 @@ export function StrategyCard ({
 				<div className="flex gap-4 px-4 py-3 lg:w-1/5 border-t lg:border-t-0 lg:border-l border-gray-200 rounded-b-xl lg:rounded-bl-none lg:rounded-r-xl">
 					<div className="flex lg:flex-col gap-4 items-center w-full justify-between lg:items-end">
 						<label
-							className={`flex items-center cursor-pointer ${
+							className={`flex items-center p-2 rounded-lg ${
 								(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)
 									? 'opacity-50 cursor-not-allowed'
-									: 'hover:bg-gray-100 rounded-lg p-2'
+									: 'hover:bg-gray-100 cursor-pointer'
 							}`}
 							title={
 								!(strategy.passedEvaluation ?? false)
@@ -166,9 +166,9 @@ export function StrategyCard ({
 									checked={strategy.active}
 									onChange={(e) => { void onToggleActive(strategy._id, e.target.checked) }}
 									disabled={(activeStrategyId !== null && activeStrategyId !== strategy._id) || !(strategy.passedEvaluation ?? false)}
-									className="sr-only"
+									className="sr-only peer"
 								/>
-								<div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:inset-y-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:my-auto peer-checked:bg-blue-600"></div>
+								<div className="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
 							</div>
 							<span className="ml-3 text-sm font-medium text-gray-700 select-none">{'Active'}</span>
 						</label>
