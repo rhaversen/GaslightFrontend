@@ -435,12 +435,14 @@ const MonacoEditor = ({
 						<div className="h-full">
 							<div className="text-sm font-semibold flex justify-between px-4 py-1"
 								style={{ color: highContrast }}>
-								<span>{'API Documentation\r'}</span>
+								<div className="w-4" /> {/* Spacer to help center the text */}
+								<span className="flex-grow text-center">{'API Documentation\r'}</span>
 								{!isSmallScreen && (
 									<button
 										type="button"
 										onClick={() => { setPreferVerticalLayout(prev => !prev) }}
 										title="Toggle layout (side or below) for docs"
+										className="w-4" // Match width of left spacer
 									>
 										{preferVerticalLayout
 											? (
