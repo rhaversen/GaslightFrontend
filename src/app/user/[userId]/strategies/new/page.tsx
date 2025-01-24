@@ -106,7 +106,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 						<input
 							id="title"
 							type="text"
-							className="w-full p-4 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+							className="w-full p-4 border border-gray-200 text-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
 							value={title}
 							onChange={(e) => { setTitle(e.target.value) }}
 							placeholder="Enter a title for your strategy"
