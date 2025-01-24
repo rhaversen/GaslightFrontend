@@ -140,8 +140,6 @@ async function initializeShiki (monaco: Monaco): Promise<void> {
 	monaco.languages.register({ id: 'typescript' })
 
 	// Register Shiki themes
-	// shikiToMonaco has weak types, so we need to cast the highlighter to any
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	shikiToMonaco(highlighter, monaco)
 }
 
@@ -160,16 +158,45 @@ const MonacoEditor = ({
 	onToggleMaximize?: () => void
 	isMaximized?: boolean
 }): JSX.Element => {
+	const monacoRef = useRef<Monaco | null>(null)
+	const extraLibDisposableRef = useRef<monaco.IDisposable | null>(null)
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
 	const [isFullscreen, setIsFullscreen] = useState(false)
 	const [leftPaneWidth, setLeftPaneWidth] = useState('60%')
+	const [topPaneHeight, setTopPaneHeight] = useState('50%')
 	const isDraggingRef = useRef(false)
 	const containerRef = useRef<HTMLDivElement>(null)
-	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
 	const [showMinimap, setShowMinimap] = useState(true)
+	const [showDocumentation, setShowDocumentation] = useState(true)
+	const [preferVerticalLayout, setPreferVerticalLayout] = useState(false)
+
+	// Layout state
+	const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+	const isSmallScreen = screenWidth < 500
+	const isVerticalLayout = isSmallScreen || preferVerticalLayout
+
+	const bgColor = MONACO_THEMES.find(t => t.value === theme)?.bg ?? 'ffffff'
+	// Determine high-contrast color based on background color
+	const highContrast = isLightBackground(bgColor) ? '#000000' : '#ffffff'
+
+	useEffect(() => {
+		const handleResize = (): void => {
+			const width = window.innerWidth
+			setScreenWidth(width)
+			if (width < 500) {
+				setLeftPaneWidth('100%')
+			} else {
+				setLeftPaneWidth('60%')
+			}
+		}
+
+		handleResize()
+		window.addEventListener('resize', handleResize)
+		return () => { window.removeEventListener('resize', handleResize) }
+	}, [])
 
 	// Add function to determine if background is light
-	const isLightBackground = (hex: string): boolean => {
+	function isLightBackground (hex: string): boolean {
 		const rgb = parseInt(hex, 16)
 		const r = (rgb >> 16) & 0xff
 		const g = (rgb >> 8) & 0xff
@@ -177,9 +204,6 @@ const MonacoEditor = ({
 		const brightness = (r * 299 + g * 587 + b * 114) / 1000
 		return brightness > 128
 	}
-
-	// Determine divider color based on background
-	const dividerColor = isLightBackground(bgColor) ? '#000000' : '#ffffff'
 
 	useEffect(() => {
 		const handleEscape = (event: KeyboardEvent): void => {
@@ -193,6 +217,31 @@ const MonacoEditor = ({
 		}
 	}, [isFullscreen])
 
+	useEffect(() => {
+		if (monacoRef.current === null) return
+
+		// Cleanup previous lib if it exists
+		if (extraLibDisposableRef.current !== null) {
+			extraLibDisposableRef.current.dispose()
+			extraLibDisposableRef.current = null
+		}
+
+		if (!showDocumentation) {
+			// Add types when docs are hidden
+			extraLibDisposableRef.current = monacoRef.current.languages.typescript.typescriptDefaults.addExtraLib(
+				apiTypes,
+				'ts:filename/MeyerStrategyAPI.d.ts'
+			)
+		}
+
+		return () => {
+			if (extraLibDisposableRef.current !== null) {
+				extraLibDisposableRef.current.dispose()
+				extraLibDisposableRef.current = null
+			}
+		}
+	}, [showDocumentation])
+
 	function handleEditorChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent): void {
 		if (onChange !== null && onChange !== undefined) {
 			onChange(value, event)
@@ -200,13 +249,16 @@ const MonacoEditor = ({
 	}
 
 	function handleEditorWillMount (monaco: Monaco): void {
-		// Having two instances of Monaco in the same page will automatically share the same worker, so we don't need to worry about adding extra libs
-		// If we want to add extra libs, we can do so like this:
-		// monaco.languages.typescript.typescriptDefaults.addExtraLib(apiTypes, 'ts:filename/MeyerStrategyAPI.d.ts')
-		initializeShiki(monaco).catch(console.error)
+		monacoRef.current = monaco
+		initializeShiki(monaco)
+			.then(() => {
+				monaco.editor.setTheme(theme)
+			})
+			.catch(console.error)
 	}
 
-	function handleEditorDidMount (editor: monaco.editor.IStandaloneCodeEditor, _monaco: Monaco): void {
+	function handleEditorDidMount (editor: monaco.editor.IStandaloneCodeEditor): void {
+		editor.updateOptions({ theme })
 	}
 
 	function handleEditorValidation (markers: monaco.editor.IMarker[]): void {
@@ -222,24 +274,30 @@ const MonacoEditor = ({
 		e.preventDefault() // Prevent text selection
 		isDraggingRef.current = true
 		setShowMinimap(false)
+
 		document.addEventListener('mousemove', handleMouseMove)
 		document.addEventListener('mouseup', handleMouseUp)
 		// Prevent text selection during drag
 		document.body.style.userSelect = 'none'
-		document.body.style.cursor = 'ew-resize'
+		document.body.style.cursor = isVerticalLayout ? 'ns-resize' : 'ew-resize'
 	}
 
 	const handleMouseMove = (e: MouseEvent): void => {
 		if (!isDraggingRef.current || containerRef.current === null) return
 
 		const containerRect = containerRef.current.getBoundingClientRect()
-		const containerWidth = containerRect.width
-		const mouseX = e.clientX - containerRect.left
-		const percentage = (mouseX / containerWidth) * 100
-
-		// Limit the resize between 20% and 80%
-		const clampedPercentage = Math.min(Math.max(percentage, 20), 80)
-		setLeftPaneWidth(`${clampedPercentage}%`)
+		
+		if (isVerticalLayout) {
+			const mouseY = e.clientY - containerRect.top
+			const percentage = (mouseY / containerRect.height) * 100
+			const clampedPercentage = Math.min(Math.max(percentage, 20), 80)
+			setTopPaneHeight(`${clampedPercentage}%`)
+		} else {
+			const mouseX = e.clientX - containerRect.left
+			const percentage = (mouseX / containerRect.width) * 100
+			const clampedPercentage = Math.min(Math.max(percentage, 20), 80)
+			setLeftPaneWidth(`${clampedPercentage}%`)
+		}
 	}
 
 	const handleMouseUp = (): void => {
@@ -254,11 +312,11 @@ const MonacoEditor = ({
 
 	return (
 		<div
-			className={`flex flex-col gap-4 rounded-md shadow-md ${isFullscreen ? 'fixed top-0 left-0 w-screen h-screen z-[9999]' : ''
+			className={`flex flex-col ${isFullscreen ? 'fixed top-0 left-0 w-screen h-screen z-[9999]' : 'rounded-md shadow-md'
 			}`}
 			style={{ backgroundColor: `#${bgColor}`, height: isFullscreen ? '100vh' : 'auto' }}
 		>
-			<div className="flex justify-end gap-2 px-4 pt-2">
+			<div className="flex flex-wrap justify-end gap-2 p-2 pr-10">
 				<label htmlFor="theme-select" className="sr-only">{'Select Theme'}</label>
 				<select
 					id="theme-select"
@@ -270,6 +328,14 @@ const MonacoEditor = ({
 						<option key={value} value={value}>{label}</option>
 					))}
 				</select>
+				<button
+					type="button"
+					onClick={() => { setShowDocumentation(prev => !prev) }}
+					className="bg-gray-700 text-white px-3 py-1 rounded-md"
+				>
+					{showDocumentation ? 'Hide Docs' : 'Show Docs'}
+				</button>
+					{/* Remove button from top toolbar: */}
 				{onToggleMaximize !== null && onToggleMaximize !== undefined && (
 					<button
 						type='button'
@@ -298,72 +364,124 @@ const MonacoEditor = ({
 					{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
 				</button>
 			</div>
-			<div className="flex gap-4 relative" ref={containerRef} style={{ height: isFullscreen ? 'calc(100% - 3rem)' : height }}>
-				<div style={{ width: leftPaneWidth }}>
-					<Editor
-						defaultLanguage="typescript"
-						value={value ?? defaultValue}
-						height="100%"
-						onChange={handleEditorChange}
-						onMount={handleEditorDidMount}
-						beforeMount={handleEditorWillMount}
-						onValidate={handleEditorValidation}
-						options={{
-							minimap: { enabled: showMinimap },
-							scrollBeyondLastLine: true
-						}}
-						theme={theme}
-					/>
+			<div className={`flex ${isVerticalLayout ? 'flex-col' : ''} gap-1 relative`}
+				ref={containerRef}
+				style={{ height: isFullscreen ? 'calc(100%)' : height }}
+			>
+				<div style={{
+					width: isVerticalLayout ? '100%' : (showDocumentation ? leftPaneWidth : '100%'),
+					height: isVerticalLayout ? (showDocumentation ? topPaneHeight : '100%') : '100%',
+					flexShrink: 0
+				}}>
+					<div className="text-sm font-semibold flex justify-center py-1"
+						style={{ color: highContrast }}>
+						{'Your Strategy Code\r'}
+					</div>
+					<div style={{ height: 'calc(100% - 28px)' }}>
+						<Editor
+							defaultLanguage="typescript"
+							value={value ?? defaultValue}
+							height="100%"
+							onChange={handleEditorChange}
+							onMount={handleEditorDidMount}
+							beforeMount={handleEditorWillMount}
+							onValidate={handleEditorValidation}
+							options={{
+								minimap: { enabled: showMinimap },
+								scrollBeyondLastLine: true
+							}}
+							theme={theme}
+						/>
+					</div>
 				</div>
-				<div
-					className="relative select-none"
-					onMouseDown={handleMouseDown}
-					style={{
-						width: '12px',
-						margin: '0 -6px',
-						cursor: 'ew-resize',
-						zIndex: 10
-					}}
-				>
+
+				{showDocumentation && (
 					<div
-						className="absolute h-full"
+						className="relative select-none flex-shrink-0 z-10"
+						onMouseDown={handleMouseDown}
 						style={{
-							left: '5px',
-							width: '2px',
-							background: dividerColor,
-							opacity: 0.5
+							cursor: isVerticalLayout ? 'ns-resize' : 'ew-resize',
+							height: isVerticalLayout ? '12px' : '100%',
+							width: isVerticalLayout ? '100%' : '12px',
+							margin: isVerticalLayout ? '-6px 0' : '0 -6px'
 						}}
-					/>
-				</div>
-				<div style={{ width: `calc(100% - ${leftPaneWidth})` }}>
-					<Editor
-						defaultLanguage="typescript"
-						value={apiTypes}
-						height="100%"
-						options={{
-							readOnly: true,
-							minimap: { enabled: showMinimap },
-							scrollBeyondLastLine: true,
-							lineNumbers: 'off',
-							folding: true,
-							wordWrap: 'on',
-							domReadOnly: true,
-							renderValidationDecorations: 'off',
-							renderLineHighlight: 'none',
-							hideCursorInOverviewRuler: true,
-							links: true,
-							overviewRulerBorder: true,
-							scrollbar: {
-								vertical: 'auto',
-								horizontal: 'hidden'
-							},
-							cursorStyle: 'line-thin',
-							contextmenu: false,
-							fontSize: 14
-						}}
-						theme={theme}
-					/>
-				</div>
+					>
+						<div
+							className="absolute rounded-full opacity-50"
+							style={{
+								background: highContrast,
+								...(isVerticalLayout
+									? { width: '100%', height: '2px', top: '5px' }
+									: { width: '2px', height: '100%', left: '5px' })
+							}}
+						/>
+					</div>
+				)}
+
+				{showDocumentation && (
+					<div style={{
+						width: isVerticalLayout ? '100%' : `calc(100% - ${leftPaneWidth})`,
+						height: isVerticalLayout ? `calc(100% - ${topPaneHeight})` : '100%',
+						flexShrink: 0
+					}}>
+						<div className="h-full">
+							<div className="text-sm font-semibold flex justify-between px-4 py-1"
+								style={{ color: highContrast }}>
+								<span>{'API Documentation\r'}</span>
+								{!isSmallScreen && (
+									<button
+										type="button"
+										onClick={() => { setPreferVerticalLayout(prev => !prev) }}
+										title="Toggle layout (side or below) for docs"
+									>
+										{preferVerticalLayout
+											? (
+												<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+												<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
+												<line x1="12" y1="4" x2="12" y2="20" strokeWidth="2" />
+											</svg>
+											)
+											: (
+												<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+												<rect x="2" y="2" width="20" height="20" strokeWidth="2" />
+												<line x1="4" y1="12" x2="20" y2="12" strokeWidth="2" />
+											</svg>
+											)}
+									</button>
+								)}
+							</div>
+							<div style={{ height: 'calc(100% - 28px)' }}>
+								<Editor
+									defaultLanguage="typescript"
+									value={apiTypes}
+									height="calc(100%)"
+									options={{
+										readOnly: true,
+										minimap: { enabled: false },
+										scrollBeyondLastLine: true,
+										lineNumbers: 'off',
+										folding: true,
+										wordWrap: 'on',
+										domReadOnly: true,
+										renderValidationDecorations: 'off',
+										renderLineHighlight: 'none',
+										hideCursorInOverviewRuler: true,
+										links: true,
+										overviewRulerBorder: true,
+										scrollbar: {
+											vertical: 'auto',
+											horizontal: 'hidden'
+										},
+										cursorStyle: 'line-thin',
+										contextmenu: false,
+										fontSize: 14
+									}}
+									theme={theme}
+								/>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	)
