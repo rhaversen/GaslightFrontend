@@ -50,7 +50,7 @@ export default main
 
 export default function NewStrategy ({ params }: { params: { userId: string } }): JSX.Element {
 	const router = useRouter()
-	const [title, setTitle] = useState('New Strategy')
+	const [title, setTitle] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState('')
 
