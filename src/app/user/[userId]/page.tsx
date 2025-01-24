@@ -68,6 +68,10 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 									<span className="font-medium">{'Member since'}</span>
 									<span className="text-gray-900">{new Date(userData.createdAt).toLocaleDateString()}</span>
 								</p>
+								<p className="flex justify-between items-center text-gray-600">
+									<span className="font-medium">{'Submissions'}</span>
+									<span className="text-gray-900">{userData.submissionCount}</span>
+								</p>
 							</div>
 						</div>
 						<div className="flex justify-center">
