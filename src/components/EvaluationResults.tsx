@@ -25,7 +25,8 @@ const EvaluationResults = ({
 			{/* Only show timing results if we have the data */}
 			{strategy.evaluation.strategyExecutionTimings != null &&
                 strategy.evaluation.strategyLoadingTimings != null &&
-                strategy.evaluation.averageExecutionTime != null && (
+                strategy.evaluation.averageExecutionTime != null &&
+				strategy.evaluation.disqualified == null && (
 				<>
 					<div className="space-y-4">
 						{/* Results display */}
