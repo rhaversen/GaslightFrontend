@@ -52,6 +52,13 @@ export default function Page (): ReactElement {
 								<div className="space-y-1">
 									<h2 className="text-xl font-semibold text-gray-900">{user.username}</h2>
 									<p className="text-sm text-gray-600">{'Submissions: '}{user.submissionCount}</p>
+									{(user.activeSubmission != null)
+										? (
+											<p className="text-sm text-gray-600">{'Active Submission: '}{user.activeSubmission}</p>
+										)
+										: (
+											<p className="text-sm text-gray-600">{'No active submission'}</p>
+										)}
 									<div className="text-xs text-gray-500">
 										<p>{'Joined: '}{formatDate(user.createdAt)}</p>
 									</div>

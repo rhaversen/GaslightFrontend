@@ -11,6 +11,8 @@ export interface UserType {
 	expirationDate?: Date | null
 	/** Amount of user submissions */
 	submissionCount: number
+	/** Active submission name */
+	activeSubmission: string | null
 
 	// Timestamps
 	createdAt: Date
