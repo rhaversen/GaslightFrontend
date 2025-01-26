@@ -66,7 +66,6 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 
 	const handleCreate = async (): Promise<void> => {
 		if (title.trim() === '') {
-			setError('Title cannot be empty')
 			return
 		}
 
@@ -132,7 +131,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 					<div className="flex items-center gap-4">
 						<button
 							onClick={() => { void handleCreate() }}
-							disabled={isSubmitting}
+							disabled={isSubmitting || title.trim().length === 0}
 							className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
 						>
 							{isSubmitting ? 'Creating...' : 'Create Strategy'}
