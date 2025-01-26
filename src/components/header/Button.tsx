@@ -1,29 +1,35 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import React, { type ReactElement } from 'react'
 
-const Button = ({
-	title,
-	path
-}: {
+interface ButtonProps {
 	title: string
-	path: string
-}): ReactElement => {
-	const router = useRouter()
-	function handleRedirect (): void {
-		router.push(path)
+	path?: string
+	onClick?: () => void
+}
+
+const Button = ({ title, path = '/', onClick }: ButtonProps): ReactElement => {
+	if (onClick != null) {
+		return (
+			<button
+				onClick={onClick}
+				className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+				type='button'
+			>
+				<div className='font-semibold p-5'>
+					{title}
+				</div>
+			</button>
+		)
 	}
 
 	return (
-		<button className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
-			onClick={handleRedirect}
-			type='button'
-		>
+		<Link href={path} className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110">
 			<div className='font-semibold p-5'>
 				{title}
 			</div>
-		</button>
+		</Link>
 	)
 }
 
