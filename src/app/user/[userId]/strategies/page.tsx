@@ -212,12 +212,21 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								</p>
 							</div>
 						)
-						: (
-							<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-								<p className="text-yellow-700 text-sm text-center">
-									{'No strategy is currently active. Activate a strategy to enter the tournament.'}
-								</p>
-							</div>
+						: (isOwnProfile
+							? (
+								<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+									<p className="text-yellow-700 text-sm text-center">
+										{'No strategy is currently active. Activate a strategy to enter the tournament.'}
+									</p>
+								</div>
+							)
+							: (
+								<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+									<p className="text-yellow-700 text-sm text-center">
+										{'This user has no active strategy.'}
+									</p>
+								</div>
+							)
 						)
 				)}
 				<div className="space-y-4">
