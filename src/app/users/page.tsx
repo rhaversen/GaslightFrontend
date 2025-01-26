@@ -1,6 +1,7 @@
 'use client'
 
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import { useUser } from '@/contexts/UserProvider'
 import { formatDate } from '@/lib/dateUtils'
 import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
@@ -10,6 +11,7 @@ import React, { type ReactElement, useEffect, useState } from 'react'
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function Page (): ReactElement {
+	const { currentUser } = useUser()
 	const [users, setUsers] = useState<UserType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -50,7 +52,12 @@ export default function Page (): ReactElement {
 						>
 							<div className="flex justify-between items-center">
 								<div className="space-y-1">
-									<h2 className="text-xl font-semibold text-gray-900">{user.username}</h2>
+									<div className="flex items-center gap-2">
+										<h2 className="text-xl font-semibold text-gray-900">{user.username}</h2>
+										{currentUser?._id === user._id && (
+											<span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">{'You'}</span>
+										)}
+									</div>
 									<p className="text-sm text-gray-600">{'Submissions: '}{user.submissionCount}</p>
 									{(user.activeSubmission != null)
 										? (
