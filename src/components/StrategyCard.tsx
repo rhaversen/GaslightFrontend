@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/dateUtils'
 import { type ISubmission } from '@/types/backendDataTypes'
 import Link from 'next/link'
 import { type ReactElement, useState } from 'react'
@@ -101,8 +102,8 @@ export function StrategyCard ({
 				<div className="grid grid-cols-2 gap-4">
 					<div className="text-gray-600">
 						<p>{'Number of tokens: '}{strategy.tokenCount}</p>
-						<p>{'Last updated: '}{new Date(strategy.updatedAt).toLocaleDateString()}</p>
-						<p>{'Created: '}{new Date(strategy.createdAt).toLocaleDateString()}</p>
+						<p>{'Last updated: '}{formatDate(strategy.updatedAt)}</p>
+						<p>{'Created: '}{formatDate(strategy.createdAt)}</p>
 					</div>
 					{strategy.evaluation != null && isEvaluationRecent(strategy.evaluation) && (
 						<div className="pl-4 border-l border-gray-200">

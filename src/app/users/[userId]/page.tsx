@@ -7,6 +7,7 @@ import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import { formatDate } from '@/lib/dateUtils'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -65,7 +66,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								)}
 								<p className="flex justify-between items-center text-gray-600">
 									<span className="font-medium">{'Member since'}</span>
-									<span className="text-gray-900">{new Date(userData.createdAt).toLocaleDateString()}</span>
+									<span className="text-gray-900">{formatDate(userData.createdAt)}</span>
 								</p>
 								<p className="flex justify-between items-center text-gray-600">
 									<span className="font-medium">{'Submissions'}</span>
