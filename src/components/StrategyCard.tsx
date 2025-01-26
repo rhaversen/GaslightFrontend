@@ -10,7 +10,6 @@ interface Props {
 	onToggleActive: (strategyId: string, active: boolean) => Promise<void>
 	onDelete: (strategy: ISubmission) => Promise<void>
 	activeStrategyId: string | null
-	isEvaluationRecent: (evaluation: ISubmission['evaluation']) => boolean
 	onEvaluate: (strategyId: string) => Promise<void>
 }
 
@@ -21,7 +20,6 @@ export function StrategyCard ({
 	onToggleActive,
 	onDelete,
 	activeStrategyId,
-	isEvaluationRecent,
 	onEvaluate
 }: Props): ReactElement {
 	const [isEvaluating, setIsEvaluating] = useState(false)
@@ -106,7 +104,7 @@ export function StrategyCard ({
 						<p>{'Last updated: '}{formatDate(strategy.updatedAt)}</p>
 						<p>{'Created: '}{formatDate(strategy.createdAt)}</p>
 					</div>
-					{strategy.evaluation != null && isEvaluationRecent(strategy.evaluation) && (
+					{strategy.evaluation != null && (
 						<div className="pl-4 border-l border-gray-200">
 							<h4 className="font-medium text-gray-700 mb-2">{'Latest Evaluation Details'}</h4>
 							{strategy.evaluation.disqualified != null
@@ -128,7 +126,7 @@ export function StrategyCard ({
 						<div className="text-sm text-gray-500">
 							{evaluationTime != null && (
 								<span>{'Evaluated: '}{formatDate(evaluationTime)}</span>
-								)}
+							)}
 						</div>
 					)}
 				</div>

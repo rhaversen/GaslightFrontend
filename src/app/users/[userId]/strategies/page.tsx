@@ -18,27 +18,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 	const isOwnProfile = currentUser?._id === params.userId
 	const [isLoading, setIsLoading] = useState(true)
 
-	const isEvaluationRecent = (evaluation: ISubmission['evaluation']): boolean => {
-		const daysBeforeStale = 7
-		try {
-			if (evaluation.updatedAt == null) return false
-
-			const evaluationDate = new Date(evaluation.updatedAt)
-			if (isNaN(evaluationDate.getTime())) return false
-
-			const oneWeekAgo = new Date()
-			oneWeekAgo.setDate(oneWeekAgo.getDate() - daysBeforeStale)
-			oneWeekAgo.setHours(0, 0, 0, 0) // normalize to start of day
-
-			const evalDateNormalized = new Date(evaluationDate)
-			evalDateNormalized.setHours(0, 0, 0, 0) // normalize to start of day
-
-			return evalDateNormalized >= oneWeekAgo
-		} catch {
-			return false
-		}
-	}
-
 	useEffect(() => {
 		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
@@ -239,7 +218,6 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 							onToggleActive={toggleActive}
 							onDelete={handleDelete}
 							activeStrategyId={activeStrategyId}
-							isEvaluationRecent={isEvaluationRecent}
 							onEvaluate={handleEvaluate}
 						/>
 					))}
