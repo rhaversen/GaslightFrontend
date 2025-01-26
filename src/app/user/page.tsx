@@ -10,7 +10,7 @@ export default function Page (): ReactElement {
 
 	useEffect(() => {
 		if (currentUser !== null) {
-			router.push(`/user/${currentUser._id}`)
+			router.push(`/users/${currentUser._id}`)
 		} else {
 			router.push('/')
 		}

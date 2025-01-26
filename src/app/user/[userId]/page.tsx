@@ -75,7 +75,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						</div>
 						<div className="flex justify-center">
 							<Link
-								href={`/user/${params.userId}/strategies`}
+								href={`/users/${params.userId}/strategies`}
 								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3
 											 rounded-lg hover:scale-105 transition-all shadow-md inline-flex
 											 items-center gap-2"

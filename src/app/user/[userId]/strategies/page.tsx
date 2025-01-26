@@ -148,7 +148,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 			<div className="container mx-auto max-w-4xl p-2">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 					<Link
-						href={`/user/${params.userId}`}
+						href={`/users/${params.userId}`}
 						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 					>
 						<span className="inline-flex items-center">
@@ -164,7 +164,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 					<div className="flex justify-end">
 						{isOwnProfile && (
 							<Link
-								href={`/user/${params.userId}/strategies/new`}
+								href={`/users/${params.userId}/strategies/new`}
 								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
 							>
 								{'Create Strategy'}
@@ -181,7 +181,7 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 								</p>
 								<div className="flex items-center gap-1">
 									<Link
-										href={`/user/${params.userId}/strategies/new`}
+										href={`/users/${params.userId}/strategies/new`}
 										className="bg-gradient-to-r text-center from-blue-500 to-purple-500 text-white px-2 py-1 m-1 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
 									>
 										{'Create a new strategy'}

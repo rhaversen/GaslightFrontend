@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 		default: 'Profile'
 	},
 	alternates: {
-		canonical: 'https://www.gaslight.fun/user'
+		canonical: 'https://www.gaslight.fun/users'
 	}
 }
 

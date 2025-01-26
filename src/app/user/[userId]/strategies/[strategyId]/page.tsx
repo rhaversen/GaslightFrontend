@@ -135,7 +135,7 @@ export default function Page ({ params }: Readonly<{
 			await axios.delete(`${API_URL}/v1/submissions/${params.strategyId}`, {
 				withCredentials: true
 			})
-			router.push(`/user/${params.userId}/strategies`)
+			router.push(`/users/${params.userId}/strategies`)
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
 		}
@@ -150,7 +150,7 @@ export default function Page ({ params }: Readonly<{
 			<div className="container mx-auto max-w-4xl p-2">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 					<Link
-						href={`/user/${params.userId}/strategies`}
+						href={`/users/${params.userId}/strategies`}
 						onClick={handleNavigateAway}
 						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 					>

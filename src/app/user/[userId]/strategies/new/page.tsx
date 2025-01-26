@@ -78,7 +78,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 				{ title, code: defaultCode },
 				{ withCredentials: true }
 			)
-			router.push(`/user/${params.userId}/strategies/${response.data._id}`)
+			router.push(`/users/${params.userId}/strategies/${response.data._id}`)
 		} catch (error) {
 			console.error('Error creating strategy:', error)
 			setError('Failed to create strategy. Please try again.')
@@ -91,7 +91,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 			<div className="container mx-auto max-w-4xl p-6">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 					<Link
-						href={`/user/${params.userId}/strategies`}
+						href={`/users/${params.userId}/strategies`}
 						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 					>
 						<span className="inline-flex items-center">
@@ -138,7 +138,7 @@ export default function NewStrategy ({ params }: { params: { userId: string } })
 							{isSubmitting ? 'Creating...' : 'Create Strategy'}
 						</button>
 						<Link
-							href={`/user/${params.userId}/strategies`}
+							href={`/users/${params.userId}/strategies`}
 							className="text-gray-600 hover:text-gray-900 transition-colors"
 						>
 							{'Cancel\r'}

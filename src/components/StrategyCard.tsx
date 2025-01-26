@@ -132,7 +132,7 @@ export function StrategyCard ({
 			{isOwnProfile
 				? (
 					<Link
-						href={`/user/${userId}/strategies/${strategy._id}`}
+						href={`/users/${userId}/strategies/${strategy._id}`}
 						className="flex-1 p-6 hover:bg-gray-50 transition-all duration-300 rounded-xl"
 					>
 						<StrategyContent />
