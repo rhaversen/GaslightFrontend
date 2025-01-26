@@ -1,6 +1,7 @@
 import { type ReactElement } from 'react'
 import ExecutionTimeHistogram from './ExecutionTimeHistogram'
 import { type ISubmission } from '@/types/backendDataTypes'
+import { formatDate } from '@/lib/dateUtils'
 
 const EvaluationResults = ({
 	strategy
@@ -11,10 +12,18 @@ const EvaluationResults = ({
 
 	const LOADING_TIME_LIMIT = 100 // ms
 	const EXECUTION_TIME_LIMIT = 1 // ms
+	const evaluationTime = strategy.evaluation?.updatedAt ?? strategy.evaluation?.createdAt
 
 	return (
 		<div className="mt-4 p-4 bg-gray-50 rounded-lg border">
-			<h3 className="text-lg text-gray-700 font-semibold mb-3 text-center">{'Evaluation Results'}</h3>
+			<div className="flex justify-between items-center mb-4">
+				<h3 className="text-lg font-semibold text-gray-800">{'Evaluation Results'}</h3>
+				{evaluationTime != null && (
+					<span className="text-sm text-gray-500">
+						{'Evaluated: '}{formatDate(evaluationTime)}
+					</span>
+				)}
+			</div>
 
 			{(strategy.evaluation.disqualified != null) && (
 				<div className="text-red-600 mb-2">

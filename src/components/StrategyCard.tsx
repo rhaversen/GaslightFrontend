@@ -25,6 +25,7 @@ export function StrategyCard ({
 	onEvaluate
 }: Props): ReactElement {
 	const [isEvaluating, setIsEvaluating] = useState(false)
+	const evaluationTime = strategy.evaluation?.updatedAt ?? strategy.evaluation?.createdAt
 
 	const handleEvaluate = async (strategyId: string): Promise<void> => {
 		setIsEvaluating(true)
@@ -120,6 +121,13 @@ export function StrategyCard ({
 											{'Execution: '}{strategy.evaluation?.averageExecutionTime != null ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
 										</span>
 									</div>
+								)}
+						</div>
+					)}
+					{strategy.evaluation != null && (
+						<div className="text-sm text-gray-500">
+							{evaluationTime != null && (
+								<span>{'Evaluated: '}{formatDate(evaluationTime)}</span>
 								)}
 						</div>
 					)}
