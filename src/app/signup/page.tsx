@@ -154,8 +154,8 @@ export default function Page (): ReactElement {
 										: passwordsMatch === true ? 'border-green-500' : ''
 								}
 							/>
-							{passwordsMatch === false && formData.confirmPassword !== '' && (
-								<span className="text-sm text-red-500 mt-1 absolute -bottom-6 left-0">
+							{passwordsMatch === false && (
+								<span className="text-sm text-red-500">
 									{formData.password.length < 4
 										? 'Password must be at least 4 characters'
 										: 'Passwords do not match'}
