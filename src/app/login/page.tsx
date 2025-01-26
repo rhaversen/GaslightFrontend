@@ -32,18 +32,13 @@ export default function Page (): ReactElement {
 	const isFormValid = formData.email.length > 0 && formData.password.length >= 4
 
 	const login = useCallback(async (credentials: any) => {
-		try {
-			const response = await axios.post<{
-				auth: boolean
-				user: UserType
-			}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
-			setCurrentUser(response.data.user)
-			router.push(`/users/${response.data.user._id}`)
-		} catch (error: any) {
-			setCurrentUser(null)
-			addError(error)
-		}
-	}, [API_URL, addError, router, setCurrentUser])
+		const response = await axios.post<{
+			auth: boolean
+			user: UserType
+		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
+		setCurrentUser(response.data.user)
+		router.push(`/users/${response.data.user._id}`)
+	}, [API_URL, router, setCurrentUser])
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })
@@ -64,11 +59,12 @@ export default function Page (): ReactElement {
 		}
 		login(credentials)
 			.catch((error) => {
+				console.error(error)
 				setFormError('Invalid email or password')
-				addError(error)
+				setIsSubmitting(false)
+				setCurrentUser(null)
 			})
-			.finally(() => { setIsSubmitting(false) })
-	}, [addError, login])
+	}, [login, setCurrentUser])
 
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
