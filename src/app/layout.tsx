@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { type ReactElement } from 'react'
-import Header from '@/components/header/Header'
+import UserProvider from '@/contexts/UserProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,8 +30,9 @@ export default function RootLayout ({
 		<html lang="en">
 			<body className={inter.className}>
 				<ErrorProvider>
-					<Header />
-					{children}
+					<UserProvider>
+						{children}
+					</UserProvider>
 				</ErrorProvider>
 			</body>
 		</html>
