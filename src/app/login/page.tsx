@@ -1,6 +1,5 @@
 'use client'
 
-import { useError } from '@/contexts/ErrorContext/ErrorContext'
 import { useUser } from '@/contexts/UserProvider'
 import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
@@ -12,7 +11,6 @@ import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 export default function Page (): ReactElement {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
-	const { addError } = useError()
 	const { setCurrentUser } = useUser()
 	const [formError, setFormError] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
