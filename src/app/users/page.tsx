@@ -22,7 +22,6 @@ export default function Page (): ReactElement {
 					`${API_URL}/v1/users`,
 					{ withCredentials: true }
 				)
-				console.log('response', response.data)
 				setUsers(response.data)
 			} catch (error) {
 				console.error('Error fetching users:', error)

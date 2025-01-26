@@ -59,8 +59,6 @@ export default function Page (): ReactElement {
 		}
 		setFormData(newFormData)
 
-		console.log('newFormData', newFormData)
-
 		if (e.target.name === 'password' || e.target.name === 'confirmPassword') {
 			if (newFormData.password === '' && newFormData.confirmPassword === '') {
 				setPasswordsMatch(null)
