@@ -172,6 +172,35 @@ export default function Page ({ params }: Readonly<{ params: { userId: string } 
 						)}
 					</div>
 				</div>
+				{strategies.length === 0 && (
+					isOwnProfile
+						? (
+							<div className="mb-4 p-4 flex flex-col gap-5 items-center bg-blue-50 border border-blue-200 rounded-lg">
+								<p className="text-blue-700 text-center">
+									{'You currently have no strategies.'}
+								</p>
+								<div className="flex items-center gap-1">
+									<Link
+										href={`/user/${params.userId}/strategies/new`}
+										className="bg-gradient-to-r text-center from-blue-500 to-purple-500 text-white px-2 py-1 m-1 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
+									>
+										{'Create a new strategy'}
+									</Link>
+
+									<p className="text-blue-700 text-center">
+										{'to get started.'}
+									</p>
+								</div>
+							</div>
+						)
+						: (
+							<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+								<p className="text-yellow-700 text-center">
+									{'This user currently has no strategies.'}
+								</p>
+							</div>
+						)
+				)}
 				{strategies.length > 0 && (
 					activeStrategyId !== null
 						? (
