@@ -3,32 +3,38 @@
 import React, { type ReactElement, useState, useEffect } from 'react'
 import Button from './Button'
 import { useUser } from '@/contexts/UserProvider'
+import { useLogout } from '@/hooks/useLogout'
 
 const Header = (): ReactElement => {
 	const { currentUser } = useUser()
 	const [mounted, setMounted] = useState(false)
+	const { logout } = useLogout()
 
 	useEffect(() => {
 		setMounted(true)
 	}, [])
 
+	type ButtonProps = Record<string, {
+		path?: string
+		onClick?: () => void
+	}>
+
 	// Unauthenticated buttons
-	const authenticatedButtonsLeft: Record<string, string> = {
-		'Overall Ranking': '/',
-		'Last Tournament': '/'
+	const authenticatedButtonsLeft: ButtonProps = {
+		Users: { path: '/users' }
 	}
-	const authenticatedButtonsRight: Record<string, string> = {
-		Profile: '/users/' + currentUser?._id
+	const authenticatedButtonsRight: ButtonProps = {
+		Profile: { path: '/users/' + currentUser?._id },
+		Logout: { onClick: logout }
 	}
 
 	// Authenticated buttons
-	const unauthenticatedButtonsLeft: Record<string, string> = {
-		'Overall Ranking': '/',
-		'Last Tournament': '/'
+	const unauthenticatedButtonsLeft: ButtonProps = {
+		Users: { path: '/users' }
 	}
-	const unauthenticatedButtonsRight: Record<string, string> = {
-		'Log in': '/login',
-		'Sign Up': '/signup'
+	const unauthenticatedButtonsRight: ButtonProps = {
+		'Log in': { path: '/login' },
+		'Sign Up': { path: '/signup' }
 	}
 
 	if (!mounted) {
@@ -42,20 +48,22 @@ const Header = (): ReactElement => {
 		<header className="p-6 absolute w-full z-10">
 			<nav className="max-w-7xl mx-auto backdrop-blur-sm bg-white/10 rounded-2xl p-4 flex justify-between items-center shadow-lg">
 				<div className="flex gap-4">
-					{Object.entries(buttonsLeft).map(([title, path]) => (
+					{Object.entries(buttonsLeft).map(([title, config]) => (
 						<Button
 							key={title}
 							title={title}
-							path={path}
+							path={config.path}
+							onClick={config.onClick}
 						/>
 					))}
 				</div>
 				<div className="flex gap-4">
-					{Object.entries(buttonsRight).map(([title, path]) => (
+					{Object.entries(buttonsRight).map(([title, config]) => (
 						<Button
 							key={title}
 							title={title}
-							path={path}
+							path={config.path}
+							onClick={config.onClick}
 						/>
 					))}
 				</div>
