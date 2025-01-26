@@ -15,6 +15,7 @@ export default function Page (): ReactElement {
 	const { addError } = useError()
 	const { setCurrentUser } = useUser()
 	const [formError, setFormError] = useState('')
+	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showPasswords, setShowPasswords] = useState(false)
 	const [formData, setFormData] = useState({
 		email: '',
@@ -73,11 +74,13 @@ export default function Page (): ReactElement {
 	const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		setFormError('')
+		setIsSubmitting(true)
 
 		if (!(passwordsMatch ?? false)) {
 			setFormError(formData.password.length < 4
 				? 'Password must be at least 4 characters long'
 				: 'Passwords do not match')
+			setIsSubmitting(false)
 			return
 		}
 
@@ -85,6 +88,7 @@ export default function Page (): ReactElement {
 			.catch((error) => {
 				setFormError('Failed to create account. Please try again.')
 				addError(error)
+				setIsSubmitting(false)
 			})
 	}, [addError, signup, formData, passwordsMatch])
 
@@ -163,11 +167,11 @@ export default function Page (): ReactElement {
 
 						<button
 							type="submit"
-							disabled={!isFormValid}
+							disabled={!isFormValid || isSubmitting}
 							className={`w-full px-4 py-2 text-white rounded-lg transition-colors
-								${isFormValid ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer' : 'bg-blue-300 cursor-not-allowed'}`}
+								${(!isFormValid || isSubmitting) ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 cursor-pointer'}`}
 						>
-							{'Sign up'}
+							{isSubmitting ? 'Creating account...' : 'Sign up'}
 						</button>
 					</form>
 
