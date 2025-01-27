@@ -23,3 +23,13 @@ spec:
                                     number: 80
                         path: /
                         pathType: Prefix
+        -   host: www.gaslight.fun
+            http:
+                paths:
+                    -   backend:
+                            service:
+                                name: frontend-service
+                                port:
+                                    number: 80
+                        path: /
+                        pathType: Prefix
