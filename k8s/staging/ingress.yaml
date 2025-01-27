@@ -9,7 +9,6 @@ spec:
     ingressClassName: nginx
     tls:
         -   hosts:
-                - www.gaslight.fun
                 - staging.gaslight.fun
             secretName: frontend-tls
     rules:
