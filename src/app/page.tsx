@@ -64,9 +64,9 @@ export default function Page (): ReactElement {
 	}, [])
 
 	const handleAmbigusClick = async (): Promise<void> => {
-		// If user is not logged in, redirect to login page
+		// If user is not logged in, redirect to signup page
 		if (currentUser == null) {
-			router.push('/login')
+			router.push('/signup')
 			return
 		}
 
