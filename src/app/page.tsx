@@ -42,8 +42,12 @@ export default function Page (): ReactElement {
 
 	// Start loading data on mount if user exists
 	useEffect(() => {
-		if (currentUser != null) {
+		if ((currentUser?._id) != null) {
 			userDataPromiseRef.current = axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
+				.catch(err => {
+					console.error('Failed to fetch user data:', err)
+					return null
+				})
 		}
 	}, [currentUser, API_URL])
 
@@ -71,25 +75,24 @@ export default function Page (): ReactElement {
 		}
 
 		try {
-			let promise = userDataPromiseRef.current
-			if (promise === null) {
-				promise = axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
-				userDataPromiseRef.current = promise // Save it for potential future clicks
+			let userData
+			if (userDataPromiseRef.current != null) {
+				userData = await userDataPromiseRef.current
+			} else if (currentUser._id !== '') {
+				userData = await axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
 			}
 
-			const response = await promise
+			if (userData?.data == null) {
+				throw new Error('No user data available')
+			}
 
-			// If user has strategies, redirect to strategies page
-			if (response.data.submissionCount > 0) {
+			if (userData.data.submissionCount > 0) {
 				router.push(`/users/${currentUser._id}/strategies`)
-				return
+			} else {
+				router.push(`/users/${currentUser._id}/strategies/new`)
 			}
-
-			// If user has no strategies, redirect to create strategy page
-			router.push(`/users/${currentUser._id}/strategies/new`)
 		} catch (error) {
 			console.error('Failed to fetch user data:', error)
-			// Handle error appropriately
 		}
 	}
 
@@ -116,7 +119,7 @@ export default function Page (): ReactElement {
 									onClick={() => { void handleAmbigusClick() }}
 									type='button'
 								>
-									{'JOIN NEXT TOURNAMENT\r'}
+									{'JOIN TOURNAMENT\r'}
 								</button>
 							</div>
 						</>
