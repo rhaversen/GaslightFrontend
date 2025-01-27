@@ -108,7 +108,7 @@ export default function Page (): ReactElement {
 								<div className='text-white text-xl font-medium tracking-wide'>
 									{'TOURNAMENT IN PROGRESS\r'}
 								</div>
-								<div className='text-white text-7xl font-light tracking-wider'>
+								<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
 									{timeSinceTournamentString}
 								</div>
 								<button
@@ -131,7 +131,7 @@ export default function Page (): ReactElement {
 								<div className='text-white text-xl font-medium tracking-wide'>
 									{'NEXT RANKED TOURNAMENT IN\r'}
 								</div>
-								<div className='text-white text-7xl font-light tracking-wider'>
+								<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
 									{timeToTournamentString}
 								</div>
 								<button
