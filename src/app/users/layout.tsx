@@ -1,4 +1,3 @@
-import UserAuthProvider from '@/contexts/UserAuthProvider'
 import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -17,8 +16,8 @@ export default function UserLayout ({
 	children: React.ReactNode
 }>): React.JSX.Element {
 	return (
-		<UserAuthProvider>
+		<>
 			{children}
-		</UserAuthProvider>
+		</>
 	)
 }
