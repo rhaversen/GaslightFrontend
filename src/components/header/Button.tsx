@@ -14,10 +14,10 @@ const Button = ({ title, path = '/', onClick }: ButtonProps): ReactElement => {
 		return (
 			<button
 				onClick={onClick}
-				className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+				className="border-2 m-2 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
 				type='button'
 			>
-				<div className='font-semibold p-5'>
+				<div className='font-semibold p-3 md:p-4 text-sm md:text-base'>
 					{title}
 				</div>
 			</button>
@@ -25,8 +25,8 @@ const Button = ({ title, path = '/', onClick }: ButtonProps): ReactElement => {
 	}
 
 	return (
-		<Link href={path} className="border-2 m-3 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110">
-			<div className='font-semibold p-5'>
+		<Link href={path} className="border-2 m-2 rounded-full border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110">
+			<div className='font-semibold p-3 md:p-4 text-sm md:text-base'>
 				{title}
 			</div>
 		</Link>
