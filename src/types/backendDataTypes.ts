@@ -79,14 +79,14 @@ export interface GradingType {
 	updatedAt: Date
 }
 
-interface TournamentWinner {
+export interface TournamentWinner {
     user: UserType['_id']
     submission: GradingType['_id']
     grade: number
     zValue: number
 }
 
-interface TournamentStatistics {
+export interface TournamentStatistics {
     percentiles: {
         p25: number
         p50: number
