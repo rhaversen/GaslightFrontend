@@ -6,7 +6,6 @@ import { TournamentType } from '@/types/backendDataTypes'
 import { formatDate } from '@/lib/dateUtils'
 import { WinnerDisplay } from './components/WinnerDisplay'
 import { StatsDisplay } from './components/StatsDisplay'
-import { DisqualificationsDisplay } from './components/DisqualificationsDisplay'
 import { RunnerUpDisplay } from './components/RunnersUp'
 
 export default function Page(): ReactElement<any> {

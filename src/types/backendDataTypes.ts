@@ -80,43 +80,43 @@ export interface GradingType {
 }
 
 export interface TournamentWinner {
-    user: UserType['_id']
-    submission: GradingType['_id']
-    grade: number
-    zValue: number
+	user: UserType['_id']
+	submission: GradingType['_id']
+	grade: number
+	zValue: number
 }
 
 export interface TournamentStatistics {
-    percentiles: {
-        p25: number
-        p50: number
-        p75: number
-        p90: number
-    }
-    averageScore: number
-    medianScore: number
+	percentiles: {
+		p25: number
+		p50: number
+		p75: number
+		p90: number
+	}
+	averageScore: number
+	medianScore: number
 }
 
 export interface TournamentType {
-    /** ID of the tournament */
-    _id: string
-    /** All gradings created from this tournament */
-    gradings: GradingType['_id']
-    /** All disqualifications from this tournament */
-    disqualified?: [{
-        submission: GradingType['_id']
-        reason: string
-    }]
-    /** Tournament winners */
-    winners: {
-        first: TournamentWinner
-        second?: TournamentWinner
-        third?: TournamentWinner
-    }
-    /** Tournament statistics */
-    statistics: TournamentStatistics
+	/** ID of the tournament */
+	_id: string
+	/** All gradings created from this tournament */
+	gradings: GradingType['_id']
+	/** All disqualifications from this tournament */
+	disqualified?: [{
+		submission: GradingType['_id']
+		reason: string
+	}]
+	/** Tournament winners */
+	winners: {
+		first: TournamentWinner
+		second?: TournamentWinner
+		third?: TournamentWinner
+	}
+	/** Tournament statistics */
+	statistics: TournamentStatistics
 
-    // Timestamps
-    createdAt: Date
-    updatedAt: Date
+	// Timestamps
+	createdAt: Date
+	updatedAt: Date
 }

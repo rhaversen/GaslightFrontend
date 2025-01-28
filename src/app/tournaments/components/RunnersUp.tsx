@@ -13,7 +13,7 @@ const useNames = (userId?: string, submissionId?: string) => {
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
-		if (!userId || !submissionId) return
+		if (userId === undefined || userId === '' || submissionId === undefined || submissionId === '') return
 
 		const fetchNames = async () => {
 			setLoading(true)
