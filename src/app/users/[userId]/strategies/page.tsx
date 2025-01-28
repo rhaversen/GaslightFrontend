@@ -4,13 +4,14 @@ import { useUser } from '@/contexts/UserProvider'
 import { type UserType, type ISubmission } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
-import React, { type ReactElement, useEffect, useState } from 'react'
+import React, { type ReactElement, useEffect, useState, use } from 'react'
 import { StrategyCard } from '@/components/StrategyCard'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement {
+export default function Page(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<ISubmission[]>([])
 	const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null)

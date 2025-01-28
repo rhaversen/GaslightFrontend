@@ -7,7 +7,7 @@ const EvaluationResults = ({
 	strategy
 }: {
 	strategy: ISubmission
-}): ReactElement | null => {
+}): ReactElement<any> | null => {
 	if (strategy?.evaluation === undefined) return null
 
 	const LOADING_TIME_LIMIT = 100 // ms

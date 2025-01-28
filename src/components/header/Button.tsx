@@ -9,7 +9,7 @@ interface ButtonProps {
 	onClick?: () => void
 }
 
-const Button = ({ title, path = '/', onClick }: ButtonProps): ReactElement => {
+const Button = ({ title, path = '/', onClick }: ButtonProps): ReactElement<any> => {
 	if (onClick != null) {
 		return (
 			<button

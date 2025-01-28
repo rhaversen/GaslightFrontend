@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 
-const LoadingPlaceholder = (): ReactElement => {
+const LoadingPlaceholder = (): ReactElement<any> => {
 	return (
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto max-w-4xl p-6">
