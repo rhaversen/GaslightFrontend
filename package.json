@@ -25,6 +25,7 @@
 	},
 	"devDependencies": {
 		"@shikijs/monaco": "^2.1.0",
+    "@stylistic/eslint-plugin": "^3.0.0",
 		"@types/lodash": "^4.17.14",
 		"@types/node": "^22.10.10",
 		"@types/react": "^18",
