@@ -116,6 +116,9 @@ export interface TournamentType {
 	/** Tournament statistics */
 	statistics: TournamentStatistics
 
+	/** Tournament execution time in milliseconds */
+	tournamentExecutionTime: number
+
 	// Timestamps
 	createdAt: Date
 	updatedAt: Date
