@@ -40,17 +40,21 @@ const EvaluationResults = ({
 					<div className="space-y-4">
 						{/* Results display */}
 						{(strategy.evaluation.results != null) && (
-							<div className="space-y-2">
-								<div className="flex gap-x-8">
-									<span className="text-gray-600">{'Your Score: \r'}
-										<span className="ml-2 font-medium">{strategy.evaluation.results.candidate.toFixed(2)}</span>
-									</span>
-									<span className="text-gray-600">{'Other Strategies Average: \r'}
-										<span className="ml-2 font-medium">{strategy.evaluation.results.average.toFixed(2)}</span>
-									</span>
-								</div>
-							</div>
-						)}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-x-2 text-gray-600 mb-1">
+                                    <span className="font-medium">Scores</span>
+                                    <span className="text-sm text-gray-400">(Lower is better)</span>
+                                </div>
+                                <div className="flex gap-x-8 pl-2">
+                                    <span className="text-gray-600">{'Yours:'}
+                                        <span className="ml-2 font-medium">{strategy.evaluation.results.candidate.toFixed(2)}</span>
+                                    </span>
+                                    <span className="text-gray-600">{'Average:'}
+                                        <span className="ml-2 font-medium">{strategy.evaluation.results.average.toFixed(2)}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        )}
 
 						{/* Time limit feedback */}
 						<div className="grid gap-3">
