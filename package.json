@@ -10,7 +10,7 @@
     "upgrade": "npm update && npx ncu -u && npm install"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
+    "@monaco-editor/react": "^4.7.0-rc.0",
     "axios": "^1.7.9",
     "lodash": "^4.17.21",
     "next": "15.1.6",
