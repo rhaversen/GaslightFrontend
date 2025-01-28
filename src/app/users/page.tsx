@@ -10,7 +10,7 @@ import React, { type ReactElement, useEffect, useState } from 'react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page (): ReactElement {
+export default function Page (): ReactElement<any> {
 	const { currentUser } = useUser()
 	const [users, setUsers] = useState<UserType[]>([])
 	const [isLoading, setIsLoading] = useState(true)

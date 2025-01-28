@@ -11,9 +11,7 @@ import EvaluationResults from '@/components/EvaluationResults'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page ({ params }: Readonly<{
-	params: { userId: string, strategyId: string }
-}>): ReactElement {
+export default function Page({ params }: Readonly<{ params: { userId: string, strategyId: string } }>): ReactElement<any> {
 	const router = useRouter()
 	const [strategy, setStrategy] = useState<ISubmission | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)

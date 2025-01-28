@@ -10,7 +10,7 @@ import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement {
+export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement<any> {
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<ISubmission[]>([])
 	const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null)

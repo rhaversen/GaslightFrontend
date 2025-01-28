@@ -13,7 +13,7 @@ import { SettingsIcon, VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement {
+export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement<any> {
 	const { currentUser } = useUser()
 	const [userData, setUserData] = useState<UserType | null>(null)
 	const isOwnProfile = currentUser?._id === params.userId

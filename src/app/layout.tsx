@@ -25,7 +25,7 @@ export default function RootLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode
-}>): ReactElement {
+}>): ReactElement<any> {
 	return (
 		<html lang="en">
 			<body className={inter.className}>
