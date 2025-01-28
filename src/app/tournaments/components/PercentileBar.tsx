@@ -1,7 +1,17 @@
-export const PercentileBar = ({ value, max, label }: { value: number, max: number, label: string }) => {
-	const percentage = (value / max) * 100
+export const PercentileBar = ({ 
+	value, 
+	min, 
+	range, 
+	label 
+}: { 
+	value: number, 
+	min: number, 
+	range: number, 
+	label: string 
+}) => {
+	const percentage = ((value - min) / range) * 100
 	return (
-		<div className="flex items-center gap-1">
+		<div className="flex items-center gap-2">
 			<span className="text-xs w-7">{label}{':'}</span>
 			<div className="h-4 flex-grow bg-gray-800 rounded">
 				<div 
@@ -10,6 +20,7 @@ export const PercentileBar = ({ value, max, label }: { value: number, max: numbe
 					title={`${value.toFixed(3)}`}
 				/>
 			</div>
+			<span className="text-xs text-right text-gray-400">{value.toFixed(1)}</span>
 		</div>
 	)
 }
