@@ -130,7 +130,50 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 								{/* Basic Info Grid */}
 								<div className="grid grid-cols-[120px,1fr] gap-y-3 text-sm">
 									<div className="font-medium text-gray-500">{'Username'}</div>
-									<div className="text-gray-900">{userData.username}</div>
+									<div className="flex items-center gap-2">
+										{isEditingUsername ? (
+											<div className="w-full flex flex-col sm:flex-row gap-2">
+												<input
+													type="text"
+													name="username"
+													value={formData.username}
+													onChange={handleInputChange}
+													placeholder={userData.username}
+													className="w-full p-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none overflow-ellipsis text-sm"
+												/>
+												<div className="flex gap-2 sm:flex-shrink-0">
+													<button
+														onClick={() => { void handleSubmit('username') }}
+														className="flex-1 sm:flex-initial px-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+													>
+														{'Save'}
+													</button>
+													<button
+														onClick={() => {
+															setIsEditingUsername(false)
+															setFormData({ ...formData, username: '' })
+														}}
+														className="flex-1 sm:flex-initial px-2 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+													>
+														{'Cancel'}
+													</button>
+												</div>
+											</div>
+										) : (
+											<>
+												<span className="text-gray-900">{userData.username}</span>
+												{isOwnProfile && (
+													<button
+														onClick={() => { setIsEditingUsername(true) }}
+														className="text-blue-500 hover:text-blue-600"
+														aria-label="Edit Username"
+													>
+														<SettingsIcon />
+													</button>
+												)}
+											</>
+										)}
+									</div>
 
 									{userData.email !== null && (
 										<>
@@ -149,46 +192,6 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 								{/* Modification Controls */}
 								{isOwnProfile && (
 									<div className="mt-6 flex flex-col gap-3 text-gray-700">
-										{isEditingUsername
-											? (
-												<div className="flex items-center gap-2">
-													<input
-														type="text"
-														name="username"
-														value={formData.username}
-														onChange={handleInputChange}
-														placeholder={userData.username}
-														className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-													/>
-													<div className="flex gap-2">
-														<button
-															onClick={() => { void handleSubmit('username') }}
-															className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-														>
-															{'Save\r'}
-														</button>
-														<button
-															onClick={() => {
-																setIsEditingUsername(false)
-																setFormData({ ...formData, username: '' })
-															}}
-															className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-														>
-															{'Cancel\r'}
-														</button>
-													</div>
-												</div>
-											)
-											: (
-												<button
-													onClick={() => { setIsEditingUsername(true) }}
-													className="flex items-center gap-2 text-blue-500 hover:text-blue-600 font-medium"
-												>
-													<SettingsIcon />
-													{'Modify Username\r'}
-												</button>
-											)}
-
 										{isEditingPassword
 											? (
 												<div className="flex flex-col gap-3">
