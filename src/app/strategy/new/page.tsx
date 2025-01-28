@@ -1,8 +1,8 @@
 'use client'
-import React, { useState, use, ReactElement } from 'react'
+import React, { useState, ReactElement } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useUser } from '@/contexts/UserProvider'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -59,9 +59,9 @@ const defaultCode = `const main = (api: MeyerStrategyAPI) => {
 export default main
 `
 
-export default function NewStrategy(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
-	const params = use(props.params)
+export default function NewStrategy(): ReactElement<any> {
 	const router = useRouter()
+	const { currentUser } = useUser()
 	const [title, setTitle] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState('')
@@ -80,7 +80,7 @@ export default function NewStrategy(props: { params: Promise<{ userId: string }>
 				{ title, code: defaultCode },
 				{ withCredentials: true }
 			)
-			router.push(`/users/${params.userId}/strategies/${response.data._id}`)
+			router.push(`/strategy/${response.data._id}`)
 		} catch (error) {
 			console.error('Error creating strategy:', error)
 			setError('Failed to create strategy. Please try again.')
@@ -92,8 +92,8 @@ export default function NewStrategy(props: { params: Promise<{ userId: string }>
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto max-w-4xl p-6">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
-					<Link
-						href={`/users/${params.userId}/strategies`}
+					<button
+						onClick={() => router.push(`/users/${currentUser?._id}/strategies`)}
 						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 					>
 						<span className="inline-flex items-center">
@@ -102,7 +102,7 @@ export default function NewStrategy(props: { params: Promise<{ userId: string }>
 							</svg>
 							{'Back\r'}
 						</span>
-					</Link>
+					</button>
 					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
 						{'Create Strategy\r'}
 					</h1>
@@ -139,12 +139,12 @@ export default function NewStrategy(props: { params: Promise<{ userId: string }>
 						>
 							{isSubmitting ? 'Creating...' : 'Create Strategy'}
 						</button>
-						<Link
-							href={`/users/${params.userId}/strategies`}
+						<button
+							onClick={() => router.push(`/users/${currentUser?._id}/strategies`)}
 							className="text-gray-600 hover:text-gray-900 transition-colors"
 						>
 							{'Cancel\r'}
-						</Link>
+						</button>
 					</div>
 				</div>
 			</div>

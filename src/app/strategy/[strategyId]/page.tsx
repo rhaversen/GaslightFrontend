@@ -8,12 +8,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import EvaluationResults from '@/components/EvaluationResults'
+import { useUser } from '@/contexts/UserProvider'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page(props: { params: Promise<{ userId: string, strategyId: string }> }): ReactElement<any> {
+export default function Page(props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
 	const params = use(props.params)
 	const router = useRouter()
+	const { currentUser } = useUser()
 	const [strategy, setStrategy] = useState<ISubmission | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [hasChanges, setHasChanges] = useState(false)
@@ -40,7 +42,7 @@ export default function Page(props: { params: Promise<{ userId: string, strategy
 			}
 		}
 		void fetchData()
-	}, [params.strategyId, params.userId])
+	}, [params.strategyId, currentUser?._id])
 
 	// Add change detection
 	useEffect(() => {
@@ -135,7 +137,7 @@ export default function Page(props: { params: Promise<{ userId: string, strategy
 			await axios.delete(`${API_URL}/v1/submissions/${params.strategyId}`, {
 				withCredentials: true
 			})
-			router.push(`/users/${params.userId}/strategies`)
+			router.push(`/users/${currentUser?._id}/strategies`)
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
 		}
@@ -174,7 +176,7 @@ export default function Page(props: { params: Promise<{ userId: string, strategy
 			<div className="container mx-auto max-w-4xl p-2">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 					<Link
-						href={`/users/${params.userId}/strategies`}
+						href={`/users/${currentUser?._id}/strategies`}
 						onClick={handleNavigateAway}
 						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 					>

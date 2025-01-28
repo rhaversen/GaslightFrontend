@@ -279,21 +279,6 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 								</div>
 							)}
 						</div>
-
-						{/* View Strategies Button */}
-						<div className="flex justify-center">
-							<Link
-								href={`/users/${params.userId}/strategies`}
-								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3
-										rounded-lg hover:scale-105 transition-all shadow-md inline-flex
-										items-center gap-2"
-							>
-								<span>{'View Strategies'}</span>
-								<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-								</svg>
-							</Link>
-						</div>
 					</div>
 				)}
 			</div>
