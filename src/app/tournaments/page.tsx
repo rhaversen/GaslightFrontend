@@ -47,7 +47,7 @@ export default function Page(): ReactElement<any> {
 						<div className="text-gray-400 mb-2 text-sm" title={`Created: ${formatDate(tournament.createdAt)}`}>
 							{formatDate(tournament.createdAt)}
 							<span className="ml-2 text-gray-500" title="Tournament execution time">
-								({formatDuration(tournament.tournamentExecutionTime)})
+								{'('}{formatDuration(tournament.tournamentExecutionTime)}{')\r'}
 							</span>
 						</div>
 
