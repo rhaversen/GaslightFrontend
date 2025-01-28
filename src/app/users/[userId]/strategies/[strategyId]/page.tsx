@@ -3,7 +3,7 @@
 import { type ISubmission } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
-import React, { type ReactElement, useEffect, useState } from 'react'
+import React, { type ReactElement, useEffect, useState, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
@@ -11,7 +11,8 @@ import EvaluationResults from '@/components/EvaluationResults'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page({ params }: Readonly<{ params: { userId: string, strategyId: string } }>): ReactElement<any> {
+export default function Page(props: { params: Promise<{ userId: string, strategyId: string }> }): ReactElement<any> {
+	const params = use(props.params)
 	const router = useRouter()
 	const [strategy, setStrategy] = useState<ISubmission | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
