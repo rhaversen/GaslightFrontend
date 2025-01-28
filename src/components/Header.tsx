@@ -124,9 +124,11 @@ export default function Header(): React.JSX.Element {
 				<div className="flex overflow-hidden items-center justify-center relative">
 					<div className="transition-all duration-300 ease-in-out flex items-center">
 						<div className="flex-shrink-0">
-							<NavLink href="/users" isActive={pathname === '/users'}>
-								{'Users\r'}
-							</NavLink>
+							{currentUser && 
+								<NavLink href="/users" isActive={pathname === '/users'}>
+									{'Users\r'}
+								</NavLink>
+							}
 						</div>
 						<div className="relative flex transition-all duration-300 ease-in-out">
 							<AnimatePresence mode="sync">

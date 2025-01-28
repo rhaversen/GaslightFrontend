@@ -3,14 +3,14 @@ import { type Metadata } from 'next'
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
-		default: 'Log In'
+		default: 'Sign Up'
 	},
 	alternates: {
-		canonical: 'https://www.gaslight.fun/login'
+		canonical: 'https://www.gaslight.fun/tournaments'
 	}
 }
 
-export default function LoginLayout ({
+export default function TournamentsLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode

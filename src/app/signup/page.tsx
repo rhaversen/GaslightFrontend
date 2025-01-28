@@ -93,108 +93,106 @@ export default function Page (): ReactElement<any> {
 	}, [addError, signup, formData, passwordsMatch])
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto max-w-md p-4">
-				<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center pb-2 mb-8">
-					{'Create Account'}
-				</h1>
-				<div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-					<form className="p-6 space-y-6" onSubmit={handleSubmit}>
-						<div className="space-y-2">
-							<label htmlFor="email" className="block text-sm font-medium text-gray-700">
-								{'Email address'}
+		<main className="container mx-auto max-w-md p-4">
+			<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center pb-2 mb-8">
+				{'Create Account'}
+			</h1>
+			<div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+				<form className="p-6 space-y-6" onSubmit={handleSubmit}>
+					<div className="space-y-2">
+						<label htmlFor="email" className="block text-sm font-medium text-gray-700">
+							{'Email address'}
+						</label>
+						<input
+							type="email"
+							id="email"
+							name="email"
+							value={formData.email}
+							onChange={handleInputChange}
+							autoComplete="email"
+							className="block w-full text-gray-700 px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+							required />
+					</div>
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<label htmlFor="password" className="block text-sm font-medium text-gray-700">
+								{'Password (minimum 4 characters)'}
 							</label>
-							<input
-								type="email"
-								id="email"
-								name="email"
-								value={formData.email}
-								onChange={handleInputChange}
-								autoComplete="email"
-								className="block w-full text-gray-700 px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-								required />
+							<button
+								type="button"
+								onClick={() => { setShowPasswords(!showPasswords) }}
+								className="text-sm text-blue-500 hover:text-blue-600"
+							>
+								{showPasswords ? <VisibilityOffIcon /> : <VisibilityIcon />}
+							</button>
 						</div>
-						<div className="space-y-2">
-							<div className="flex items-center justify-between">
-								<label htmlFor="password" className="block text-sm font-medium text-gray-700">
-									{'Password (minimum 4 characters)'}
-								</label>
-								<button
-									type="button"
-									onClick={() => { setShowPasswords(!showPasswords) }}
-									className="text-sm text-blue-500 hover:text-blue-600"
-								>
-									{showPasswords ? <VisibilityOffIcon /> : <VisibilityIcon />}
-								</button>
-							</div>
-							<PasswordInput
-								name="password"
-								value={formData.password}
-								placeholder="Password"
-								onChange={handleInputChange}
-								inputType={showPasswords ? 'text' : 'password'}
-								borderColor={
-									passwordsMatch === false
-										? 'border-red-500'
-										: passwordsMatch === true ? 'border-green-500' : ''
-								}
-							/>
-						</div>
-						<div className="space-y-2">
-							<label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-								{'Confirm Password'}
-							</label>
-							<PasswordInput
-								name="confirmPassword"
-								value={formData.confirmPassword}
-								placeholder="Confirm password"
-								onChange={handleInputChange}
-								inputType={showPasswords ? 'text' : 'password'}
-								borderColor={
-									passwordsMatch === false
-										? 'border-red-500'
-										: passwordsMatch === true ? 'border-green-500' : ''
-								}
-							/>
-							{passwordsMatch === false && (
-								<span className="text-sm text-red-500">
-									{formData.password.length < 4
-										? 'Password must be at least 4 characters'
-										: 'Passwords do not match'}
-								</span>
-							)}
-						</div>
+						<PasswordInput
+							name="password"
+							value={formData.password}
+							placeholder="Password"
+							onChange={handleInputChange}
+							inputType={showPasswords ? 'text' : 'password'}
+							borderColor={
+								passwordsMatch === false
+									? 'border-red-500'
+									: passwordsMatch === true ? 'border-green-500' : ''
+							}
+						/>
+					</div>
+					<div className="space-y-2">
+						<label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+							{'Confirm Password'}
+						</label>
+						<PasswordInput
+							name="confirmPassword"
+							value={formData.confirmPassword}
+							placeholder="Confirm password"
+							onChange={handleInputChange}
+							inputType={showPasswords ? 'text' : 'password'}
+							borderColor={
+								passwordsMatch === false
+									? 'border-red-500'
+									: passwordsMatch === true ? 'border-green-500' : ''
+							}
+						/>
+						{passwordsMatch === false && (
+							<span className="text-sm text-red-500">
+								{formData.password.length < 4
+									? 'Password must be at least 4 characters'
+									: 'Passwords do not match'}
+							</span>
+						)}
+					</div>
 
-						<button
-							type="submit"
-							disabled={!isFormValid || isSubmitting}
-							className={`w-full px-4 py-2 text-white rounded-lg transition-colors
+					<button
+						type="submit"
+						disabled={!isFormValid || isSubmitting}
+						className={`w-full px-4 py-2 text-white rounded-lg transition-colors
 								${(!isFormValid || isSubmitting) ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 cursor-pointer'}`}
-						>
-							{isSubmitting ? 'Creating account...' : 'Sign up'}
-						</button>
-					</form>
-
-					{/* Messages */}
-					{(formError.length > 0) && (
-						<div className="border-t border-gray-100 px-6 py-4">
-							{(formError.length > 0) && <p className="text-red-500 text-sm text-center">{formError}</p>}
-						</div>
-					)}
-				</div>
-				<div className="flex justify-center flex-col items-center mt-5 space-y-2">
-					<p className="text-sm text-gray-600">
-						{'Already have an account?'}{' '}
-						<button type="button" onClick={() => { router.push('/login') }}
-							className="font-medium text-indigo-600 hover:text-indigo-900">
-							{'Log in\r'}
-						</button>
-					</p>
-					<button type="button" onClick={() => { router.push('/') }}
-						className="text-sm text-indigo-600 hover:text-indigo-900">
-						{'Back to home'}
+					>
+						{isSubmitting ? 'Creating account...' : 'Sign up'}
 					</button>
-				</div>
+				</form>
+
+				{/* Messages */}
+				{(formError.length > 0) && (
+					<div className="border-t border-gray-100 px-6 py-4">
+						{(formError.length > 0) && <p className="text-red-500 text-sm text-center">{formError}</p>}
+					</div>
+				)}
+			</div>
+			<div className="flex justify-center flex-col items-center mt-5 space-y-2">
+				<p className="text-sm text-gray-600">
+					{'Already have an account?'}{' '}
+					<button type="button" onClick={() => { router.push('/login') }}
+						className="font-medium text-indigo-600 hover:text-indigo-900">
+						{'Log in\r'}
+					</button>
+				</p>
+				<button type="button" onClick={() => { router.push('/') }}
+					className="text-sm text-indigo-600 hover:text-indigo-900">
+					{'Back to home'}
+				</button>
 			</div>
 		</main>
 	)
