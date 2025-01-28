@@ -4,6 +4,7 @@ import axios from 'axios'
 import React, { useState, useEffect, type ReactElement } from 'react'
 import { TournamentType } from '@/types/backendDataTypes'
 import { formatDate } from '@/lib/dateUtils'
+import { formatDuration } from '@/lib/timeUtils'
 import { WinnerDisplay } from './components/WinnerDisplay'
 import { StatsDisplay } from './components/StatsDisplay'
 import { RunnerUpDisplay } from './components/RunnersUp'
@@ -45,6 +46,9 @@ export default function Page(): ReactElement<any> {
 					<div key={tournament._id} className="bg-gray-800 rounded-lg shadow-xl p-3">
 						<div className="text-gray-400 mb-2 text-sm" title={`Created: ${formatDate(tournament.createdAt)}`}>
 							{formatDate(tournament.createdAt)}
+							<span className="ml-2 text-gray-500" title="Tournament execution time">
+								{'('}{formatDuration(tournament.tournamentExecutionTime)}{')\r'}
+							</span>
 						</div>
 
 						<div className="grid grid-cols-[minmax(200px,35%)_minmax(250px,40%)_minmax(200px,25%)] gap-4">

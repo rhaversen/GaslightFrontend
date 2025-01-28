@@ -4,7 +4,7 @@ import { type Metadata } from 'next'
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
-		default: 'Profile'
+		default: 'Users'
 	},
 	alternates: {
 		canonical: 'https://www.gaslight.fun/users'
