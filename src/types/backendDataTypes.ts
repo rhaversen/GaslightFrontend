@@ -88,13 +88,23 @@ export interface TournamentWinner {
 
 export interface TournamentStatistics {
 	percentiles: {
+		p10: number
 		p25: number
 		p50: number
 		p75: number
 		p90: number
 	}
 	averageScore: number
-	medianScore: number
+	minMax: {
+		min: number
+		max: number
+	}
+	iqr: number
+	outlierBoundaries: {
+		lower: number
+		upper: number
+	}
+	outliers: number[]
 }
 
 export interface TournamentType {
