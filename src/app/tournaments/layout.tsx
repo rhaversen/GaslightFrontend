@@ -3,7 +3,7 @@ import { type Metadata } from 'next'
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
-		default: 'Sign Up'
+		default: 'Tournaments'
 	},
 	alternates: {
 		canonical: 'https://www.gaslight.fun/tournaments'
