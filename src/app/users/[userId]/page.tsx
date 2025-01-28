@@ -3,7 +3,6 @@
 import { useUser } from '@/contexts/UserProvider'
 import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
-import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
