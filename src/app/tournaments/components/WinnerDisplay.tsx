@@ -48,9 +48,9 @@ export const WinnerDisplay = ({ winner }: { winner: TournamentWinner }) => {
 					{'User: '}{loading ? <LoadingPlaceholderSmall /> : userName}
 				</div>
 				<div title={`First Place Score: ${winner.grade}`}>
-				{formatScore(winner.grade)}
-				<span className="text-gray-300 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
-					{formatZScore(winner.zValue)}
+					{formatScore(winner.grade)}
+					<span className="text-gray-300 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
+						{formatZScore(winner.zValue)}
 					</span>
 				</div>
 				<div title={submissionName}>
