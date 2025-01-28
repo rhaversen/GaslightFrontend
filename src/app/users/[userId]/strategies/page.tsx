@@ -127,17 +127,6 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto max-w-4xl p-2">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
-					<Link
-						href={`/users/${params.userId}`}
-						className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
-					>
-						<span className="inline-flex items-center">
-							<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-							</svg>
-							{'Profile'}
-						</span>
-					</Link>
 					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
 						{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
 					</h1>
