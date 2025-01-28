@@ -2,10 +2,9 @@ import { ISubmission, TournamentWinner, UserType } from '@/types/backendDataType
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
+import { formatScore, formatZScore } from '@/lib/scoreUtils'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-const formatScore = (score: number) => score.toFixed(2)
-const formatZScore = (z: number) => `Z-Score: ${z.toFixed(3)}`
 
 const useNames = (userId?: string, submissionId?: string) => {
 	const [userName, setUserName] = useState<string>('')
@@ -61,11 +60,11 @@ export const RunnerUpDisplay = ({
 						</span>
 					</div>
 					<div className="flex flex-col items-start">
-						<span title={`Score: ${formatScore(winner.grade)}`}>
-							{'Score: '}{formatScore(winner.grade)}
+						<span title={`Score: ${winner.grade}`}>
+							{formatScore(winner.grade)}
 						</span>
-						<span title={formatZScore(winner.zValue)}>
-							{'z: '}{winner.zValue}
+						<span title={`Z-Score: ${winner.zValue}`}>
+							{formatZScore(winner.zValue)}
 						</span>
 					</div>
 				</div>

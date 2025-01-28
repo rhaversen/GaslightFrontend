@@ -14,7 +14,7 @@ export const StatsDisplay = ({ statistics }: { statistics: TournamentStatistics 
 
 	return (
 		<div className="bg-gray-700 p-3 rounded-lg text-sm">
-			<div className="text-xs text-gray-400 mb-1">{'Statistics'}</div>
+			<div className="text-xs text-gray-400 mb-1">{'Score Statistics'}</div>
 			<div className="grid grid-cols-3 gap-x-2 text-gray-300 text-xs mb-2">
 				<span title={`Mean: ${statistics.averageScore.toFixed(2)}`}>
 					{'μ: '}{statistics.averageScore.toFixed(1)}

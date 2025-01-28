@@ -2,9 +2,9 @@ import { ISubmission, TournamentWinner, UserType } from '@/types/backendDataType
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
+import { formatScore, formatZScore } from '@/lib/scoreUtils'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-const formatScore = (score: number) => score.toFixed(2)
 
 const useNames = (userId?: string, submissionId?: string) => {
 	const [userName, setUserName] = useState<string>('')
@@ -39,7 +39,7 @@ const useNames = (userId?: string, submissionId?: string) => {
 
 export const WinnerDisplay = ({ winner }: { winner: TournamentWinner }) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
-    
+
 	return (
 		<div className="bg-gray-700 p-3 rounded-lg">
 			<h3 className="text-yellow-400 text-sm font-semibold mb-1">{'Winner'}</h3>
@@ -47,10 +47,10 @@ export const WinnerDisplay = ({ winner }: { winner: TournamentWinner }) => {
 				<div title={userName}>
 					{'User: '}{loading ? <LoadingPlaceholderSmall /> : userName}
 				</div>
-				<div title={`First Place Score: ${formatScore(winner.grade)}`}>
-					{'Score: '}{formatScore(winner.grade)}
-					<span className="text-gray-300 text-sm ml-2" title={`Z-Score: ${winner.zValue.toFixed(3)}`}>
-						{'(z: '}{winner.zValue.toFixed(3)}{')\r'}
+				<div title={`First Place Score: ${winner.grade}`}>
+				{formatScore(winner.grade)}
+				<span className="text-gray-300 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
+					{formatZScore(winner.zValue)}
 					</span>
 				</div>
 				<div title={submissionName}>
