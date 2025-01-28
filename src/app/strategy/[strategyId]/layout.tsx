@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 		default: 'Modify Strategy'
 	},
 	alternates: {
-		canonical: 'https://www.gaslight.fun/users/[userId]/strategies/[strategy]'
+		canonical: 'https://www.gaslight.fun/strategy/[strategy]'
 	}
 }
 

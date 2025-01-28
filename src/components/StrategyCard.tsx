@@ -6,7 +6,6 @@ import { type ReactElement, useState } from 'react'
 interface Props {
 	strategy: ISubmission
 	isOwnProfile: boolean
-	userId: string
 	onToggleActive: (strategyId: string, active: boolean) => Promise<void>
 	onDelete: (strategy: ISubmission) => Promise<void>
 	activeStrategyId: string | null
@@ -16,7 +15,6 @@ interface Props {
 export function StrategyCard ({
 	strategy,
 	isOwnProfile,
-	userId,
 	onToggleActive,
 	onDelete,
 	activeStrategyId,
@@ -139,7 +137,7 @@ export function StrategyCard ({
 			{isOwnProfile
 				? (
 					<Link
-						href={`/users/${userId}/strategies/${strategy._id}`}
+						href={`/strategy/${strategy._id}`}
 						className="flex-1 p-6 hover:bg-gray-50 transition-all duration-300 rounded-xl"
 					>
 						<StrategyContent />
