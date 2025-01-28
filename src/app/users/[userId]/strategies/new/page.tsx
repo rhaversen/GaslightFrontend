@@ -52,9 +52,10 @@ const defaultCode = `const main = (api: MeyerStrategyAPI) => {
 		api.detEllerDerover()
 		// We cant make any more actions after calling "det eller derover"
 	}
+
+	// END CODE
 }
 
-// END CODE
 export default main
 `
 
