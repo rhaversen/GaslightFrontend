@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { ReactElement, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import HALO from 'vanta/dist/vanta.halo.min.js'
 import NET from 'vanta/dist/vanta.net.min.js'
 
-export const HaloCalm = (): JSX.Element => {
+export const HaloCalm = (): ReactElement<any> => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -32,7 +32,7 @@ export const HaloCalm = (): JSX.Element => {
 	return <div ref={vantaRef} className="absolute w-full h-full -z-10" />
 }
 
-export const HaloAgressive = (): JSX.Element => {
+export const HaloAgressive = (): ReactElement<any> => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -61,7 +61,7 @@ export const HaloAgressive = (): JSX.Element => {
 	return <div ref={vantaRef} className="absolute w-full h-full -z-10" />
 }
 
-export const Net = (): JSX.Element => {
+export const Net = (): ReactElement<any> => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {

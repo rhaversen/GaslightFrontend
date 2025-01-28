@@ -4,7 +4,7 @@ import { useUser } from '@/contexts/UserProvider'
 import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
-import React, { type ReactElement, useEffect, useState } from 'react'
+import React, { type ReactElement, useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { formatDate } from '@/lib/dateUtils'
@@ -13,7 +13,8 @@ import { SettingsIcon, VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page ({ params }: Readonly<{ params: { userId: string } }>): ReactElement {
+export default function Page(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [userData, setUserData] = useState<UserType | null>(null)
 	const isOwnProfile = currentUser?._id === params.userId

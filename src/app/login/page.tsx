@@ -8,7 +8,7 @@ import React, { type ReactElement, useCallback, useEffect, useState } from 'reac
 import PasswordInput from '@/components/PasswordInput'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 
-export default function Page (): ReactElement {
+export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
 	const { setCurrentUser } = useUser()

@@ -7,7 +7,7 @@ const ErrorWindow = ({
 }: {
 	error: unknown
 	onClose: () => void
-}): ReactElement => {
+}): ReactElement<any> => {
 	const renderDelay = 50
 	const deRenderDelay = 200
 	const timeOut = 5000 + renderDelay

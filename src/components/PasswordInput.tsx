@@ -16,7 +16,7 @@ export default function PasswordInput ({
 	onChange,
 	borderColor,
 	inputType = 'password'
-}: PasswordInputProps): ReactElement {
+}: PasswordInputProps): ReactElement<any> {
 	return (
 		<input
 			type={inputType}

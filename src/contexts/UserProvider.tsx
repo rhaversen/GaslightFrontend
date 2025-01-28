@@ -3,6 +3,7 @@ import { type UserType } from '@/types/backendDataTypes'
 import React, {
 	createContext,
 	type Dispatch,
+	ReactElement,
 	type ReactNode,
 	type SetStateAction,
 	useContext,
@@ -22,7 +23,7 @@ const UserContext = createContext<UserContextType>({
 
 export const useUser = (): UserContextType => useContext(UserContext)
 
-export default function UserProvider ({ children }: { readonly children: ReactNode }): JSX.Element {
+export default function UserProvider ({ children }: { readonly children: ReactNode }): ReactElement<any> {
 	const [currentUser, setCurrentUser] = useState<UserType | null>(() => {
 		if (typeof window !== 'undefined') {
 			const storedUser = localStorage.getItem('currentUser')

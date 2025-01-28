@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
 
-export default function Page (): ReactElement {
+export default function Page (): ReactElement<any> {
 	// Time generation function
 	const timeToNextMidnight = (): string => {
 		const now = new Date()

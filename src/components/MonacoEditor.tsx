@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, ReactElement } from 'react'
 import Editor, { type Monaco } from '@monaco-editor/react'
 import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
@@ -174,7 +174,7 @@ const MonacoEditor = ({
 	onChange?: (value: string | undefined, event: any) => void
 	onToggleMaximize?: () => void
 	isMaximized?: boolean
-}): JSX.Element => {
+}): ReactElement<any> => {
 	const monacoRef = useRef<Monaco | null>(null)
 	const extraLibDisposableRef = useRef<monaco.IDisposable | null>(null)
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
@@ -286,7 +286,8 @@ const MonacoEditor = ({
 		editor.updateOptions({ theme })
 	}
 
-	function handleEditorValidation (markers: monaco.editor.IMarker[]): void {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function handleEditorValidation (_markers: monaco.editor.IMarker[]): void {
 		// model markers
 		// markers.forEach(marker => console.log('onValidate:', marker.message));
 	}

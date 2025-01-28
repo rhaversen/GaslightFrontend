@@ -21,7 +21,7 @@ export function StrategyCard ({
 	onDelete,
 	activeStrategyId,
 	onEvaluate
-}: Props): ReactElement {
+}: Props): ReactElement<any> {
 	const [isEvaluating, setIsEvaluating] = useState(false)
 	const evaluationTime = strategy.evaluation?.updatedAt ?? strategy.evaluation?.createdAt
 
@@ -34,7 +34,7 @@ export function StrategyCard ({
 		}
 	}
 
-	const StrategyContent = (): ReactElement => (
+	const StrategyContent = (): ReactElement<any> => (
 		<>
 			<div className="flex justify-between items-center">
 				<h3 className="text-xl font-semibold text-gray-800">{strategy.title}</h3>

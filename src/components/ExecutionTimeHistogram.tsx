@@ -25,7 +25,7 @@ const createTimeBuckets = (times: number[]): Array<{ range: string, count: numbe
 	return buckets
 }
 
-const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement => {
+const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement<any> => {
 	const buckets = useMemo(() => createTimeBuckets(times), [times])
 	const maxCount = Math.max(...buckets.map(b => b.count))
 	const containerRef = useRef<HTMLDivElement>(null)

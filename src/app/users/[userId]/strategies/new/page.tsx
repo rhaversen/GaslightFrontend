@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, use, ReactElement } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -58,7 +58,8 @@ const defaultCode = `const main = (api: MeyerStrategyAPI) => {
 export default main
 `
 
-export default function NewStrategy ({ params }: { params: { userId: string } }): JSX.Element {
+export default function NewStrategy(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+	const params = use(props.params)
 	const router = useRouter()
 	const [title, setTitle] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
