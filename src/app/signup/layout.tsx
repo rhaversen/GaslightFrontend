@@ -15,7 +15,9 @@ export default function SignupLayout ({
 }: Readonly<{
 	children: React.ReactNode
 }>): React.JSX.Element {
-	return <section>
-		{children}
-	</section>
+	return (
+		<>
+			{children}
+		</>
+	)
 }
