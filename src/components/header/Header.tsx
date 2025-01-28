@@ -21,7 +21,8 @@ const Header = (): ReactElement<any> => {
 
 	// Unauthenticated buttons
 	const authenticatedButtonsLeft: ButtonProps = {
-		Users: { path: '/users' }
+		Users: { path: '/users' },
+		Tournaments: { path: '/tournaments' }
 	}
 	const authenticatedButtonsRight: ButtonProps = {
 		Profile: { path: '/users/' + currentUser?._id },
@@ -30,7 +31,8 @@ const Header = (): ReactElement<any> => {
 
 	// Authenticated buttons
 	const unauthenticatedButtonsLeft: ButtonProps = {
-		Users: { path: '/users' }
+		Users: { path: '/users' },
+		Tournaments: { path: '/tournaments' }
 	}
 	const unauthenticatedButtonsRight: ButtonProps = {
 		'Log in': { path: '/login' },
