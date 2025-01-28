@@ -93,8 +93,7 @@ export default function Page (): ReactElement<any> {
 	}, [addError, signup, formData, passwordsMatch])
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto max-w-md p-4">
+			<main className="container mx-auto max-w-md p-4">
 				<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center pb-2 mb-8">
 					{'Create Account'}
 				</h1>
@@ -194,7 +193,6 @@ export default function Page (): ReactElement<any> {
 						className="text-sm text-indigo-600 hover:text-indigo-900">
 						{'Back to home'}
 					</button>
-				</div>
 			</div>
 		</main>
 	)

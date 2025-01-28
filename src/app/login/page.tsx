@@ -65,8 +65,7 @@ export default function Page (): ReactElement<any> {
 	}, [login, setCurrentUser])
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto max-w-md p-4">
+			<main className="container mx-auto max-w-md p-4">
 				<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center pb-2 mb-8">
 					{'Log In'}
 				</h1>
@@ -148,7 +147,6 @@ export default function Page (): ReactElement<any> {
 						{'Back to home'}
 					</button>
 				</div>
-			</div>
 		</main>
 	)
 }
