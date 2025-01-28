@@ -124,94 +124,92 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 	}
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-			<div className="container mx-auto max-w-4xl p-2">
-				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
-					<div className="flex justify-start w-20"/> {/* Placeholder for alignment */}
-					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
-						{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
-					</h1>
-					<div className="flex justify-end w-20">
-						{isOwnProfile && (
-							<Link
-								href="/strategy/new"
-								className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
-							>
-								{'Create Strategy'}
-							</Link>
-						)}
-					</div>
+		<main className="container mx-auto max-w-4xl p-2">
+			<div className="flex flex-wrap items-center justify-between gap-4 m-8">
+				<div className="flex justify-start w-20"/> {/* Placeholder for alignment */}
+				<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
+					{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
+				</h1>
+				<div className="flex justify-end w-20">
+					{isOwnProfile && (
+						<Link
+							href="/strategy/new"
+							className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
+						>
+							{'Create Strategy'}
+						</Link>
+					)}
 				</div>
-				{strategies.length === 0 && (
-					isOwnProfile
-						? (
-							<div className="mb-4 p-4 flex flex-col gap-5 items-center bg-blue-50 border border-blue-200 rounded-lg">
-								<p className="text-blue-700 text-center">
-									{'You currently have no strategies.'}
-								</p>
-								<div className="flex items-center gap-1">
-									<Link
-										href="/strategy/new"
-										className="bg-gradient-to-r text-center from-blue-500 to-purple-500 text-white px-2 py-1 m-1 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
-									>
-										{'Create a new strategy'}
-									</Link>
+			</div>
+			{strategies.length === 0 && (
+				isOwnProfile
+					? (
+						<div className="mb-4 p-4 flex flex-col gap-5 items-center bg-blue-50 border border-blue-200 rounded-lg">
+							<p className="text-blue-700 text-center">
+								{'You currently have no strategies.'}
+							</p>
+							<div className="flex items-center gap-1">
+								<Link
+									href="/strategy/new"
+									className="bg-gradient-to-r text-center from-blue-500 to-purple-500 text-white px-2 py-1 m-1 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
+								>
+									{'Create a new strategy'}
+								</Link>
 
-									<p className="text-blue-700 text-center">
-										{'to get started.'}
-									</p>
-								</div>
+								<p className="text-blue-700 text-center">
+									{'to get started.'}
+								</p>
+							</div>
+						</div>
+					)
+					: (
+						<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+							<p className="text-yellow-700 text-center">
+								{'This user currently has no strategies.'}
+							</p>
+						</div>
+					)
+			)}
+			{strategies.length > 0 && (
+				activeStrategyId !== null
+					? (
+						<div className="mb-4 p-4 border bg-white rounded-lg">
+							<p className="text-gray-700 text-sm text-center">
+								{'Currently active strategy: '}<span className="font-semibold">
+									{strategies.find(s => s._id === activeStrategyId)?.title ?? 'Unknown'}
+								</span>
+							</p>
+						</div>
+					)
+					: (isOwnProfile
+						? (
+							<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+								<p className="text-yellow-700 text-sm text-center">
+									{'No strategy is currently active. Activate a strategy to enter the tournament.'}
+								</p>
 							</div>
 						)
 						: (
 							<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-								<p className="text-yellow-700 text-center">
-									{'This user currently has no strategies.'}
+								<p className="text-yellow-700 text-sm text-center">
+									{'This user has no active strategy.'}
 								</p>
 							</div>
 						)
-				)}
-				{strategies.length > 0 && (
-					activeStrategyId !== null
-						? (
-							<div className="mb-4 p-4 border bg-white rounded-lg">
-								<p className="text-gray-700 text-sm text-center">
-									{'Currently active strategy: '}<span className="font-semibold">
-										{strategies.find(s => s._id === activeStrategyId)?.title ?? 'Unknown'}
-									</span>
-								</p>
-							</div>
-						)
-						: (isOwnProfile
-							? (
-								<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-									<p className="text-yellow-700 text-sm text-center">
-										{'No strategy is currently active. Activate a strategy to enter the tournament.'}
-									</p>
-								</div>
-							)
-							: (
-								<div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-									<p className="text-yellow-700 text-sm text-center">
-										{'This user has no active strategy.'}
-									</p>
-								</div>
-							)
-						)
-				)}
-				<div className="space-y-4">
-					{strategies.map((strategy) => (
-						<StrategyCard
-							key={strategy._id}
-							strategy={strategy}
-							isOwnProfile={isOwnProfile}
-							onToggleActive={toggleActive}
-							onDelete={handleDelete}
-							activeStrategyId={activeStrategyId}
-							onEvaluate={handleEvaluate}
-						/>
-					))}
-				</div>
+					)
+			)}
+			<div className="space-y-4">
+				{strategies.map((strategy) => (
+					<StrategyCard
+						key={strategy._id}
+						strategy={strategy}
+						isOwnProfile={isOwnProfile}
+						onToggleActive={toggleActive}
+						onDelete={handleDelete}
+						activeStrategyId={activeStrategyId}
+						onEvaluate={handleEvaluate}
+					/>
+				))}
 			</div>
 		</main>
 	)
