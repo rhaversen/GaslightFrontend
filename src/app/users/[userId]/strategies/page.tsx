@@ -127,10 +127,11 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 		<main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 			<div className="container mx-auto max-w-4xl p-2">
 				<div className="flex flex-wrap items-center justify-between gap-4 m-8">
+					<div className="flex justify-start w-20"/> {/* Placeholder for alignment */}
 					<h1 className="w-full sm:w-auto sm:flex-1 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center order-last sm:order-none pb-2">
 						{isOwnProfile ? 'Your Strategies' : `${username}'s Strategies`}
 					</h1>
-					<div className="flex justify-end">
+					<div className="flex justify-end w-20">
 						{isOwnProfile && (
 							<Link
 								href={`/users/${params.userId}/strategies/new`}
