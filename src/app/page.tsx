@@ -5,6 +5,7 @@ import { HaloCalm, HaloAgressive } from '../components/VantaBackground'
 import Header from '@/components/header/Header'
 import { useUser } from '@/contexts/UserProvider'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
 
@@ -104,7 +105,7 @@ export default function Page (): ReactElement<any> {
 					? (
 						<>
 							<HaloAgressive />
-							<div className="z-10 text-center space-y-8">
+							<div className="z-10 text-center flex flex-col items-center gap-8">
 								<div className='text-white text-xl font-medium tracking-wide'>
 									{'TOURNAMENT IN PROGRESS\r'}
 								</div>
@@ -121,13 +122,22 @@ export default function Page (): ReactElement<any> {
 								>
 									{'JOIN TOURNAMENT\r'}
 								</button>
+								<Link
+									href="/tournament/results"
+									className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300 
+									hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+								>
+									<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
+										{'SHOW LAST TOURNAMENT RESULTS\r'}
+									</div>
+								</Link>
 							</div>
 						</>
 					)
 					: (
 						<>
 							<HaloCalm />
-							<div className="z-10 text-center space-y-8">
+							<div className="z-10 text-center flex flex-col items-center gap-8">
 								<div className='text-white text-xl font-medium tracking-wide'>
 									{'NEXT RANKED TOURNAMENT IN\r'}
 								</div>
@@ -144,6 +154,15 @@ export default function Page (): ReactElement<any> {
 								>
 									{'JOIN TOURNAMENT\r'}
 								</button>
+								<Link
+									href="/tournament/results"
+									className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300 
+									hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+								>
+									<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
+										{'SHOW LAST TOURNAMENT RESULTS\r'}
+									</div>
+								</Link>
 							</div>
 						</>
 					)}
