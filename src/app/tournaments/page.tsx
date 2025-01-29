@@ -40,7 +40,7 @@ export default function Page(): ReactElement<any> {
 	}
 
 	return (
-		<main className="p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+		<main className="p-2 sm:p-4 md:p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
 			<div className="flex items-center gap-4 mb-6">
 				<Link
 					href="/"
@@ -60,16 +60,18 @@ export default function Page(): ReactElement<any> {
 					<div key={tournament._id} 
 						className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 
 							border border-gray-700/30 backdrop-blur-sm">
-						<div className="text-gray-400 mb-3 text-sm font-medium flex justify-between items-center">
-							<div>
-								<span title={`Created: ${formatDate(tournament.createdAt)}`}>
-									{formatDate(tournament.createdAt)}
-								</span>
-								<span className="ml-2 text-gray-500/80" title="Tournament execution time">
-									{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
-								</span>
-								<span className="ml-2 text-gray-500/80" title="Number of submissions">
-									{' • '}{tournament.gradings.length}{' submissions'}
+						<div className="text-gray-400 mb-3 text-sm font-medium flex justify-between items-start">
+							<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+								<div className="flex items-center gap-2">
+									<span title={`Created: ${formatDate(tournament.createdAt)}`}>
+										{formatDate(tournament.createdAt)}
+									</span>
+									<span className="text-gray-500/80" title="Tournament execution time">
+										{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
+									</span>
+								</div>
+								<span className="text-gray-500/80" title="Number of submissions">
+									{tournament.gradings.length}{' submissions'}
 								</span>
 							</div>
 							<button
@@ -83,9 +85,9 @@ export default function Page(): ReactElement<any> {
 							</button>
 						</div>
 						
-						<div className="grid grid-cols-[minmax(200px,35%)_minmax(250px,40%)_minmax(200px,25%)] gap-6">
+						<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)_1fr] gap-2">
 							<WinnerDisplay winner={tournament.standings[0]} />
-							<div className="space-y-3">
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
 								<RunnerUpDisplay place={2} winner={tournament.standings[1]} />
 								<RunnerUpDisplay place={3} winner={tournament.standings[2]} />
 							</div>

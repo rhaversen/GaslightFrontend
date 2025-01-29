@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
 import { formatScore, formatZScore } from '@/lib/scoreUtils'
+import Link from 'next/link'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -42,45 +43,50 @@ export const WinnerDisplay = ({ winner }: { winner: TournamentStanding }) => {
 
 	return (
 		<div 
-			className="clickable bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-4 rounded-xl
+			className="
+				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-3 rounded-xl
 				border border-yellow-500/20 shadow-lg transition-all duration-300
-				hover:shadow-yellow-500/10 hover:border-yellow-500/30 cursor-pointer"
-			onClick={() => console.log('Navigate to winner submission:', winner.submission)}>
-			<h3 className="text-yellow-400 text-sm font-semibold mb-2 uppercase tracking-wider">
+				hover:shadow-yellow-500/10 hover:border-yellow-500/30
+			"
+		>
+			<h3 className="text-xs font-semibold mb-2 uppercase tracking-wider text-yellow-400">
 				{'Winner'}
 			</h3>
-			<div className="space-y-2">
-				<div className="text-gray-100">
-					{'User: '}
-					<span 
-						className="font-medium cursor-pointer hover:text-yellow-200 transition-colors inline-block
-							border-b border-yellow-500/30 hover:border-yellow-500" 
-						onClick={(e) => {
-							e.stopPropagation()
-							console.log('Navigate to user:', winner.user)
-						}}
-						title={userName}>
-						{loading ? <LoadingPlaceholderSmall /> : userName}
-					</span>
+			<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2">
+				<div className="space-y-1.5">
+					<div>
+						<Link href={`/users/${winner.user}`}>
+							<span
+								className="
+									text-gray-100
+									hover:text-yellow-200 transition-colors
+								"
+								title={userName}
+							>
+								{loading ? <LoadingPlaceholderSmall /> : userName}
+							</span>
+						</Link>
+						<span className="text-gray-500">{' with '}</span>
+						<Link href={`/submissions/${winner.submission}`}>
+							<span
+								className="
+									text-sm text-gray-300
+									hover:text-yellow-200 transition-colors
+								"
+								title={submissionName}
+							>
+								{loading ? <LoadingPlaceholderSmall /> : submissionName}
+							</span>
+						</Link>
+					</div>
 				</div>
-				<div className="text-gray-200" title={`First Place Score: ${winner.grade}`}>
-					{formatScore(winner.grade)}
-					<span className="text-gray-400 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
+				<div className="flex flex-col gap-1">
+					<div className="text-gray-200" title={`First Place Score: ${winner.grade}`}>
+						{formatScore(winner.grade)}
+					</div>
+					<div className="text-gray-400 text-sm" title={`Z-Score: ${winner.zValue}`}>
 						{formatZScore(winner.zValue)}
-					</span>
-				</div>
-				<div className="text-gray-300 text-sm">
-					{'Submission: '}
-					<span 
-						className="cursor-pointer hover:text-yellow-200 transition-colors inline-block
-							border-b border-yellow-500/30 hover:border-yellow-500"
-						onClick={(e) => {
-							e.stopPropagation()
-							console.log('Navigate to submission:', winner.submission)
-						}}
-						title={submissionName}>
-						{loading ? <LoadingPlaceholderSmall /> : submissionName}
-					</span>
+					</div>
 				</div>
 			</div>
 		</div>

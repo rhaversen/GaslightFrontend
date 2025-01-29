@@ -50,7 +50,7 @@ export const StatsDisplay = ({
 			</div>
 
 			{/* Chart */}
-			<div className="relative h-20 my-4 mx-2">
+			<div className="relative h-24 sm:h-20 my-4 mx-2">
 				{/* Grid lines */}
 				{keyPoints
 					.filter(point => showBounds || (
