@@ -2,10 +2,12 @@ import { TournamentStatistics } from '@/types/backendDataTypes'
 
 export const StatsDisplay = ({ 
 	statistics, 
-	showBounds = false 
+	showBounds = false,
+	userGrade
 }: { 
 	statistics: TournamentStatistics,
-	showBounds?: boolean
+	showBounds?: boolean,
+	userGrade?: number
 }) => {
 	const stats = {
 		p10: statistics.percentiles.p10,
@@ -40,7 +42,11 @@ export const StatsDisplay = ({
 			<div className="text-sm text-gray-200 mb-3 flex justify-between items-center">
 				<span className="font-medium">{'Score Distribution'}</span>
 				<div className="flex gap-4 text-xs">
-					{[['bg-yellow-400', 'Mean'], ['bg-white', 'Median']].map(([bg, label]) => (
+					{[
+						['bg-yellow-400', 'Mean'],
+						['bg-white', 'Median'],
+						...(userGrade != null ? [['bg-blue-400', 'Your Score']] : [])
+					].map(([bg, label]) => (
 						<div key={label} className="flex items-center gap-1.5">
 							<div className={`w-1.5 h-1.5 ${bg} rounded-full`}/>
 							<span className="text-gray-300">{label}</span>
@@ -52,7 +58,13 @@ export const StatsDisplay = ({
 			{/* Chart */}
 			<div className="relative h-24 sm:h-20 my-4 mx-2">
 				{/* Grid lines */}
-				{keyPoints
+				{[
+					...keyPoints,
+					...(userGrade != null ? [{
+						value: userGrade,
+						label: 'user-score'
+					}] : [])
+				]
 					.filter(point => showBounds || (
 						point.value >= stats.q1 && 
                         point.value <= stats.q3
@@ -93,13 +105,15 @@ export const StatsDisplay = ({
 					{/* Markers */}
 					{[
 						[stats.median, 'white'],
-						[stats.mean, 'yellow-400']
+						[stats.mean, 'yellow-400'],
+						...(userGrade != null ? [[userGrade, 'blue-400']] : [])
 					].map(([value, color]) => (
 						<div 
 							key={color}
 							className={`absolute top-1/2 -translate-y-1/2 transition-transform duration-300
-                            hover:scale-150`}
+                            hover:scale-150 z-10`}
 							style={{ left: `calc(${getPosition(value as number)}% - 4px)` }}
+							title={color === 'blue-400' ? `Your score: ${(value as number).toFixed(3)}` : undefined}
 						>
 							<div className={`w-2 h-2 rounded-full bg-${color} shadow-lg`}/>
 						</div>
@@ -118,7 +132,15 @@ export const StatsDisplay = ({
 				</div>
 
 				{/* Labels */}
-				{keyPoints
+				{[
+					...keyPoints,
+					...(userGrade != null ? [{
+						value: userGrade,
+						label: 'You',
+						color: 'text-blue-400',
+						position: 'bottom-1'
+					}] : [])
+				]
 					.filter(point => showBounds || (point.label !== '10th' && point.label !== '90th'))
 					.map(({ value, label, color, position }) => (
 						<div

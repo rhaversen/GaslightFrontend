@@ -9,11 +9,13 @@ import { formatDuration } from '@/lib/timeUtils'
 import { WinnerDisplay } from './components/WinnerDisplay'
 import { StatsDisplay } from './components/StatsDisplay'
 import { RunnerUpDisplay } from './components/RunnersUp'
+import { useUser } from '@/contexts/UserProvider'
 
 export default function Page(): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const [tournaments, setTournaments] = useState<TournamentType[]>([])
 	const [loading, setLoading] = useState(true)
+	const { currentUser } = useUser()
 
 	useEffect(() => {
 		const fetchTournaments = async () => {
@@ -91,7 +93,10 @@ export default function Page(): ReactElement<any> {
 								<RunnerUpDisplay place={2} winner={tournament.standings[1]} />
 								<RunnerUpDisplay place={3} winner={tournament.standings[2]} />
 							</div>
-							<StatsDisplay statistics={tournament.statistics} />
+							<StatsDisplay 
+								statistics={tournament.statistics} 
+								userGrade={tournament.standings.find(s => s.user === currentUser?._id)?.grade}
+							/>
 						</div>
 					</div>
 				))}
