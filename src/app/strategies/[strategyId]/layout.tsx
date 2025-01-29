@@ -3,14 +3,14 @@ import { type Metadata } from 'next'
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
-		default: 'New Strategy'
+		default: 'Modify Strategy'
 	},
 	alternates: {
-		canonical: 'https://www.gaslight.fun/strategy/new'
+		canonical: 'https://www.gaslight.fun/strategies/[strategy]'
 	}
 }
 
-export default function NewStrategyLayout ({
+export default function StrategyLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode
