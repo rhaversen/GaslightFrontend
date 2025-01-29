@@ -40,7 +40,7 @@ const NavLink = ({ href, children, isActive }: NavLinkProps) => (
 )
 
 interface NavigationLinksProps {
-	user: UserType
+	user: UserType | null
 	pathname: string
 	currentUser: UserType | null
 }
@@ -53,11 +53,17 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 		transition={{ duration: 0.3 }}
 		style={{ display: 'flex' }}
 	>
-		<NavLink href={`/users/${user._id}`} isActive={pathname === `/users/${user._id}`}>
-			{user === currentUser ? 'Your Profile\r' : `${user.username}'s Profile`}
+		<NavLink 
+			href={user ? `/users/${user._id}` : '/login'} 
+			isActive={user ? pathname === `/users/${user._id}` : false}
+		>
+			{user ? (user === currentUser ? 'Your Profile\r' : `${user.username}'s Profile`) : 'Your Profile\r'}
 		</NavLink>
-		<NavLink href={`/users/${user._id}/strategies`} isActive={pathname === `/users/${user._id}/strategies`}>
-			{user === currentUser ? 'Your Strategies\r' : `${user.username}'s Strategies`}
+		<NavLink 
+			href={user ? `/users/${user._id}/strategies` : '/login'} 
+			isActive={user ? pathname === `/users/${user._id}/strategies` : false}
+		>
+			{user ? (user === currentUser ? 'Your Strategies\r' : `${user.username}'s Strategies`) : 'Your Strategies\r'}
 		</NavLink>
 	</motion.div>
 )
@@ -70,7 +76,7 @@ export default function Header(): React.JSX.Element {
 	const [isMounted, setIsMounted] = useState(false)
 	const [viewedUser, setViewedUser] = useState<UserType | null>(null)
 	const userIdFromPath = pathname.split('/')[2]
-	const isCurrentUserPage = currentUser && currentUser._id === userIdFromPath
+	const isCurrentUserPage = currentUser !== null && currentUser._id === userIdFromPath
 
 	// Client-side initialization
 	useEffect(() => {
@@ -79,7 +85,7 @@ export default function Header(): React.JSX.Element {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			if (userIdFromPath && (isCurrentUserPage === false)) {
+			if (userIdFromPath && !isCurrentUserPage) {
 				try {
 					const response = await axios.get<UserType>(
 						`${API_URL}/v1/users/${userIdFromPath}`,
@@ -124,14 +130,19 @@ export default function Header(): React.JSX.Element {
 				<div className="flex overflow-hidden items-center justify-center relative">
 					<div className="transition-all duration-300 ease-in-out flex items-center">
 						<div className="flex-shrink-0">
-							{currentUser && 
-								<NavLink href="/users" isActive={pathname === '/users'}>
-									{'Users\r'}
-								</NavLink>
-							}
+							<NavLink href="/users" isActive={pathname === '/users'}>
+								{'Users\r'}
+							</NavLink>
 						</div>
 						<div className="relative flex transition-all duration-300 ease-in-out">
 							<AnimatePresence mode="sync">
+								{!currentUser && !viewedUser && (
+									<NavigationLinks 
+										user={null}
+										pathname={pathname}
+										currentUser={null}
+									/>
+								)}
 								{isLoading && currentUser && (
 									<NavigationLinks 
 										user={currentUser} 
@@ -159,13 +170,20 @@ export default function Header(): React.JSX.Element {
 				</div>
 
 				<div className="flex items-center">
-					{currentUser && (
+					{currentUser ? (
 						<button
 							onClick={logout}
 							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 						>
 							{'Logout\r'}
 						</button>
+					) : (
+						<Link
+							href="/login"
+							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+						>
+							{'Login\r'}
+						</Link>
 					)}
 				</div>
 			</div>
