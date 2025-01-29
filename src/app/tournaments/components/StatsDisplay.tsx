@@ -11,11 +11,11 @@ export const StatsDisplay = ({
 		p10: statistics.percentiles.p10,
 		q1: statistics.percentiles.p25,
 		median: statistics.percentiles.p50,
-		mean: statistics.averageScore,
+		mean: statistics.centralTendency.arithmeticMean,
 		q3: statistics.percentiles.p75,
 		p90: statistics.percentiles.p90,
-		lowerBound: statistics.outlierBoundaries.lower,
-		upperBound: statistics.outlierBoundaries.upper
+		lowerBound: statistics.tukeyCriteria.lowerBound,
+		upperBound: statistics.tukeyCriteria.upperBound,
 	}
     
 	const range = showBounds 
@@ -104,7 +104,7 @@ export const StatsDisplay = ({
 					))}
 
 					{/* Outliers */}
-					{statistics.outliers.map((value, i) => (
+					{statistics.outlierValues.map((value, i) => (
 						<div
 							key={i}
 							className="absolute w-1.5 h-1.5 bg-red-400 rounded-full top-1/2 -translate-y-1/2"

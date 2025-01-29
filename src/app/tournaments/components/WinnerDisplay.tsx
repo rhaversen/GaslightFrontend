@@ -1,4 +1,4 @@
-import { ISubmission, TournamentWinner, UserType } from '@/types/backendDataTypes'
+import { ISubmission, TournamentStanding, UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
@@ -37,7 +37,7 @@ const useNames = (userId?: string, submissionId?: string) => {
 	return { userName, submissionName, loading }
 }
 
-export const WinnerDisplay = ({ winner }: { winner: TournamentWinner }) => {
+export const WinnerDisplay = ({ winner }: { winner: TournamentStanding }) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
 
 	return (

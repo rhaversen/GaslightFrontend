@@ -52,10 +52,10 @@ export default function Page(): ReactElement<any> {
 						</div>
 
 						<div className="grid grid-cols-[minmax(200px,35%)_minmax(250px,40%)_minmax(200px,25%)] gap-4">
-							<WinnerDisplay winner={tournament.winners.first} />
+							<WinnerDisplay winner={tournament.standings[0]} />
 							<div className="space-y-2">
-								<RunnerUpDisplay place={2} winner={tournament.winners.second} />
-								<RunnerUpDisplay place={3} winner={tournament.winners.third} />
+								<RunnerUpDisplay place={2} winner={tournament.standings[1]} />
+								<RunnerUpDisplay place={3} winner={tournament.standings[2]} />
 							</div>
 							<StatsDisplay statistics={tournament.statistics} />
 						</div>
