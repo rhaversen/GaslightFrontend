@@ -10,6 +10,10 @@ import { type UserType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+const truncateText = (text: string, maxLength: number): string => {
+	return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+}
+
 interface NavLinkProps {
 	href: string
 	children: React.ReactNode
@@ -19,7 +23,7 @@ interface NavLinkProps {
 const NavLink = ({ href, children, isActive }: NavLinkProps) => (
 	<Link
 		href={href}
-		className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
+		className={`flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
 			isActive
 				? 'border-blue-500 text-blue-600 bg-blue-50'
 				: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
@@ -45,28 +49,39 @@ interface NavigationLinksProps {
 	currentUser: UserType | null
 }
 
-const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) => (
-	<motion.div
-		initial={{ opacity: 0, position: 'absolute' }}
-		animate={{ opacity: 1, position: 'static' }}
-		exit={{ opacity: 0, position: 'absolute' }}
-		transition={{ duration: 0.3 }}
-		style={{ display: 'flex' }}
-	>
-		<NavLink 
-			href={user ? `/users/${user._id}` : '/login'} 
-			isActive={user ? pathname === `/users/${user._id}` : false}
+const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) => {
+	const isProfile = user ? pathname === `/users/${user._id}` : false
+	const isStrategies = user ? pathname === `/users/${user._id}/strategies` : false
+	const isCurrentUser = user === currentUser
+	const displayName = user ? truncateText(user.username, 10) : ''
+
+	return (
+		<motion.div
+			initial={{ opacity: 0, position: 'absolute' }}
+			animate={{ opacity: 1, position: 'static' }}
+			exit={{ opacity: 0, position: 'absolute' }}
+			transition={{ duration: 0.3 }}
+			style={{ display: 'flex' }}
 		>
-			{user ? (user === currentUser ? 'Your Profile\r' : `${user.username}'s Profile`) : 'Your Profile\r'}
-		</NavLink>
-		<NavLink 
-			href={user ? `/users/${user._id}/strategies` : '/login'} 
-			isActive={user ? pathname === `/users/${user._id}/strategies` : false}
-		>
-			{user ? (user === currentUser ? 'Your Strategies\r' : `${user.username}'s Strategies`) : 'Your Strategies\r'}
-		</NavLink>
-	</motion.div>
-)
+			<div className={`${isProfile && !isCurrentUser ? 'hidden md:block' : ''}`}>
+				<NavLink 
+					href={user ? `/users/${user._id}` : '/login'} 
+					isActive={isProfile}
+				>
+					{user ? (isCurrentUser ? 'Your Profile\r' : `${displayName}'s Profile`) : 'Your Profile\r'}
+				</NavLink>
+			</div>
+			<div className={`${isStrategies && !isCurrentUser ? 'hidden md:block' : ''}`}>
+				<NavLink 
+					href={user ? `/users/${user._id}/strategies` : '/login'} 
+					isActive={isStrategies}
+				>
+					{user ? (isCurrentUser ? 'Your Strategies\r' : `${displayName}'s Strategies`) : 'Your Strategies\r'}
+				</NavLink>
+			</div>
+		</motion.div>
+	)
+}
 
 export default function Header(): React.JSX.Element {
 	const pathname = usePathname()
@@ -117,11 +132,11 @@ export default function Header(): React.JSX.Element {
 
 	return (
 		<nav className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200 shadow-sm">
-			<div className="container mx-auto px-4 flex justify-between">
-				<div className="flex items-center space-x-2">
+			<div className="container mx-auto px-1 sm:px-1 md:px-2 lg:px-4 flex justify-between max-w-full">
+				<div className="flex items-center space-x-1 sm:space-x-1 md:space-x-2">
 					<Link
 						href="/"
-						className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+						className="flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 					>
 						{'Home\r'}
 					</Link>
@@ -173,7 +188,7 @@ export default function Header(): React.JSX.Element {
 					{currentUser && (
 						<button
 							onClick={logout}
-							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+							className="flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 						>
 							{'Logout\r'}
 						</button>
