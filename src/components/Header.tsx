@@ -53,7 +53,6 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 	const isProfile = user ? pathname === `/users/${user._id}` : false
 	const isStrategies = user ? pathname === `/users/${user._id}/strategies` : false
 	const isCurrentUser = user === currentUser
-	const displayName = user ? truncateText(user.username, 10) : ''
 
 	return (
 		<motion.div
@@ -68,7 +67,28 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 					href={user ? `/users/${user._id}` : '/login'} 
 					isActive={isProfile}
 				>
-					{user ? (isCurrentUser ? 'Your Profile\r' : `${displayName}'s Profile`) : 'Your Profile\r'}
+					{user ? (
+						isCurrentUser ? (
+							'Your Profile'
+						) : (
+							<>
+								<span className="hidden sm:block md:hidden">
+									{truncateText(user.username, 10)}{'\'s Profile\r'}
+								</span>
+								<span className="hidden md:block lg:hidden">
+									{truncateText(user.username, 20)}{'\'s Profile\r'}
+								</span>
+								<span className="hidden lg:block">
+									{truncateText(user.username, 30)}{'\'s Profile\r'}
+								</span>
+								<span className="sm:hidden">
+									{truncateText(user.username, 8)}{'\'s Profile\r'}
+								</span>
+							</>
+						)
+					) : (
+						'Your Profile'
+					)}
 				</NavLink>
 			</div>
 			<div className={`${isStrategies && !isCurrentUser ? 'hidden md:block' : ''}`}>
@@ -76,7 +96,28 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 					href={user ? `/users/${user._id}/strategies` : '/login'} 
 					isActive={isStrategies}
 				>
-					{user ? (isCurrentUser ? 'Your Strategies\r' : `${displayName}'s Strategies`) : 'Your Strategies\r'}
+					{user ? (
+						isCurrentUser ? (
+							'Your Strategies'
+						) : (
+							<>
+								<span className="hidden sm:block md:hidden">
+									{truncateText(user.username, 10)}{'\'s Strategies\r'}
+								</span>
+								<span className="hidden md:block lg:hidden">
+									{truncateText(user.username, 20)}{'\'s Strategies\r'}
+								</span>
+								<span className="hidden lg:block">
+									{truncateText(user.username, 30)}{'\'s Strategies\r'}
+								</span>
+								<span className="sm:hidden">
+									{truncateText(user.username, 8)}{'\'s Strategies\r'}
+								</span>
+							</>
+						)
+					) : (
+						'Your Strategies'
+					)}
 				</NavLink>
 			</div>
 		</motion.div>
