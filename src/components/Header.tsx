@@ -23,7 +23,7 @@ interface NavLinkProps {
 const NavLink = ({ href, children, isActive }: NavLinkProps) => (
 	<Link
 		href={href}
-		className={`flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
+		className={`flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-sm sm:text-sm md:text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
 			isActive
 				? 'border-blue-500 text-blue-600 bg-blue-50'
 				: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
@@ -62,7 +62,7 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 			transition={{ duration: 0.3 }}
 			style={{ display: 'flex' }}
 		>
-			<div className={`${isProfile && !isCurrentUser ? 'hidden md:block' : ''}`}>
+			<div>
 				<NavLink 
 					href={user ? `/users/${user._id}` : '/login'} 
 					isActive={isProfile}
@@ -72,17 +72,13 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 							'Your Profile'
 						) : (
 							<>
-								<span className="hidden sm:block md:hidden">
-									{truncateText(user.username, 10)}{'\'s Profile\r'}
+								{/* Show simpler label on small screens */}
+								<span className="block sm:hidden">
+									{'Profile\r'}
 								</span>
-								<span className="hidden md:block lg:hidden">
-									{truncateText(user.username, 20)}{'\'s Profile\r'}
-								</span>
-								<span className="hidden lg:block">
+								{/* Show username on larger screens */}
+								<span className="hidden sm:block">
 									{truncateText(user.username, 30)}{'\'s Profile\r'}
-								</span>
-								<span className="sm:hidden">
-									{truncateText(user.username, 8)}{'\'s Profile\r'}
 								</span>
 							</>
 						)
@@ -91,7 +87,8 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 					)}
 				</NavLink>
 			</div>
-			<div className={`${isStrategies && !isCurrentUser ? 'hidden md:block' : ''}`}>
+
+			<div>
 				<NavLink 
 					href={user ? `/users/${user._id}/strategies` : '/login'} 
 					isActive={isStrategies}
@@ -101,17 +98,11 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 							'Your Strategies'
 						) : (
 							<>
-								<span className="hidden sm:block md:hidden">
-									{truncateText(user.username, 10)}{'\'s Strategies\r'}
+								<span className="block sm:hidden">
+									{'Strategies\r'}
 								</span>
-								<span className="hidden md:block lg:hidden">
-									{truncateText(user.username, 20)}{'\'s Strategies\r'}
-								</span>
-								<span className="hidden lg:block">
+								<span className="hidden sm:block">
 									{truncateText(user.username, 30)}{'\'s Strategies\r'}
-								</span>
-								<span className="sm:hidden">
-									{truncateText(user.username, 8)}{'\'s Strategies\r'}
 								</span>
 							</>
 						)
