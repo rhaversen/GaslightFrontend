@@ -2,37 +2,40 @@ import { TournamentStatistics } from '@/types/backendDataTypes'
 
 export const StatsDisplay = ({ 
 	statistics, 
-	showBounds = false,
 	userGrade
 }: { 
 	statistics: TournamentStatistics,
-	showBounds?: boolean,
 	userGrade?: number
 }) => {
 	const stats = {
-		p10: statistics.percentiles.p10,
+		// Statistical points
 		q1: statistics.percentiles.p25,
 		median: statistics.percentiles.p50,
 		mean: statistics.centralTendency.arithmeticMean,
 		q3: statistics.percentiles.p75,
-		p90: statistics.percentiles.p90,
-		lowerBound: statistics.tukeyCriteria.lowerBound,
-		upperBound: statistics.tukeyCriteria.upperBound,
+		// Full range (including outliers)
+		min: statistics.extrema.minimum,
+		max: statistics.extrema.maximum,
+		// Tukey range (excluding outliers)
+		tukeyMin: statistics.tukeyCriteria.lowerBound,
+		tukeyMax: statistics.tukeyCriteria.upperBound,
 	}
     
-	const range = showBounds 
-		? stats.upperBound - stats.lowerBound
-		: stats.q3 - stats.q1
-
-	const getPosition = (value: number) => ((value - (showBounds ? stats.lowerBound : stats.q1)) / range) * 100
+	// Use absolute extrema between actual values and Tukey bounds
+	const absoluteMin = Math.min(stats.min, stats.tukeyMin)
+	const absoluteMax = Math.max(stats.max, stats.tukeyMax)
+	const range = absoluteMax - absoluteMin
+	const getPosition = (value: number) => ((value - absoluteMin) / range) * 100
 
 	const keyPoints = [
-		{ value: stats.p10, label: '10th', color: 'text-gray-400', position: 'top' },
+		{ value: stats.min, label: 'Min', color: 'text-red-400', position: 'top' },
+		{ value: stats.tukeyMin, label: 'Lower', color: 'text-gray-400', position: 'top' },
 		{ value: stats.q1, label: 'Q1', color: 'text-blue-300', position: 'bottom-1' },
 		{ value: stats.median, label: 'Q2', color: 'text-white', position: 'bottom-1' },
 		{ value: stats.mean, label: 'μ', color: 'text-yellow-400', position: 'bottom-1' },
 		{ value: stats.q3, label: 'Q3', color: 'text-blue-300', position: 'bottom-1' },
-		{ value: stats.p90, label: '90th', color: 'text-gray-400', position: 'top' }
+		{ value: stats.tukeyMax, label: 'Upper', color: 'text-gray-400', position: 'top' },
+		{ value: stats.max, label: 'Max', color: 'text-red-400', position: 'top' }
 	] as const
 
 	return (
@@ -64,33 +67,57 @@ export const StatsDisplay = ({
 						value: userGrade,
 						label: 'user-score'
 					}] : [])
-				]
-					.filter(point => showBounds || (
-						point.value >= stats.q1 && 
-                        point.value <= stats.q3
-					))
-					.map(({ value, label }) => (
-						<div
-							key={label}
-							className="absolute h-full w-px bg-gray-600/20"
-							style={{ left: `calc(${getPosition(value)}% - 0.5px)` }}
-						/>
-					))}
+				].map(({ value, label }) => (
+					<div
+						key={label}
+						className="absolute h-full w-px bg-gray-600/20"
+						style={{ left: `calc(${getPosition(value)}% - 0.5px)` }}
+					/>
+				))}
 
 				{/* Base line */}
 				<div className="absolute w-full h-px bg-gray-600/50 top-1/2"/>
 
 				{/* Box plot */}
 				<div className="absolute top-1/2 -translate-y-1/2 w-full h-8">
-					{/* Whiskers */}
-					{showBounds && [[stats.lowerBound, stats.q1], [stats.q3, stats.upperBound]].map(([start, end], i) => (
-						<div key={i} className="absolute h-px bg-gray-400/60"
-							style={{
-								left: `calc(${getPosition(start)}% - 0.5px)`,
-								width: `${getPosition(end) - getPosition(start)}%`,
-								top: '50%'
-							}}
-						/>
+					{/* Full range whiskers */}
+					{[[stats.min, stats.q1], [stats.q3, stats.max]].map(([start, end], i) => (
+						<div key={i}>
+							<div className="absolute h-px bg-red-400/60"
+								style={{
+									left: `calc(${getPosition(start)}% - 0.5px)`,
+									width: `${getPosition(end) - getPosition(start)}%`,
+									top: '50%'
+								}}
+							/>
+							{/* Whisker ends */}
+							<div className="absolute h-full w-px bg-red-400/60"
+								style={{ left: `calc(${getPosition(start)}% - 0.5px)` }}
+							/>
+							<div className="absolute h-full w-px bg-red-400/60"
+								style={{ left: `calc(${getPosition(end)}% - 0.5px)` }}
+							/>
+						</div>
+					))}
+
+					{/* Tukey range whiskers */}
+					{[[stats.tukeyMin, stats.q1], [stats.q3, stats.tukeyMax]].map(([start, end], i) => (
+						<div key={i}>
+							<div className="absolute h-px bg-gray-400"
+								style={{
+									left: `calc(${getPosition(start)}% - 0.5px)`,
+									width: `${getPosition(end) - getPosition(start)}%`,
+									top: '50%'
+								}}
+							/>
+							{/* Whisker ends */}
+							<div className="absolute h-full w-px bg-gray-400"
+								style={{ left: `calc(${getPosition(start)}% - 0.5px)` }}
+							/>
+							<div className="absolute h-full w-px bg-gray-400"
+								style={{ left: `calc(${getPosition(end)}% - 0.5px)` }}
+							/>
+						</div>
 					))}
 
 					{/* Box */}
@@ -140,26 +167,24 @@ export const StatsDisplay = ({
 						color: 'text-blue-400',
 						position: 'bottom-1'
 					}] : [])
-				]
-					.filter(point => showBounds || (point.label !== '10th' && point.label !== '90th'))
-					.map(({ value, label, color, position }) => (
-						<div
-							key={label}
-							className={`absolute text-center -translate-x-1/2 ${color}`}
-							style={{ 
-								left: `${getPosition(value)}%`,
-								top: position === 'top' 
-									? '0%'
-									: position === 'bottom-1'
-										? '75%'
-										: '85%',
-								opacity: 0.8
-							}}
-						>
-							<div className="text-[0.65rem] font-medium">{label}</div>
-							<div className="text-[0.6rem] opacity-75">{value.toFixed(2)}</div>
-						</div>
-					))}
+				].map(({ value, label, color, position }) => (
+					<div
+						key={label}
+						className={`absolute text-center -translate-x-1/2 ${color}`}
+						style={{ 
+							left: `${getPosition(value)}%`,
+							top: position === 'top' 
+								? '0%'
+								: position === 'bottom-1'
+									? '75%'
+									: '85%',
+							opacity: 0.8
+						}}
+					>
+						<div className="text-[0.65rem] font-medium">{label}</div>
+						<div className="text-[0.6rem] opacity-75">{value.toFixed(2)}</div>
+					</div>
+				))}
 			</div>
 		</div>
 	)
