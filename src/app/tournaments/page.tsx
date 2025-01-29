@@ -1,6 +1,7 @@
 'use client'
 
 import axios from 'axios'
+import Link from 'next/link'
 import React, { useState, useEffect, type ReactElement } from 'react'
 import { TournamentType } from '@/types/backendDataTypes'
 import { formatDate } from '@/lib/dateUtils'
@@ -40,9 +41,20 @@ export default function Page(): ReactElement<any> {
 
 	return (
 		<main className="p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-			<h1 className="text-4xl font-bold mb-6 text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
-				{'Tournaments'}
-			</h1>
+			<div className="flex items-center gap-4 mb-6">
+				<Link
+					href="/"
+					className="px-3 py-1.5 text-sm font-medium text-gray-300 
+						border border-gray-700 rounded-lg
+						hover:bg-gray-800 transition-all duration-300
+						hover:border-gray-600"
+				>
+					{'←'}<span className="ml-2">{'Home'}</span>
+				</Link>
+				<h1 className="text-4xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
+					{'Tournaments'}
+				</h1>
+			</div>
 			<div className="space-y-6">
 				{tournaments.map((tournament) => (
 					<div key={tournament._id} 
