@@ -170,20 +170,13 @@ export default function Header(): React.JSX.Element {
 				</div>
 
 				<div className="flex items-center">
-					{currentUser ? (
+					{currentUser && (
 						<button
 							onClick={logout}
 							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 						>
 							{'Logout\r'}
 						</button>
-					) : (
-						<Link
-							href="/login"
-							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
-						>
-							{'Login\r'}
-						</Link>
 					)}
 				</div>
 			</div>
