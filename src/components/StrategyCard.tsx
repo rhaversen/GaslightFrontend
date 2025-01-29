@@ -88,6 +88,11 @@ export function StrategyCard ({
 								? 'Passing'
 								: 'Not Passing'}
 					</span>
+					{!isOwnProfile && strategy.active && (
+						<div className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+							{'Active\r'}
+						</div>
+					)}
 					{strategy.evaluation?.results != null && (
 						<span className="text-sm text-gray-600">
 							{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
