@@ -34,22 +34,23 @@ export const StatsDisplay = ({
 	] as const
 
 	return (
-		<div className="bg-gray-700 p-3 rounded-lg">
+		<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-4 rounded-xl
+        border border-indigo-500/20 shadow-lg">
 			{/* Header */}
-			<div className="text-sm text-gray-300 mb-2 flex justify-between">
-				<span>{'Score Distribution'}</span>
-				<div className="flex gap-3 text-xs">
+			<div className="text-sm text-gray-200 mb-3 flex justify-between items-center">
+				<span className="font-medium">{'Score Distribution'}</span>
+				<div className="flex gap-4 text-xs">
 					{[['bg-yellow-400', 'Mean'], ['bg-white', 'Median']].map(([bg, label]) => (
-						<div key={label} className="flex items-center gap-1">
+						<div key={label} className="flex items-center gap-1.5">
 							<div className={`w-1.5 h-1.5 ${bg} rounded-full`}/>
-							<span>{label}</span>
+							<span className="text-gray-300">{label}</span>
 						</div>
 					))}
 				</div>
 			</div>
 
 			{/* Chart */}
-			<div className="relative h-20 m-3">
+			<div className="relative h-20 my-4 mx-2">
 				{/* Grid lines */}
 				{keyPoints
 					.filter(point => showBounds || (
@@ -59,19 +60,19 @@ export const StatsDisplay = ({
 					.map(({ value, label }) => (
 						<div
 							key={label}
-							className="absolute h-full w-px bg-gray-600/30"
+							className="absolute h-full w-px bg-gray-600/20"
 							style={{ left: `calc(${getPosition(value)}% - 0.5px)` }}
 						/>
 					))}
 
 				{/* Base line */}
-				<div className="absolute w-full h-px bg-gray-600 top-1/2"/>
+				<div className="absolute w-full h-px bg-gray-600/50 top-1/2"/>
 
 				{/* Box plot */}
 				<div className="absolute top-1/2 -translate-y-1/2 w-full h-8">
 					{/* Whiskers */}
 					{showBounds && [[stats.lowerBound, stats.q1], [stats.q3, stats.upperBound]].map(([start, end], i) => (
-						<div key={i} className="absolute h-px bg-gray-400"
+						<div key={i} className="absolute h-px bg-gray-400/60"
 							style={{
 								left: `calc(${getPosition(start)}% - 0.5px)`,
 								width: `${getPosition(end) - getPosition(start)}%`,
@@ -82,7 +83,7 @@ export const StatsDisplay = ({
 
 					{/* Box */}
 					<div 
-						className="absolute h-full bg-blue-500/20 border border-blue-500/40"
+						className="absolute h-full bg-indigo-500/20 border border-indigo-500/40"
 						style={{
 							left: `${getPosition(stats.q1)}%`,
 							width: `${getPosition(stats.q3) - getPosition(stats.q1)}%`
@@ -96,10 +97,11 @@ export const StatsDisplay = ({
 					].map(([value, color]) => (
 						<div 
 							key={color}
-							className="absolute top-1/2 -translate-y-1/2"
+							className={`absolute top-1/2 -translate-y-1/2 transition-transform duration-300
+                            hover:scale-150`}
 							style={{ left: `calc(${getPosition(value as number)}% - 4px)` }}
 						>
-							<div className={`w-2 h-2 rounded-full bg-${color}`}/>
+							<div className={`w-2 h-2 rounded-full bg-${color} shadow-lg`}/>
 						</div>
 					))}
 
@@ -107,7 +109,8 @@ export const StatsDisplay = ({
 					{statistics.outlierValues.map((value, i) => (
 						<div
 							key={i}
-							className="absolute w-1.5 h-1.5 bg-red-400 rounded-full top-1/2 -translate-y-1/2"
+							className="absolute w-1.5 h-1.5 bg-red-400 rounded-full top-1/2 -translate-y-1/2
+                            transition-all duration-300 hover:scale-150 hover:bg-red-300"
 							style={{ left: `${getPosition(value)}%` }}
 							title={`Outlier: ${value.toFixed(3)}`}
 						/>
@@ -127,10 +130,11 @@ export const StatsDisplay = ({
 									? '0%'
 									: position === 'bottom-1'
 										? '75%'
-										: '85%'
+										: '85%',
+								opacity: 0.8
 							}}
 						>
-							<div className="text-[0.65rem]">{label}</div>
+							<div className="text-[0.65rem] font-medium">{label}</div>
 							<div className="text-[0.6rem] opacity-75">{value.toFixed(2)}</div>
 						</div>
 					))}

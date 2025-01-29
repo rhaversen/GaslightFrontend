@@ -41,20 +41,46 @@ export const WinnerDisplay = ({ winner }: { winner: TournamentStanding }) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
 
 	return (
-		<div className="bg-gray-700 p-3 rounded-lg">
-			<h3 className="text-yellow-400 text-sm font-semibold mb-1">{'Winner'}</h3>
-			<div className="space-y-1">
-				<div title={userName}>
-					{'User: '}{loading ? <LoadingPlaceholderSmall /> : userName}
+		<div 
+			className="clickable bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-4 rounded-xl
+				border border-yellow-500/20 shadow-lg transition-all duration-300
+				hover:shadow-yellow-500/10 hover:border-yellow-500/30 cursor-pointer"
+			onClick={() => console.log('Navigate to winner submission:', winner.submission)}>
+			<h3 className="text-yellow-400 text-sm font-semibold mb-2 uppercase tracking-wider">
+				{'Winner'}
+			</h3>
+			<div className="space-y-2">
+				<div className="text-gray-100">
+					{'User: '}
+					<span 
+						className="font-medium cursor-pointer hover:text-yellow-200 transition-colors inline-block
+							border-b border-yellow-500/30 hover:border-yellow-500" 
+						onClick={(e) => {
+							e.stopPropagation()
+							console.log('Navigate to user:', winner.user)
+						}}
+						title={userName}>
+						{loading ? <LoadingPlaceholderSmall /> : userName}
+					</span>
 				</div>
-				<div title={`First Place Score: ${winner.grade}`}>
+				<div className="text-gray-200" title={`First Place Score: ${winner.grade}`}>
 					{formatScore(winner.grade)}
-					<span className="text-gray-300 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
+					<span className="text-gray-400 text-sm ml-2" title={`Z-Score: ${winner.zValue}`}>
 						{formatZScore(winner.zValue)}
 					</span>
 				</div>
-				<div title={submissionName}>
-					{'Submission: '}{loading ? <LoadingPlaceholderSmall /> : submissionName}
+				<div className="text-gray-300 text-sm">
+					{'Submission: '}
+					<span 
+						className="cursor-pointer hover:text-yellow-200 transition-colors inline-block
+							border-b border-yellow-500/30 hover:border-yellow-500"
+						onClick={(e) => {
+							e.stopPropagation()
+							console.log('Navigate to submission:', winner.submission)
+						}}
+						title={submissionName}>
+						{loading ? <LoadingPlaceholderSmall /> : submissionName}
+					</span>
 				</div>
 			</div>
 		</div>

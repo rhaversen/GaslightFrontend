@@ -39,24 +39,41 @@ export default function Page(): ReactElement<any> {
 	}
 
 	return (
-		<main className="p-8 min-h-screen bg-gray-900">
-			<h1 className="text-3xl font-bold mb-4 text-white">{'Tournaments'}</h1>
-			<div className="space-y-4">
+		<main className="p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+			<h1 className="text-4xl font-bold mb-6 text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
+				{'Tournaments'}
+			</h1>
+			<div className="space-y-6">
 				{tournaments.map((tournament) => (
-					<div key={tournament._id} className="bg-gray-800 rounded-lg shadow-xl p-3">
-						<div className="text-gray-400 mb-2 text-sm" title={`Created: ${formatDate(tournament.createdAt)}`}>
-							{formatDate(tournament.createdAt)}
-							<span className="ml-2 text-gray-500" title="Tournament execution time">
-								{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
-							</span>
-							<span className="ml-2 text-gray-500" title="Number of submissions">
-								{' • '}{tournament.gradings.length}{' submissions'}
-							</span>
+					<div key={tournament._id} 
+						className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 
+							border border-gray-700/30 backdrop-blur-sm">
+						<div className="text-gray-400 mb-3 text-sm font-medium flex justify-between items-center">
+							<div>
+								<span title={`Created: ${formatDate(tournament.createdAt)}`}>
+									{formatDate(tournament.createdAt)}
+								</span>
+								<span className="ml-2 text-gray-500/80" title="Tournament execution time">
+									{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
+								</span>
+								<span className="ml-2 text-gray-500/80" title="Number of submissions">
+									{' • '}{tournament.gradings.length}{' submissions'}
+								</span>
+							</div>
+							<button
+								onClick={() => console.log('Navigate to tournament:', tournament._id)}
+								className="px-3 py-1 text-xs font-medium text-indigo-300 
+									border border-indigo-500/30 rounded-lg
+									hover:bg-indigo-500/10 transition-all duration-300
+									hover:border-indigo-500/50"
+							>
+								{'View Details →'}
+							</button>
 						</div>
-
-						<div className="grid grid-cols-[minmax(200px,35%)_minmax(250px,40%)_minmax(200px,25%)] gap-4">
+						
+						<div className="grid grid-cols-[minmax(200px,35%)_minmax(250px,40%)_minmax(200px,25%)] gap-6">
 							<WinnerDisplay winner={tournament.standings[0]} />
-							<div className="space-y-2">
+							<div className="space-y-3">
 								<RunnerUpDisplay place={2} winner={tournament.standings[1]} />
 								<RunnerUpDisplay place={3} winner={tournament.standings[2]} />
 							</div>

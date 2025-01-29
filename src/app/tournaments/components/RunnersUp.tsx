@@ -47,23 +47,52 @@ export const RunnerUpDisplay = ({
 	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
 
 	return (
-		<div className="bg-gray-700 p-2 rounded-lg">
-			<div className={`text-xs ${place === 2 ? 'text-sky-100' : 'text-amber-500'} mb-1`}>{place === 2 ? '2nd Place' : '3rd Place'}</div>
+		<div className={`clickable bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-3 rounded-xl
+			border transition-all duration-300 shadow-lg cursor-pointer
+			${place === 2 
+			? 'border-sky-500/20 hover:border-sky-500/30 hover:shadow-sky-500/10' 
+			: 'border-amber-500/20 hover:border-amber-500/30 hover:shadow-amber-500/10'
+		}`}
+		onClick={() => winner && console.log(`Navigate to ${place}nd place submission:`, winner.submission)}>
+			<div className={`text-xs font-medium uppercase tracking-wider mb-2 
+				${place === 2 ? 'text-sky-300' : 'text-amber-400'}`}>
+				{place === 2 ? '2nd Place' : '3rd Place'}
+			</div>
 			{winner ? (
-				<div className="grid grid-cols-2 text-sm">
-					<div className="flex flex-col items-start">
-						<span title={userName}>
-							{'User: '}{loading ? <LoadingPlaceholderSmall /> : userName}
-						</span>
-						<span title={submissionName}>
-							{'Submission: '}{loading ? <LoadingPlaceholderSmall /> : submissionName}
-						</span>
+				<div className="grid grid-cols-2 text-sm gap-3">
+					<div className="flex flex-col space-y-1">
+						<div className="text-gray-200">
+							{'User: '}
+							<span 
+								className="font-medium cursor-pointer hover:text-sky-200 transition-colors inline-block
+									border-b border-sky-500/30 hover:border-sky-500" 
+								onClick={(e) => {
+									e.stopPropagation()
+									console.log('Navigate to user:', winner.user)
+								}}
+								title={userName}>
+								{loading ? <LoadingPlaceholderSmall /> : userName}
+							</span>
+						</div>
+						<div className="text-gray-300 text-xs">
+							{'Submission: '}
+							<span 
+								className="cursor-pointer hover:text-sky-200 transition-colors inline-block
+									border-b border-sky-500/30 hover:border-sky-500"
+								onClick={(e) => {
+									e.stopPropagation()
+									console.log('Navigate to submission:', winner.submission)
+								}}
+								title={submissionName}>
+								{loading ? <LoadingPlaceholderSmall /> : submissionName}
+							</span>
+						</div>
 					</div>
-					<div className="flex flex-col items-start">
-						<span title={`Score: ${winner.grade}`}>
+					<div className="flex flex-col space-y-1">
+						<span className="text-gray-200" title={`Score: ${winner.grade}`}>
 							{formatScore(winner.grade)}
 						</span>
-						<span title={`Z-Score: ${winner.zValue}`}>
+						<span className="text-gray-400 text-xs" title={`Z-Score: ${winner.zValue}`}>
 							{formatZScore(winner.zValue)}
 						</span>
 					</div>
