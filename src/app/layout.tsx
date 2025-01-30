@@ -8,13 +8,43 @@ import UserProvider from '@/contexts/UserProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+	metadataBase: new URL('https://www.gaslight.fun'),
 	title: {
 		template: '%s | Gaslight',
 		default: 'Gaslight'
 	},
-	description: 'Gaslight',
+	description: 'Write your strategies, compete in daily tournaments, and see your code ranked at Gaslight!',
+	keywords: [
+		'code-based gaming',
+		'strategy games',
+		'daily competitions',
+		'coding tournaments',
+		'multiplayer development',
+		'interactive programming',
+		'create your own games',
+		'Gaslight'
+	],
+	openGraph: {
+		siteName: 'Gaslight: Code-based Strategy Tournaments',
+		type: 'website',
+		locale: 'en_US'
+	},
+	robots: {
+		index: true,
+		follow: true,
+		'max-image-preview': 'large',
+		'max-snippet': -1,
+		'max-video-preview': -1,
+		googleBot: 'index, follow'
+	},
 	alternates: {
 		canonical: 'https://www.gaslight.fun'
+	},
+	applicationName: 'Gaslight',
+	appleWebApp: {
+		title: 'Gaslight',
+		statusBarStyle: 'default',
+		capable: true
 	},
 	icons: {
 		icon: '/favicon.ico'
