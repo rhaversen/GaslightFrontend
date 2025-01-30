@@ -80,7 +80,7 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 								transition={{ duration: 0.3, ease: 'easeInOut' }}
 								className='pt-3 overflow-hidden'
 							>
-								<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
+								<div className="mt-4 grid grid-cols-1 md:grid-cols-[350px_1fr] gap-2">
 									<DisqualificationsDisplay
 										disqualified={tournament.disqualified}
 									/>
@@ -100,7 +100,7 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 									))}
 
 								</div>
-								<div className="mt-2 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+								<div className="mt-2 gap-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 									{tournament.standings.slice(9, 30).map((standing) => (
 										<RunnerUpDisplay
 											key={standing.user}
