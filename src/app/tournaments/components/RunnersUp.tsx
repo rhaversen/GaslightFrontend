@@ -18,14 +18,6 @@ const getPlaceStyles = (place: number) => {
 				bg: 'bg-orange-800/10',
 				placeGlow: 'place-glow third-place-glow'
 			}
-		case 4:
-		case 5:
-			return {
-				border: 'border-purple-500/20 hover:border-purple-500/30 hover:shadow-purple-500/10',
-				text: 'text-purple-300',
-				bg: 'bg-purple-500/10',
-				placeGlow: ''
-			}
 		default:
 			return {
 				border: 'border-gray-600/20 hover:border-gray-600/30',
@@ -40,13 +32,15 @@ export const RunnerUpDisplay = ({
 	place,
 	winner,
 	isCurrentUser,
+	simpleStartIndex
 }: {
 	place: number,
 	winner?: TournamentStanding,
 	isCurrentUser: boolean,
+	simpleStartIndex?: number
 }) => {
 	const placeStyles = getPlaceStyles(place)
-	const isSimplified = place > 5
+	const isSimplified = simpleStartIndex != null && place >= simpleStartIndex
 
 	if (isSimplified) {
 		return (
@@ -58,7 +52,7 @@ export const RunnerUpDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{formatScore(winner?.grade ?? 0)}
+					{winner?.grade.toFixed(2) ?? 0}
 				</span>
 			</div>
 		)
@@ -83,7 +77,7 @@ export const RunnerUpDisplay = ({
 				)}
 			</div>
 			{winner ? (
-				<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] text-sm gap-2">
+				<div className="grid grid-cols-1 2xl:grid-cols-[60%_40%] text-sm gap-2">
 					<div className="flex flex-col space-y-0.5">
 						<div>
 							<Link href={`/users/${winner.user}`}>

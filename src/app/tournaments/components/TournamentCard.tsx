@@ -48,12 +48,12 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 						isCurrentUser={tournament.standings[0].user === currentUserId}
 					/>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-						{[1, 2].map((place) => (
+						{tournament.standings.slice(1, 3).map((standing) => (
 							<RunnerUpDisplay
-								key={place}
-								place={place + 1}
-								winner={tournament.standings[place]}
-								isCurrentUser={tournament.standings[place].user === currentUserId}
+								key={standing.user}
+								place={standing.placement}
+								winner={standing}
+								isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
 							/>
 						))}
 					</div>
@@ -64,21 +64,48 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 						onClick={() => setIsExpanded(!isExpanded)}
 						className="w-full flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-gray-300"
 					>
-						<span>{isExpanded ? 'Hide Stats' : 'Show Stats'}</span>
+						<span>{isExpanded ? 'Hide Details' : 'Show Details'}</span>
 						<div className="w-4 h-4">
 							{isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
 						</div>
 					</button>
 
 					{isExpanded && (
-						<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-							<StatsDisplay
-								tournamentId={tournament._id}
-								userGrade={currentUserStanding?.grade}
-							/>
-							<DisqualificationsDisplay
-								disqualified={tournament.disqualified}
-							/>
+						<div className='pt-3'>
+							<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
+								<DisqualificationsDisplay
+									disqualified={tournament.disqualified}
+								/>
+								<StatsDisplay
+									tournamentId={tournament._id}
+									userGrade={currentUserStanding?.grade}
+								/>
+							</div>
+							<div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-2">
+								{tournament.standings.slice(3, 9).map((standing) => (
+									<RunnerUpDisplay
+										key={standing.user}
+										place={standing.placement}
+										winner={standing}
+										isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+									/>
+								))}
+
+							</div>
+							<div className="mt-2 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+								{tournament.standings.slice(9, 30).map((standing) => (
+									<RunnerUpDisplay
+										key={standing.user}
+										place={standing.placement}
+										winner={standing}
+										isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+										simpleStartIndex={10}
+									/>
+								))}
+
+							</div>
+
+
 						</div>
 					)}
 				</div>
