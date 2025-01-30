@@ -96,6 +96,7 @@ export interface TournamentStanding {
 	submission: GradingType['_id']
 	grade: number
 	zValue: number
+	placement: number
 	statistics: IGradingStatistics
 }
 

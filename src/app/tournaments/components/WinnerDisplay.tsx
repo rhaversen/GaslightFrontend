@@ -38,9 +38,14 @@ const useNames = (userId?: string, submissionId?: string) => {
 	return { userName, submissionName, loading }
 }
 
-export const WinnerDisplay = ({ winner, currentUser }: { winner: TournamentStanding; currentUser?: string }) => {
+export const WinnerDisplay = ({ 
+	winner, 
+	isCurrentUser 
+}: { 
+	winner: TournamentStanding; 
+	isCurrentUser: boolean 
+}) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
-	const isCurrentUser = currentUser === winner.user
 
 	return (
 		<div 
@@ -54,7 +59,7 @@ export const WinnerDisplay = ({ winner, currentUser }: { winner: TournamentStand
 		>
 			<h3 className="text-xs font-semibold mb-2 uppercase tracking-wider text-yellow-400 flex items-center gap-2">
 				{'Winner'}
-				{currentUser === winner.user && (
+				{isCurrentUser && (
 					<span className="text-[10px] px-1.5 py-0.5 bg-yellow-500/10 rounded-full">{'You !'}</span>
 				)}
 			</h3>

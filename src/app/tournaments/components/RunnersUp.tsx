@@ -75,14 +75,13 @@ const getPlaceStyles = (place: number) => {
 export const RunnerUpDisplay = ({
 	place,
 	winner,
-	currentUser,
+	isCurrentUser,
 }: {
 	place: number,
 	winner?: TournamentStanding,
-	currentUser?: string,
+	isCurrentUser: boolean,
 }) => {
 	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
-	const isCurrentUser = currentUser === winner?.user
 	const placeStyles = getPlaceStyles(place)
 	const isSimplified = place > 5
 
@@ -118,7 +117,7 @@ export const RunnerUpDisplay = ({
 			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 flex items-center gap-2
 				${placeStyles.text}`}>
 				{place === 2 ? '2nd Place' : place === 3 ? '3rd Place' : `${place}th Place`}
-				{currentUser === winner?.user && (
+				{isCurrentUser && (
 					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${placeStyles.bg}`}>
 						{'You !'}
 					</span>
