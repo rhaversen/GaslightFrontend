@@ -58,7 +58,7 @@ export const RunnerUpDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{formatScore(winner?.grade || 0)}
+					{formatScore(winner?.grade ?? 0)}
 				</span>
 			</div>
 		)
