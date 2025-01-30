@@ -58,10 +58,14 @@ export default function Page(): ReactElement<any> {
 				</h1>
 			</div>
 			<div className="space-y-6">
-				{tournaments.map((tournament) => (
+				{tournaments.map((tournament, index) => (
 					<div key={tournament._id} 
-						className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 
-							border border-gray-700/30 backdrop-blur-sm">
+						className={`
+							bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 
+							border border-gray-700/30 backdrop-blur-sm
+							${index === 0 ? 'p-6' : 'p-4'}
+						`}
+					>
 						<div className="text-gray-400 mb-3 text-sm font-medium flex justify-between items-start">
 							<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
 								<div className="flex items-center gap-2">
@@ -87,17 +91,53 @@ export default function Page(): ReactElement<any> {
 							</button>
 						</div>
 						
-						<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)_1fr] gap-2">
-							<WinnerDisplay winner={tournament.standings[0]} currentUser={currentUser?._id} />
-							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-								<RunnerUpDisplay place={2} winner={tournament.standings[1]} currentUser={currentUser?._id} />
-								<RunnerUpDisplay place={3} winner={tournament.standings[2]} currentUser={currentUser?._id} />
+						{index === 0 ? (
+							// Most recent tournament display
+							<div className="grid grid-cols-1 gap-4">
+								<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_1fr] gap-4">
+									<WinnerDisplay winner={tournament.standings[0]} currentUser={currentUser?._id} />
+									<StatsDisplay 
+										tournamentId={tournament._id}
+										userGrade={tournament.standings.find(s => s.user === currentUser?._id)?.grade}
+									/>
+								</div>
+								<div className="grid grid-cols-1 gap-4">
+									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+										{tournament.standings.slice(1, 5).map((standing, place) => (
+											<RunnerUpDisplay 
+												key={standing.user} 
+												place={place + 2} 
+												winner={standing} 
+												currentUser={currentUser?._id}
+											/>
+										))}
+									</div>
+									<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-1">
+										{tournament.standings.slice(5, 11).map((standing, place) => (
+											<RunnerUpDisplay 
+												key={standing.user} 
+												place={place + 6} 
+												winner={standing} 
+												currentUser={currentUser?._id}
+											/>
+										))}
+									</div>
+								</div>
 							</div>
-							<StatsDisplay 
-								tournamentId={tournament._id}
-								userGrade={tournament.standings.find(s => s.user === currentUser?._id)?.grade}
-							/>
-						</div>
+						) : (
+							// Regular tournament display
+							<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)_1fr] gap-2">
+								<WinnerDisplay winner={tournament.standings[0]} currentUser={currentUser?._id} />
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+									<RunnerUpDisplay place={2} winner={tournament.standings[1]} currentUser={currentUser?._id} />
+									<RunnerUpDisplay place={3} winner={tournament.standings[2]} currentUser={currentUser?._id} />
+								</div>
+								<StatsDisplay 
+									tournamentId={tournament._id}
+									userGrade={tournament.standings.find(s => s.user === currentUser?._id)?.grade}
+								/>
+							</div>
+						)}
 					</div>
 				))}
 			</div>
