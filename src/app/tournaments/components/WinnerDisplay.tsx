@@ -1,52 +1,14 @@
-import { ISubmission, TournamentStanding, UserType } from '@/types/backendDataTypes'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
+import { TournamentStanding } from '@/types/backendDataTypes'
 import { formatScore, formatZScore } from '@/lib/scoreUtils'
 import Link from 'next/link'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-const useNames = (userId?: string, submissionId?: string) => {
-	const [userName, setUserName] = useState<string>('')
-	const [submissionName, setSubmissionName] = useState<string>('')
-	const [loading, setLoading] = useState(false)
-
-	useEffect(() => {
-		if (userId === undefined || userId === '' || submissionId === undefined || submissionId === '') return
-
-		const fetchNames = async () => {
-			setLoading(true)
-			try {
-				const [userRes, subRes] = await Promise.all([
-					axios.get<UserType>(`${API_URL}/v1/users/${userId}`),
-					axios.get<ISubmission>(`${API_URL}/v1/submissions/${submissionId}`)
-				])
-				setUserName(userRes.data.username)
-				setSubmissionName(subRes.data.title)
-			} catch (error) {
-				console.error('Failed to fetch names:', error)
-				setUserName(userId)
-				setSubmissionName(submissionId)
-			}
-			setLoading(false)
-		}
-
-		fetchNames()
-	}, [userId, submissionId])
-
-	return { userName, submissionName, loading }
-}
-
-export const WinnerDisplay = ({ 
-	winner, 
-	isCurrentUser 
-}: { 
-	winner: TournamentStanding; 
-	isCurrentUser: boolean 
+export const WinnerDisplay = ({
+	winner,
+	isCurrentUser
+}: {
+	winner: TournamentStanding;
+	isCurrentUser: boolean;
 }) => {
-	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
-
 	return (
 		<div 
 			className={`
@@ -72,9 +34,9 @@ export const WinnerDisplay = ({
 									text-gray-100
 									hover:text-yellow-200 transition-colors
 								"
-								title={userName}
+								title={winner.userName}
 							>
-								{loading ? <LoadingPlaceholderSmall /> : userName}
+								{winner.userName}
 							</span>
 						</Link>
 						<span className="text-gray-500">{' with '}</span>
@@ -84,9 +46,9 @@ export const WinnerDisplay = ({
 									text-sm text-gray-300
 									hover:text-yellow-200 transition-colors
 								"
-								title={submissionName}
+								title={winner.submissionName}
 							>
-								{loading ? <LoadingPlaceholderSmall /> : submissionName}
+								{winner.submissionName}
 							</span>
 						</Link>
 					</div>

@@ -93,7 +93,9 @@ export interface GradingType {
 
 export interface TournamentStanding {
 	user: UserType['_id']
+	userName: string
 	submission: GradingType['_id']
+	submissionName: string
 	grade: number
 	zValue: number
 	placement: number

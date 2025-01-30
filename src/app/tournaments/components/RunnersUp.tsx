@@ -1,42 +1,6 @@
-import { ISubmission, TournamentStanding, UserType } from '@/types/backendDataTypes'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import LoadingPlaceholderSmall from '@/components/LoadingPlaceholderSmall'
+import { TournamentStanding } from '@/types/backendDataTypes'
 import { formatScore, formatZScore } from '@/lib/scoreUtils'
 import Link from 'next/link'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-const useNames = (userId?: string, submissionId?: string) => {
-	const [userName, setUserName] = useState<string>('')
-	const [submissionName, setSubmissionName] = useState<string>('')
-	const [loading, setLoading] = useState(false)
-
-	useEffect(() => {
-		if (userId === undefined || userId === '' || submissionId === undefined || submissionId === '') return
-
-		const fetchNames = async () => {
-			setLoading(true)
-			try {
-				const [userRes, subRes] = await Promise.all([
-					axios.get<UserType>(`${API_URL}/v1/users/${userId}`),
-					axios.get<ISubmission>(`${API_URL}/v1/submissions/${submissionId}`)
-				])
-				setUserName(userRes.data.username)
-				setSubmissionName(subRes.data.title)
-			} catch (error) {
-				console.error('Failed to fetch names:', error)
-				setUserName(userId)
-				setSubmissionName(submissionId)
-			}
-			setLoading(false)
-		}
-
-		fetchNames()
-	}, [userId, submissionId])
-
-	return { userName, submissionName, loading }
-}
 
 const getPlaceStyles = (place: number) => {
 	switch(place) {
@@ -81,7 +45,6 @@ export const RunnerUpDisplay = ({
 	winner?: TournamentStanding,
 	isCurrentUser: boolean,
 }) => {
-	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
 	const placeStyles = getPlaceStyles(place)
 	const isSimplified = place > 5
 
@@ -89,15 +52,11 @@ export const RunnerUpDisplay = ({
 		return (
 			<div className="text-sm text-gray-400">
 				<span className="font-medium">{`${place}. `}</span>
-				{loading ? (
-					<LoadingPlaceholderSmall />
-				) : (
-					<Link href={`/users/${winner?.user}`}>
-						<span className={`${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
-							{userName}
-						</span>
-					</Link>
-				)}
+				<Link href={`/users/${winner?.user}`}>
+					<span className={`${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
+						{winner?.userName}
+					</span>
+				</Link>
 				<span className="text-gray-500 ml-2">
 					{formatScore(winner?.grade || 0)}
 				</span>
@@ -127,27 +86,27 @@ export const RunnerUpDisplay = ({
 				<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] text-sm gap-2">
 					<div className="flex flex-col space-y-0.5">
 						<div>
-							<Link href={`/users/${winner?.user}`}>
+							<Link href={`/users/${winner.user}`}>
 								<span
 									className="
 										text-gray-200
 										hover:text-sky-200 transition-colors
 									"
-									title={userName}
+									title={winner.userName}
 								>
-									{loading ? <LoadingPlaceholderSmall /> : userName}
+									{winner.userName}
 								</span>
 							</Link>
 							<span className="text-gray-600">{' with '}</span>
-							<Link href={`/submissions/${winner?.submission}`}>
+							<Link href={`/submissions/${winner.submission}`}>
 								<span
 									className="
 										text-xs text-gray-300
 										hover:text-sky-200 transition-colors
 									"
-									title={submissionName}
+									title={winner.submissionName}
 								>
-									{loading ? <LoadingPlaceholderSmall /> : submissionName}
+									{winner.submissionName}
 								</span>
 							</Link>
 						</div>
