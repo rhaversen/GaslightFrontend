@@ -6,6 +6,7 @@ import { StatsDisplay } from './StatsDisplay'
 import { RunnerUpDisplay } from './RunnersUp'
 import { useState } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
+import { DisqualificationsDisplay } from './DisqualificationsDisplay'
 
 interface TournamentCardProps {
 	tournament: TournamentType
@@ -74,6 +75,9 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 							<StatsDisplay
 								tournamentId={tournament._id}
 								userGrade={currentUserStanding?.grade}
+							/>
+							<DisqualificationsDisplay
+								disqualified={tournament.disqualified}
 							/>
 						</div>
 					)}
