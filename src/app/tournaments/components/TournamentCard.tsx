@@ -4,6 +4,8 @@ import { formatDuration } from '@/lib/timeUtils'
 import { WinnerDisplay } from './WinnerDisplay'
 import { StatsDisplay } from './StatsDisplay'
 import { RunnerUpDisplay } from './RunnersUp'
+import { useState } from 'react'
+import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
 
 interface TournamentCardProps {
 	tournament: TournamentType
@@ -11,6 +13,7 @@ interface TournamentCardProps {
 }
 
 export function TournamentCard({ tournament, currentUserId }: TournamentCardProps) {
+	const [isExpanded, setIsExpanded] = useState(false)
 	const currentUserStanding = tournament.standings.find(s => s.user === currentUserId)
 
 	return (
@@ -37,27 +40,44 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 				</button>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)_1fr] gap-2">
-				<WinnerDisplay 
-					winner={tournament.standings[0]} 
-					isCurrentUser={tournament.standings[0].user === currentUserId} 
-				/>
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-					<RunnerUpDisplay 
-						place={2} 
-						winner={tournament.standings[1]} 
-						isCurrentUser={tournament.standings[1].user === currentUserId} 
+			<div className="space-y-4">
+				<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)] gap-2">
+					<WinnerDisplay
+						winner={tournament.standings[0]}
+						isCurrentUser={tournament.standings[0].user === currentUserId}
 					/>
-					<RunnerUpDisplay 
-						place={3} 
-						winner={tournament.standings[2]} 
-						isCurrentUser={tournament.standings[2].user === currentUserId} 
-					/>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+						{[1, 2].map((place) => (
+							<RunnerUpDisplay
+								key={place}
+								place={place + 1}
+								winner={tournament.standings[place]}
+								isCurrentUser={tournament.standings[place].user === currentUserId}
+							/>
+						))}
+					</div>
 				</div>
-				<StatsDisplay 
-					tournamentId={tournament._id}
-					userGrade={currentUserStanding?.grade}
-				/>
+
+				<div className="border-t border-gray-700/30 pt-2">
+					<button
+						onClick={() => setIsExpanded(!isExpanded)}
+						className="w-full flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-gray-300"
+					>
+						<span>{isExpanded ? 'Hide Stats' : 'Show Stats'}</span>
+						<div className="w-4 h-4">
+							{isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+						</div>
+					</button>
+
+					{isExpanded && (
+						<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+							<StatsDisplay
+								tournamentId={tournament._id}
+								userGrade={currentUserStanding?.grade}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	)
