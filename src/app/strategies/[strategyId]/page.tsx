@@ -168,7 +168,13 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 	}
 
 	if (isLoading) {
-		return <LoadingPlaceholder />
+		return (
+			<div className="w-full flex justify-center">
+				<div className="w-1/2 p-5">
+					<LoadingPlaceholder />
+				</div>
+			</div>
+		)
 	}
 
 	return (

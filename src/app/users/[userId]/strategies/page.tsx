@@ -119,7 +119,11 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 
 	if (isLoading) {
 		return (
-			<LoadingPlaceholder />
+			<div className="w-full flex justify-center">
+				<div className="w-1/2 p-5">
+					<LoadingPlaceholder />
+				</div>
+			</div>
 		)
 	}
 
