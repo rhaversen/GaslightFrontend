@@ -88,10 +88,10 @@ export default function Page(): ReactElement<any> {
 						</div>
 						
 						<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)_1fr] gap-2">
-							<WinnerDisplay winner={tournament.standings[0]} />
+							<WinnerDisplay winner={tournament.standings[0]} currentUser={currentUser?._id} />
 							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-								<RunnerUpDisplay place={2} winner={tournament.standings[1]} />
-								<RunnerUpDisplay place={3} winner={tournament.standings[2]} />
+								<RunnerUpDisplay place={2} winner={tournament.standings[1]} currentUser={currentUser?._id} />
+								<RunnerUpDisplay place={3} winner={tournament.standings[2]} currentUser={currentUser?._id} />
 							</div>
 							<StatsDisplay 
 								statistics={tournament.statistics} 

@@ -40,7 +40,7 @@ export const StatsDisplay = ({
 
 	return (
 		<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-4 rounded-xl
-        border border-indigo-500/20 shadow-lg">
+        border border-indigo-500/30 shadow-lg">
 			{/* Header */}
 			<div className="text-sm text-gray-200 mb-3 flex justify-between items-center">
 				<span className="font-medium">{'Score Distribution'}</span>

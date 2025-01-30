@@ -38,19 +38,22 @@ const useNames = (userId?: string, submissionId?: string) => {
 	return { userName, submissionName, loading }
 }
 
-export const WinnerDisplay = ({ winner }: { winner: TournamentStanding }) => {
+export const WinnerDisplay = ({ winner, currentUser }: { winner: TournamentStanding; currentUser?: string }) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
 
 	return (
 		<div 
-			className="
+			className={`
 				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-3 rounded-xl
 				border border-yellow-500/20 shadow-lg transition-all duration-300
-				hover:shadow-yellow-500/10 hover:border-yellow-500/30
-			"
+				hover:shadow-yellow-500/10 hover:border-yellow-500/40
+			`}
 		>
-			<h3 className="text-xs font-semibold mb-2 uppercase tracking-wider text-yellow-400">
+			<h3 className="text-xs font-semibold mb-2 uppercase tracking-wider text-yellow-400 flex items-center gap-2">
 				{'Winner'}
+				{currentUser === winner.user && (
+					<span className="text-[10px] px-1.5 py-0.5 bg-yellow-500/10 rounded-full">{'You !'}</span>
+				)}
 			</h3>
 			<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2">
 				<div className="space-y-1.5">

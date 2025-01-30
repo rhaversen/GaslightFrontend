@@ -41,9 +41,11 @@ const useNames = (userId?: string, submissionId?: string) => {
 export const RunnerUpDisplay = ({
 	place,
 	winner,
+	currentUser,
 }: {
 	place: number,
 	winner?: TournamentStanding,
+	currentUser?: string,
 }) => {
 	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
 
@@ -55,15 +57,22 @@ export const RunnerUpDisplay = ({
 				${
 		winner
 			? place === 2
-				? 'border-sky-500/20 hover:border-sky-500/30 hover:shadow-sky-500/10'
-				: 'border-amber-500/20 hover:border-amber-500/30 hover:shadow-amber-500/10'
+				? 'border-sky-500/20 hover:border-sky-500/40 hover:shadow-sky-500/10'
+				: 'border-orange-800/20 hover:border-orange-800/40 hover:shadow-orange-800/10'
 			: 'border-gray-700/30'
 		}
 			`}
 		>
-			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 
-				${place === 2 ? 'text-sky-300' : 'text-amber-400'}`}>
+			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 flex items-center gap-2
+				${place === 2 ? 'text-sky-300' : 'text-orange-400'}`}>
 				{place === 2 ? '2nd Place' : '3rd Place'}
+				{currentUser === winner?.user && (
+					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+						place === 2 ? 'bg-sky-500/10' : 'bg-orange-800/10'
+					}`}>
+						{'You !'}
+					</span>
+				)}
 			</div>
 			{winner ? (
 				<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] text-sm gap-2">
