@@ -32,7 +32,7 @@ export const StatsDisplay = ({
 		{ value: stats.tukeyMin, label: 'Lower', color: 'text-gray-400', position: 'top' },
 		{ value: stats.q1, label: 'Q1', color: 'text-blue-300', position: 'bottom-1' },
 		{ value: stats.median, label: 'Q2', color: 'text-white', position: 'bottom-1' },
-		{ value: stats.mean, label: 'μ', color: 'text-yellow-400', position: 'bottom-1' },
+		{ value: stats.mean, label: 'μ', color: 'text-yellow-400', position: 'top' },
 		{ value: stats.q3, label: 'Q3', color: 'text-blue-300', position: 'bottom-1' },
 		{ value: stats.tukeyMax, label: 'Upper', color: 'text-gray-400', position: 'top' },
 		{ value: stats.max, label: 'Max', color: 'text-red-400', position: 'top' }
@@ -174,7 +174,7 @@ export const StatsDisplay = ({
 						style={{ 
 							left: `${getPosition(value)}%`,
 							top: position === 'top' 
-								? '0%'
+								? '-10%'
 								: position === 'bottom-1'
 									? '75%'
 									: '85%',
