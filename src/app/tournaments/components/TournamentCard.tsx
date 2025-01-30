@@ -7,6 +7,7 @@ import { RunnerUpDisplay } from './RunnersUp'
 import { useState } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
 import { DisqualificationsDisplay } from './DisqualificationsDisplay'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface TournamentCardProps {
 	tournament: TournamentType
@@ -70,44 +71,50 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 						</div>
 					</button>
 
-					{isExpanded && (
-						<div className='pt-3'>
-							<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
-								<DisqualificationsDisplay
-									disqualified={tournament.disqualified}
-								/>
-								<StatsDisplay
-									tournamentId={tournament._id}
-									userGrade={currentUserStanding?.grade}
-								/>
-							</div>
-							<div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-2">
-								{tournament.standings.slice(3, 9).map((standing) => (
-									<RunnerUpDisplay
-										key={standing.user}
-										place={standing.placement}
-										winner={standing}
-										isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+					<AnimatePresence>
+						{isExpanded && (
+							<motion.div
+								initial={{ height: 0, opacity: 0 }}
+								animate={{ height: 'auto', opacity: 1 }}
+								exit={{ height: 0, opacity: 0 }}
+								transition={{ duration: 0.3, ease: 'easeInOut' }}
+								className='pt-3 overflow-hidden'
+							>
+								<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
+									<DisqualificationsDisplay
+										disqualified={tournament.disqualified}
 									/>
-								))}
-
-							</div>
-							<div className="mt-2 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-								{tournament.standings.slice(9, 30).map((standing) => (
-									<RunnerUpDisplay
-										key={standing.user}
-										place={standing.placement}
-										winner={standing}
-										isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
-										simpleStartIndex={10}
+									<StatsDisplay
+										tournamentId={tournament._id}
+										userGrade={currentUserStanding?.grade}
 									/>
-								))}
+								</div>
+								<div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-2">
+									{tournament.standings.slice(3, 9).map((standing) => (
+										<RunnerUpDisplay
+											key={standing.user}
+											place={standing.placement}
+											winner={standing}
+											isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+										/>
+									))}
 
-							</div>
+								</div>
+								<div className="mt-2 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+									{tournament.standings.slice(9, 30).map((standing) => (
+										<RunnerUpDisplay
+											key={standing.user}
+											place={standing.placement}
+											winner={standing}
+											isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+											simpleStartIndex={10}
+										/>
+									))}
 
-
-						</div>
-					)}
+								</div>
+							</motion.div>
+						)}
+					</AnimatePresence>
 				</div>
 			</div>
 		</div>
