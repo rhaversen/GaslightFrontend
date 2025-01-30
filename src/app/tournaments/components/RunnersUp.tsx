@@ -38,6 +38,40 @@ const useNames = (userId?: string, submissionId?: string) => {
 	return { userName, submissionName, loading }
 }
 
+const getPlaceStyles = (place: number) => {
+	switch(place) {
+		case 2:
+			return {
+				border: 'border-sky-500/20 hover:border-sky-500/40 hover:shadow-sky-500/10',
+				text: 'text-sky-300',
+				bg: 'bg-sky-500/10',
+				placeGlow: 'place-glow second-place-glow'
+			}
+		case 3:
+			return {
+				border: 'border-orange-800/20 hover:border-orange-800/40 hover:shadow-orange-800/10',
+				text: 'text-orange-400',
+				bg: 'bg-orange-800/10',
+				placeGlow: 'place-glow third-place-glow'
+			}
+		case 4:
+		case 5:
+			return {
+				border: 'border-purple-500/20 hover:border-purple-500/30 hover:shadow-purple-500/10',
+				text: 'text-purple-300',
+				bg: 'bg-purple-500/10',
+				placeGlow: ''
+			}
+		default:
+			return {
+				border: 'border-gray-600/20 hover:border-gray-600/30',
+				text: 'text-gray-400',
+				bg: 'bg-gray-500/10',
+				placeGlow: ''
+			}
+	}
+}
+
 export const RunnerUpDisplay = ({
 	place,
 	winner,
@@ -49,30 +83,43 @@ export const RunnerUpDisplay = ({
 }) => {
 	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
 	const isCurrentUser = currentUser === winner?.user
+	const placeStyles = getPlaceStyles(place)
+	const isSimplified = place > 5
+
+	if (isSimplified) {
+		return (
+			<div className="text-sm text-gray-400">
+				<span className="font-medium">{`${place}. `}</span>
+				{loading ? (
+					<LoadingPlaceholderSmall />
+				) : (
+					<Link href={`/users/${winner?.user}`}>
+						<span className={`${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
+							{userName}
+						</span>
+					</Link>
+				)}
+				<span className="text-gray-500 ml-2">
+					{formatScore(winner?.grade || 0)}
+				</span>
+			</div>
+		)
+	}
 
 	return (
 		<div
 			className={`
 				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-2.5 rounded-xl
 				border transition-all duration-300 shadow-lg relative
-				${
-		winner
-			? place === 2
-				? 'border-sky-500/20 hover:border-sky-500/40 hover:shadow-sky-500/10'
-				: 'border-orange-800/20 hover:border-orange-800/40 hover:shadow-orange-800/10'
-			: 'border-gray-700/30'
-		}
-				${isCurrentUser && place === 2 ? 'place-glow second-place-glow' : ''}
-				${isCurrentUser && place === 3 ? 'place-glow third-place-glow' : ''}
+				${placeStyles.border}
+				${isCurrentUser ? placeStyles.placeGlow : ''}
 			`}
 		>
 			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 flex items-center gap-2
-				${place === 2 ? 'text-sky-300' : 'text-orange-400'}`}>
-				{place === 2 ? '2nd Place' : '3rd Place'}
+				${placeStyles.text}`}>
+				{place === 2 ? '2nd Place' : place === 3 ? '3rd Place' : `${place}th Place`}
 				{currentUser === winner?.user && (
-					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-						place === 2 ? 'bg-sky-500/10' : 'bg-orange-800/10'
-					}`}>
+					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${placeStyles.bg}`}>
 						{'You !'}
 					</span>
 				)}
