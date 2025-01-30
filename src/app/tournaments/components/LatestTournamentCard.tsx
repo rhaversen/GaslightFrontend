@@ -4,6 +4,7 @@ import { formatDuration } from '@/lib/timeUtils'
 import { WinnerDisplay } from './WinnerDisplay'
 import { StatsDisplay } from './StatsDisplay'
 import { RunnerUpDisplay } from './RunnersUp'
+import { DisqualificationsDisplay } from './DisqualificationsDisplay'
 
 interface LatestTournamentCardProps {
 	tournament: TournamentType
@@ -42,38 +43,55 @@ export function LatestTournamentCard({ tournament, currentUserId }: LatestTourna
 				</button>
 			</div>
 
-			<div className="grid grid-cols-1 gap-4">
-				<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_1fr] gap-4">
-					<WinnerDisplay 
-						winner={tournament.standings[0]} 
-						isCurrentUser={tournament.standings[0].user === currentUserId} 
+			<div className="grid grid-cols-1 gap-2">
+				<div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_minmax(300px,400px)] gap-2">
+					<WinnerDisplay
+						winner={tournament.standings[0]}
+						isCurrentUser={tournament.standings[0].user === currentUserId}
 					/>
-					<StatsDisplay 
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+						{tournament.standings.slice(1, 3).map((standing) => (
+							<RunnerUpDisplay
+								key={standing.user}
+								place={standing.placement}
+								winner={standing}
+								isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+							/>
+						))}
+					</div>
+				</div>
+				
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
+					<DisqualificationsDisplay
+						disqualified={tournament.disqualified}
+					/>
+					<StatsDisplay
 						tournamentId={tournament._id}
 						userGrade={currentUserStanding?.grade}
 					/>
 				</div>
-				<div className="grid grid-cols-1 gap-4">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-						{tournament.standings.slice(1, 5).map((standing) => (
-							<RunnerUpDisplay 
-								key={standing.user} 
-								place={standing.placement} 
-								winner={standing} 
-								isCurrentUser={standing.user === currentUserId}
-							/>
-						))}
-					</div>
-					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-1">
-						{tournament.standings.slice(5, 11).map((standing) => (
-							<RunnerUpDisplay 
-								key={standing.user} 
-								place={standing.placement} 
-								winner={standing} 
-								isCurrentUser={standing.user === currentUserId}
-							/>
-						))}
-					</div>
+				
+				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+					{tournament.standings.slice(1, 13).map((standing) => (
+						<RunnerUpDisplay 
+							key={standing.user} 
+							place={standing.placement} 
+							winner={standing} 
+							isCurrentUser={standing.user === currentUserId}
+						/>
+					))}
+				</div>
+
+				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+					{tournament.standings.slice(13, 30).map((standing) => (
+						<RunnerUpDisplay 
+							key={standing.user} 
+							place={standing.placement} 
+							winner={standing} 
+							isCurrentUser={standing.user === currentUserId}
+							simpleStartIndex={13}
+						/>
+					))}
 				</div>
 			</div>
 		</div>
