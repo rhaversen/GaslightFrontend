@@ -65,3 +65,49 @@ body {
 .hover\:bounceOrig:hover {
 	animation: bounceOrig 1s infinite;
 }
+
+@keyframes animateGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.place-glow {
+  position: relative;
+}
+
+.place-glow::after {
+  position: absolute;
+  content: "";
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  transform: scale(1.02) translateZ(0);
+  filter: blur(20px);
+  background: linear-gradient(
+    90deg,
+    var(--glow-color-1),
+    var(--glow-color-2),
+    var(--glow-color-1)
+  );
+  background-size: 200% 100%;
+  animation: animateGlow 3s ease-in-out infinite;
+}
+
+.first-place-glow {
+  --glow-color-1: rgba(255, 215, 0, 0.5);
+  --glow-color-2: rgba(218, 165, 32, 0.5);
+}
+
+.second-place-glow {
+  --glow-color-1: rgba(0, 191, 255, 0.5);
+  --glow-color-2: rgba(30, 144, 255, 0.5);
+}
+
+.third-place-glow {
+  --glow-color-1: rgba(205, 127, 50, 0.5);
+  --glow-color-2: rgba(184, 115, 51, 0.5);
+}

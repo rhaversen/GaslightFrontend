@@ -48,12 +48,13 @@ export const RunnerUpDisplay = ({
 	currentUser?: string,
 }) => {
 	const { userName, submissionName, loading } = useNames(winner?.user, winner?.submission)
+	const isCurrentUser = currentUser === winner?.user
 
 	return (
 		<div
 			className={`
 				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-2.5 rounded-xl
-				border transition-all duration-300 shadow-lg
+				border transition-all duration-300 shadow-lg relative
 				${
 		winner
 			? place === 2
@@ -61,6 +62,8 @@ export const RunnerUpDisplay = ({
 				: 'border-orange-800/20 hover:border-orange-800/40 hover:shadow-orange-800/10'
 			: 'border-gray-700/30'
 		}
+				${isCurrentUser && place === 2 ? 'place-glow second-place-glow' : ''}
+				${isCurrentUser && place === 3 ? 'place-glow third-place-glow' : ''}
 			`}
 		>
 			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 flex items-center gap-2

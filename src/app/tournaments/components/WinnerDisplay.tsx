@@ -40,6 +40,7 @@ const useNames = (userId?: string, submissionId?: string) => {
 
 export const WinnerDisplay = ({ winner, currentUser }: { winner: TournamentStanding; currentUser?: string }) => {
 	const { userName, submissionName, loading } = useNames(winner.user, winner.submission)
+	const isCurrentUser = currentUser === winner.user
 
 	return (
 		<div 
@@ -47,6 +48,8 @@ export const WinnerDisplay = ({ winner, currentUser }: { winner: TournamentStand
 				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-3 rounded-xl
 				border border-yellow-500/20 shadow-lg transition-all duration-300
 				hover:shadow-yellow-500/10 hover:border-yellow-500/40
+				relative
+				${isCurrentUser ? 'place-glow first-place-glow' : ''}
 			`}
 		>
 			<h3 className="text-xs font-semibold mb-2 uppercase tracking-wider text-yellow-400 flex items-center gap-2">
