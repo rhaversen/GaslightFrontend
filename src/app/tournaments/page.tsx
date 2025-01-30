@@ -32,8 +32,27 @@ export default function Page(): ReactElement<any> {
 
 	if (loading) {
 		return (
-			<main className="p-4">
-				<h1>{'Loading tournaments...'}</h1>
+			<main className="p-2 sm:p-4 md:p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+				<div className="flex items-center gap-4 mb-6">
+					<Link
+						href="/"
+						className="px-3 py-1.5 text-sm font-medium text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:border-gray-600"
+					>
+						{'←'}<span className="ml-2">{'Home'}</span>
+					</Link>
+					<h1 className="text-4xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
+						{'Tournaments'}
+					</h1>
+				</div>
+				<div className="space-y-6">
+					{[...Array(3)].map((_, index) => (
+						<div 
+							key={index} 
+							className="animate-pulse bg-gray-800 rounded-lg p-6 h-32"
+							style={{ opacity: 1 - (index * 0.3) }}
+						/>
+					))}
+				</div>
 			</main>
 		)
 	}
