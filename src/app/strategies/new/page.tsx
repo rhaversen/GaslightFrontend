@@ -80,7 +80,7 @@ export default function NewStrategy(): ReactElement<any> {
 				{ title, code: defaultCode },
 				{ withCredentials: true }
 			)
-			router.push(`/strategy/${response.data._id}`)
+			router.push(`/strategies/${response.data._id}`)
 		} catch (error) {
 			console.error('Error creating strategy:', error)
 			setError('Failed to create strategy. Please try again.')

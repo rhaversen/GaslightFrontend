@@ -35,7 +35,7 @@ export function StrategyCard ({
 	const StrategyContent = (): ReactElement<any> => (
 		<>
 			<div className="flex justify-between items-center">
-				<h3 className="text-xl font-semibold text-gray-800">{strategy.title}</h3>
+				<h3 className="text-lg md:text-xl font-semibold text-gray-800">{strategy.title}</h3>
 				{isOwnProfile && (
 					<button
 						type='button'
@@ -75,7 +75,7 @@ export function StrategyCard ({
 			</div>
 			<div className="mt-4 space-y-4">
 				<div className="flex flex-wrap gap-4 items-center">
-					<span className={`px-3 py-1 rounded-full text-sm ${
+					<span className={`px-3 py-1 rounded-full text-xs sm:text-sm ${
 						strategy.passedEvaluation === null
 							? 'bg-yellow-100 text-yellow-800'
 							: strategy.passedEvaluation
@@ -88,31 +88,36 @@ export function StrategyCard ({
 								? 'Passing'
 								: 'Not Passing'}
 					</span>
+					{!isOwnProfile && strategy.active && (
+						<div className="px-3 py-1 rounded-full text-xs sm:text-sm bg-blue-100 text-blue-800">
+							{'Active\r'}
+						</div>
+					)}
 					{strategy.evaluation?.results != null && (
-						<span className="text-sm text-gray-600">
+						<span className="text-xs sm:text-sm text-gray-600">
 							{'Score: '}<span className="font-semibold">{strategy.evaluation.results.candidate.toFixed(2)}</span>
 							<span className="mx-2">{'•'}</span>
 							{'Avg: '}<span className="font-semibold">{strategy.evaluation.results.average.toFixed(2)}</span>
 						</span>
 					)}
 				</div>
-				<div className="grid grid-cols-2 gap-4">
-					<div className="text-gray-600">
+				<div className={`${strategy.evaluation == null ? '' : 'grid grid-cols-2 gap-4'}`}>
+					<div className="text-gray-600 text-xs sm:text-sm">
 						<p>{'Number of tokens: '}{strategy.tokenCount}</p>
 						<p>{'Last updated: '}{formatDate(strategy.updatedAt)}</p>
 						<p>{'Created: '}{formatDate(strategy.createdAt)}</p>
 					</div>
 					{strategy.evaluation != null && (
 						<div className="pl-4 border-l border-gray-200">
-							<h4 className="font-medium text-gray-700 mb-2">{'Latest Evaluation Details'}</h4>
+							<h4 className="font-medium text-gray-700 mb-2 text-sm">{'Latest Evaluation Details'}</h4>
 							{strategy.evaluation.disqualified != null
 								? (
-									<div className="text-red-600 text-sm">
+									<div className="text-red-600 text-xs sm:text-sm">
 										{'Disqualified: '}{strategy.evaluation.disqualified}
 									</div>
 								)
 								: (
-									<div className="space-y-2 text-sm">
+									<div className="space-y-2 text-xs sm:text-sm">
 										<span className={strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}>
 											{'Execution: '}{strategy.evaluation?.averageExecutionTime != null ? `${strategy.evaluation.averageExecutionTime.toFixed(3)} milliseconds` : 'N/A'}
 										</span>
@@ -121,7 +126,7 @@ export function StrategyCard ({
 						</div>
 					)}
 					{strategy.evaluation != null && (
-						<div className="text-sm text-gray-500">
+						<div className="text-xs sm:text-sm text-gray-500">
 							{evaluationTime != null && (
 								<span>{'Evaluated: '}{formatDate(evaluationTime)}</span>
 							)}
@@ -137,7 +142,7 @@ export function StrategyCard ({
 			{isOwnProfile
 				? (
 					<Link
-						href={`/strategy/${strategy._id}`}
+						href={`/strategies/${strategy._id}`}
 						className="flex-1 p-6 hover:bg-gray-50 transition-all duration-300 rounded-xl"
 					>
 						<StrategyContent />
