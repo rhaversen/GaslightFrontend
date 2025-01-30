@@ -66,6 +66,16 @@ export interface ISubmission {
 	updatedAt: Date
 }
 
+interface IGradingStatistics {
+	/** Percentile rank (0-100) of this grading's score */
+	percentileRank: number
+	/** Standard score (z-score) */
+	standardScore: number
+	/** How many standard deviations from mean */
+	deviationsFromMean: number
+	/** Relative performance (-1 to 1) compared to mean */
+	normalizedScore: number
+}
 export interface GradingType {
 	/** ID of the grading */
 	_id: string
@@ -73,20 +83,49 @@ export interface GradingType {
 	submission: ISubmission['_id']
 	/** Score given to the submission */
 	score: number
+	/** Statistics of the grading */
+	statistics: IGradingStatistics
 
 	// Timestamps
 	createdAt: Date
 	updatedAt: Date
 }
 
-export interface TournamentWinner {
+export interface TournamentStanding {
 	user: UserType['_id']
+	userName: string
 	submission: GradingType['_id']
+	submissionName: string
 	grade: number
 	zValue: number
+	placement: number
+	statistics: IGradingStatistics
 }
 
 export interface TournamentStatistics {
+	sampleSize: number
+	centralTendency: {
+		/** Simple average of all scores */
+		arithmeticMean: number
+		/** Only calculated for non-zero scores. Useful for averaging rates */
+		harmonicMean: number | null
+		/** Most frequent score(s) */
+		mode: number[]
+	}
+	dispersion: {
+		/** Average squared deviation from the mean */
+		variance: number
+		/** Square root of variance, indicates spread of scores */
+		standardDeviation: number
+		/** Difference between 75th and 25th percentiles */
+		interquartileRange: number
+	}
+	distribution: {
+		/** Measure of asymmetry. Positive means tail on right, negative means tail on left */
+		skewness: number | null
+		/** Measure of outliers. Higher values mean more extreme outliers */
+		kurtosis: number | null
+	}
 	percentiles: {
 		p10: number
 		p25: number
@@ -94,37 +133,30 @@ export interface TournamentStatistics {
 		p75: number
 		p90: number
 	}
-	averageScore: number
-	minMax: {
-		min: number
-		max: number
+	extrema: {
+		minimum: number
+		maximum: number
+		range: number
 	}
-	iqr: number
-	outlierBoundaries: {
-		lower: number
-		upper: number
+	tukeyCriteria: {
+		lowerBound: number
+		upperBound: number
 	}
-	outliers: number[]
+	outlierValues: number[]
 }
 
 export interface TournamentType {
 	/** ID of the tournament */
 	_id: string
 	/** All gradings created from this tournament */
-	gradings: GradingType['_id']
+	gradings: GradingType['_id'][]
 	/** All disqualifications from this tournament */
 	disqualified?: [{
 		submission: GradingType['_id']
 		reason: string
 	}]
 	/** Tournament winners */
-	winners: {
-		first: TournamentWinner
-		second?: TournamentWinner
-		third?: TournamentWinner
-	}
-	/** Tournament statistics */
-	statistics: TournamentStatistics
+	standings: TournamentStanding[]
 
 	/** Tournament execution time in milliseconds */
 	tournamentExecutionTime: number

@@ -2,25 +2,25 @@ import { type Metadata } from 'next'
 
 export async function generateMetadata({ params }: Readonly<{
 	children: React.ReactNode
-	params: Promise<{ userId: string }>
+	params: Promise<{ strategyId: string }>
 }>): Promise<Metadata> {
 	const resolvedParams = await params
 	return {
 		title: {
 			template: '%s | Gaslight',
-			default: 'Strategies'
+			default: 'Modify Strategy'
 		},
 		alternates: {
-			canonical: `https://www.gaslight.fun/users/${resolvedParams.userId}/strategies`
+			canonical: `https://www.gaslight.fun/strategies/${resolvedParams.strategyId}`
 		}
 	}
 }
 
-export default function StrategiesLayout({
+export default function StrategyLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode
-	params: Promise<{ userId: string }>
+	params: Promise<{ strategyId: string }>
 }>): React.JSX.Element {
 	return (
 		<>

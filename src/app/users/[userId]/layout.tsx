@@ -1,19 +1,26 @@
 import { type Metadata } from 'next'
 
-export const metadata: Metadata = {
-	title: {
-		template: '%s | Gaslight',
-		default: 'Profile'
-	},
-	alternates: {
-		canonical: 'https://www.gaslight.fun/users/[userId]'
+export async function generateMetadata({ params }: Readonly<{
+	children: React.ReactNode
+	params: Promise<{ userId: string }>
+}>): Promise<Metadata> {
+	const resolvedParams = await params
+	return {
+		title: {
+			template: '%s | Gaslight',
+			default: 'Profile'
+		},
+		alternates: {
+			canonical: `https://www.gaslight.fun/users/${resolvedParams.userId}`
+		}
 	}
 }
 
-export default function ProfileLayout ({
+export default function ProfileLayout({
 	children
 }: Readonly<{
 	children: React.ReactNode
+	params: Promise<{ userId: string }>
 }>): React.JSX.Element {
 	return (
 		<>

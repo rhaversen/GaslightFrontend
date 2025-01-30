@@ -10,6 +10,10 @@ import { type UserType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+const truncateText = (text: string, maxLength: number): string => {
+	return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+}
+
 interface NavLinkProps {
 	href: string
 	children: React.ReactNode
@@ -19,7 +23,7 @@ interface NavLinkProps {
 const NavLink = ({ href, children, isActive }: NavLinkProps) => (
 	<Link
 		href={href}
-		className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
+		className={`flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-sm sm:text-sm md:text-sm font-medium whitespace-nowrap border-b-2 transition-all ${
 			isActive
 				? 'border-blue-500 text-blue-600 bg-blue-50'
 				: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
@@ -40,27 +44,76 @@ const NavLink = ({ href, children, isActive }: NavLinkProps) => (
 )
 
 interface NavigationLinksProps {
-	user: UserType
+	user: UserType | null
 	pathname: string
 	currentUser: UserType | null
 }
 
-const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) => (
-	<motion.div
-		initial={{ opacity: 0, position: 'absolute' }}
-		animate={{ opacity: 1, position: 'static' }}
-		exit={{ opacity: 0, position: 'absolute' }}
-		transition={{ duration: 0.3 }}
-		style={{ display: 'flex' }}
-	>
-		<NavLink href={`/users/${user._id}`} isActive={pathname === `/users/${user._id}`}>
-			{user === currentUser ? 'Your Profile\r' : `${user.username}'s Profile`}
-		</NavLink>
-		<NavLink href={`/users/${user._id}/strategies`} isActive={pathname === `/users/${user._id}/strategies`}>
-			{user === currentUser ? 'Your Strategies\r' : `${user.username}'s Strategies`}
-		</NavLink>
-	</motion.div>
-)
+const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) => {
+	const isProfile = user ? pathname === `/users/${user._id}` : false
+	const isStrategies = user ? pathname === `/users/${user._id}/strategies` : false
+	const isCurrentUser = user === currentUser
+
+	return (
+		<motion.div
+			initial={{ opacity: 0, position: 'absolute' }}
+			animate={{ opacity: 1, position: 'static' }}
+			exit={{ opacity: 0, position: 'absolute' }}
+			transition={{ duration: 0.3 }}
+			style={{ display: 'flex' }}
+		>
+			<div>
+				<NavLink 
+					href={user ? `/users/${user._id}` : '/login'} 
+					isActive={isProfile}
+				>
+					{user ? (
+						isCurrentUser ? (
+							'Your Profile'
+						) : (
+							<>
+								{/* Show simpler label on small screens */}
+								<span className="block sm:hidden">
+									{'Profile\r'}
+								</span>
+								{/* Show username on larger screens */}
+								<span className="hidden sm:block">
+									{truncateText(user.username, 30)}{'\'s Profile\r'}
+								</span>
+							</>
+						)
+					) : (
+						'Your Profile'
+					)}
+				</NavLink>
+			</div>
+
+			<div>
+				<NavLink 
+					href={user ? `/users/${user._id}/strategies` : '/login'} 
+					isActive={isStrategies}
+				>
+					{user ? (
+						isCurrentUser ? (
+							'Your Strategies'
+						) : (
+							<>
+								<span className="block sm:hidden">
+									{'Strategies\r'}
+								</span>
+								<span className="hidden sm:block">
+									{truncateText(user.username, 30)}{'\'s Strategies\r'}
+								</span>
+							</>
+						)
+					) : (
+						'Your Strategies'
+					)}
+				</NavLink>
+			</div>
+		</motion.div>
+	)
+}
 
 export default function Header(): React.JSX.Element {
 	const pathname = usePathname()
@@ -70,7 +123,7 @@ export default function Header(): React.JSX.Element {
 	const [isMounted, setIsMounted] = useState(false)
 	const [viewedUser, setViewedUser] = useState<UserType | null>(null)
 	const userIdFromPath = pathname.split('/')[2]
-	const isCurrentUserPage = currentUser && currentUser._id === userIdFromPath
+	const isCurrentUserPage = currentUser !== null && currentUser._id === userIdFromPath
 
 	// Client-side initialization
 	useEffect(() => {
@@ -79,7 +132,7 @@ export default function Header(): React.JSX.Element {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			if (userIdFromPath && (isCurrentUserPage === false)) {
+			if (userIdFromPath && !isCurrentUserPage) {
 				try {
 					const response = await axios.get<UserType>(
 						`${API_URL}/v1/users/${userIdFromPath}`,
@@ -111,11 +164,11 @@ export default function Header(): React.JSX.Element {
 
 	return (
 		<nav className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200 shadow-sm">
-			<div className="container mx-auto px-4 flex justify-between">
-				<div className="flex items-center space-x-2">
+			<div className="container mx-auto px-1 sm:px-1 md:px-2 lg:px-4 flex justify-between max-w-full">
+				<div className="flex items-center space-x-1 sm:space-x-1 md:space-x-2">
 					<Link
 						href="/"
-						className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+						className="flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 					>
 						{'Home\r'}
 					</Link>
@@ -124,14 +177,19 @@ export default function Header(): React.JSX.Element {
 				<div className="flex overflow-hidden items-center justify-center relative">
 					<div className="transition-all duration-300 ease-in-out flex items-center">
 						<div className="flex-shrink-0">
-							{currentUser && 
-								<NavLink href="/users" isActive={pathname === '/users'}>
-									{'Users\r'}
-								</NavLink>
-							}
+							<NavLink href="/users" isActive={pathname === '/users'}>
+								{'Users\r'}
+							</NavLink>
 						</div>
 						<div className="relative flex transition-all duration-300 ease-in-out">
 							<AnimatePresence mode="sync">
+								{!currentUser && !viewedUser && (
+									<NavigationLinks 
+										user={null}
+										pathname={pathname}
+										currentUser={null}
+									/>
+								)}
 								{isLoading && currentUser && (
 									<NavigationLinks 
 										user={currentUser} 
@@ -162,7 +220,7 @@ export default function Header(): React.JSX.Element {
 					{currentUser && (
 						<button
 							onClick={logout}
-							className="flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+							className="flex items-center px-2 py-3 sm:px-2 md:px-3 lg:px-6 md:py-4 text-xs sm:text-xs md:text-sm font-medium whitespace-nowrap border-b-2 transition-all border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
 						>
 							{'Logout\r'}
 						</button>
