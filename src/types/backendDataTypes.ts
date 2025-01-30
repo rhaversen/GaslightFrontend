@@ -146,7 +146,7 @@ export interface TournamentType {
 	/** ID of the tournament */
 	_id: string
 	/** All gradings created from this tournament */
-	gradings: GradingType['_id']
+	gradings: GradingType['_id'][]
 	/** All disqualifications from this tournament */
 	disqualified?: [{
 		submission: GradingType['_id']
