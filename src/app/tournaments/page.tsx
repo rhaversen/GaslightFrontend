@@ -16,9 +16,36 @@ export default function Page(): ReactElement<any> {
 
 	useEffect(() => {
 		const fetchTournaments = async () => {
+			const winnerLimit = 1
+			const otherSkip = 1
+
+			const winnerStandings = 30
+			const otherStandings = 3
+
 			try {
-				const response = await axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`)
-				const tournamentsSorted = response.data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+				const [latestTournament, otherTournaments] = await Promise.all([
+					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
+						params: {
+							limit: winnerLimit,
+							limitStandings: winnerStandings
+						}
+					}),
+					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
+						params: {
+							skip: otherSkip,
+							limitStandings: otherStandings
+						}
+					})
+				])
+
+				const allTournaments = [
+					...latestTournament.data,
+					...otherTournaments.data
+				]
+
+				const tournamentsSorted = allTournaments.sort(
+					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				)
 				setTournaments(tournamentsSorted)
 			} catch (error) {
 				console.error('Error fetching tournaments:', error)
