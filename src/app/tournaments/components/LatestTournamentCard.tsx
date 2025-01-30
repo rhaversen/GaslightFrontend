@@ -16,13 +16,13 @@ export function LatestTournamentCard({ tournament, currentUserId }: LatestTourna
 	const currentUserStanding = tournament.standings.find(s => s.user === currentUserId)
 
 	return (
-		<div className="relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl shadow-2xl p-4 border-2 border-indigo-500/30 backdrop-blur-sm overflow-hidden">
+		<div className="relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl shadow-2xl p-4 border-2 border-indigo-500/30 backdrop-blur-sm">
 			<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
 			<div className="absolute top-0 left-0 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-1 rounded-br-lg text-white text-sm font-medium">
 				{'Latest Tournament\r'}
 			</div>
 
-			<div className="text-gray-400 mb-3 mt-4 text-sm font-medium flex justify-between items-start">
+			<div className="text-gray-400Zz mt-4 text-sm font-medium flex justify-between items-start">
 				<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
 					<div className="flex items-center gap-2">
 						<span title={`Created: ${formatDate(tournament.createdAt)}`}>
