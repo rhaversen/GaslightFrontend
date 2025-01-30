@@ -154,8 +154,6 @@ export interface TournamentType {
 	}]
 	/** Tournament winners */
 	standings: TournamentStanding[]
-	/** Tournament statistics */
-	statistics: TournamentStatistics
 
 	/** Tournament execution time in milliseconds */
 	tournamentExecutionTime: number

@@ -94,7 +94,7 @@ export default function Page(): ReactElement<any> {
 								<RunnerUpDisplay place={3} winner={tournament.standings[2]} currentUser={currentUser?._id} />
 							</div>
 							<StatsDisplay 
-								statistics={tournament.statistics} 
+								tournamentId={tournament._id}
 								userGrade={tournament.standings.find(s => s.user === currentUser?._id)?.grade}
 							/>
 						</div>

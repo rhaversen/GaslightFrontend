@@ -1,12 +1,42 @@
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import { TournamentStatistics } from '@/types/backendDataTypes'
+import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
 export const StatsDisplay = ({ 
-	statistics, 
+	tournamentId,
 	userGrade
 }: { 
-	statistics: TournamentStatistics,
+	tournamentId: string,
 	userGrade?: number
 }) => {
+	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
+	const [loading, setLoading] = useState(true)
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+	useEffect(() => {
+		const fetchStatistics = async () => {
+			try {
+				const response = await axios.get<TournamentStatistics>(`${API_URL}/v1/tournaments/${tournamentId}/statistics`)
+				setStatistics(response.data)
+			} catch (error) {
+				console.error('Error fetching tournament statistics:', error)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchStatistics()
+	}, [tournamentId, API_URL])
+
+	if (loading || !statistics) {
+		return(
+			<div>
+				<LoadingPlaceholder variant="dark"/>
+			</div>
+		)
+	}
+
 	const stats = {
 		// Statistical points
 		q1: statistics.percentiles.p25,
