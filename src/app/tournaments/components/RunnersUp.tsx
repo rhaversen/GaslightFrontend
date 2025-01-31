@@ -2,8 +2,16 @@ import { TournamentStanding } from '@/types/backendDataTypes'
 import { formatScore, formatZScore } from '@/lib/scoreUtils'
 import Link from 'next/link'
 
+// Modify the getPlaceStyles function to include first place
 const getPlaceStyles = (place: number) => {
 	switch(place) {
+		case 1:
+			return {
+				border: 'border-yellow-500/20 hover:border-yellow-500/40 hover:shadow-yellow-500/10',
+				text: 'text-yellow-300',
+				bg: 'bg-yellow-500/10',
+				placeGlow: 'place-glow first-place-glow'
+			}
 		case 2:
 			return {
 				border: 'border-sky-500/20 hover:border-sky-500/40 hover:shadow-sky-500/10',
@@ -69,7 +77,7 @@ export const RunnerUpDisplay = ({
 		>
 			<div className={`text-xs font-medium uppercase tracking-wider mb-1.5 flex items-center gap-2
 				${placeStyles.text}`}>
-				{place === 2 ? '2nd Place' : place === 3 ? '3rd Place' : `${place}th Place`}
+				{place === 1 ? '1st Place' : place === 2 ? '2nd Place' : place === 3 ? '3rd Place' : `${place}th Place`}
 				{isCurrentUser && (
 					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${placeStyles.bg}`}>
 						{'You !'}
@@ -77,42 +85,51 @@ export const RunnerUpDisplay = ({
 				)}
 			</div>
 			{winner ? (
-				<div className="grid grid-cols-1 2xl:grid-cols-[60%_40%] text-sm gap-2">
-					<div className="flex flex-col space-y-0.5">
-						<div>
+				<div className="flex flex-col gap-3">
+					<div className="space-y-2">
+						<div className="flex items-center gap-2">
 							<Link href={`/users/${winner.user}`}>
-								<span
-									className="
-										text-gray-200
-										hover:text-sky-200 transition-colors
-									"
-									title={winner.userName}
-								>
+								<span className="text-gray-200 hover:text-sky-200 transition-colors" title={winner.userName}>
 									{winner.userName}
 								</span>
 							</Link>
-							<span className="text-gray-600">{' with '}</span>
+							<span className="text-gray-600">with</span>
 							<Link href={`/submissions/${winner.submission}`}>
-								<span
-									className="
-										text-xs text-gray-300
-										hover:text-sky-200 transition-colors
-									"
-									title={winner.submissionName}
-								>
+								<span className="text-gray-300 hover:text-sky-200 transition-colors" title={winner.submissionName}>
 									{winner.submissionName}
 								</span>
 							</Link>
 						</div>
+						<div className="flex items-center gap-4">
+							<span className="text-gray-200" title={`Score: ${winner.grade}`}>
+								{formatScore(winner.grade)}
+							</span>
+							<span className="text-gray-400 text-xs" title={`Z-Score: ${winner.zValue}`}>
+								{formatZScore(winner.zValue)}
+							</span>
+						</div>
 					</div>
-					<div className="flex flex-col gap-0.5">
-						<span className="text-gray-200" title={`Score: ${winner.grade}`}>
-							{formatScore(winner.grade)}
-						</span>
-						<span className="text-gray-400 text-xs" title={`Z-Score: ${winner.zValue}`}>
-							{formatZScore(winner.zValue)}
-						</span>
-					</div>
+
+					{place <= 3 && winner.statistics && (
+						<div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+							<div className="flex items-center justify-between">
+								<span className="text-gray-400">Percentile Rank:</span>
+								<span className="text-gray-300">{winner.statistics.percentileRank.toFixed(1)}%</span>
+							</div>
+							<div className="flex items-center justify-between">
+								<span className="text-gray-400">Standard Score:</span>
+								<span className="text-gray-300">{winner.statistics.standardScore.toFixed(2)}</span>
+							</div>
+							<div className="flex items-center justify-between">
+								<span className="text-gray-400">Deviations:</span>
+								<span className="text-gray-300">{winner.statistics.deviationsFromMean.toFixed(2)}σ</span>
+							</div>
+							<div className="flex items-center justify-between">
+								<span className="text-gray-400">Normalized:</span>
+								<span className="text-gray-300">{(winner.statistics.normalizedScore * 100).toFixed(1)}%</span>
+							</div>
+						</div>
+					)}
 				</div>
 			) : (
 				<div className="text-gray-400">{'None'}</div>
