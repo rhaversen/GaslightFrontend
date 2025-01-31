@@ -54,7 +54,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 	}
 
 	return (
-		<div 
+		<div
 			className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}
 			style={{ minHeight: 160 }} // Match the loading state height
 		>
@@ -134,7 +134,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 										userGrade={tournament.userStanding?.grade}
 									/>
 								</div>
-				
+
 								<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2">
 									{isLoadingStandings ? (
 										Array(chunk1Count).fill(0).map((_, idx) => (
@@ -142,10 +142,10 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 										))
 									) : (
 										allStandings.slice(TOP_PLACES, TOP_PLACES + chunk1Count).map((standing) => (
-											<PlacementDisplay 
-												key={standing.user} 
-												place={standing.placement} 
-												standing={standing} 
+											<PlacementDisplay
+												key={standing.user}
+												place={standing.placement}
+												standing={standing}
 												isCurrentUser={standing.user === currentUserId}
 											/>
 										))
@@ -159,10 +159,10 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 										))
 									) : (
 										allStandings.slice(SIMPLIFIED_DISPLAY_START, SIMPLIFIED_DISPLAY_START + chunk2Count).map((standing) => (
-											<PlacementDisplay 
-												key={standing.user} 
-												place={standing.placement} 
-												standing={standing} 
+											<PlacementDisplay
+												key={standing.user}
+												place={standing.placement}
+												standing={standing}
 												isCurrentUser={standing.user === currentUserId}
 												simpleStartIndex={FULL_DISPLAY_PLACES}
 											/>
@@ -186,7 +186,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 					)}
 				</div>
 			</div>
-		</div>
+		</div >
 	)
 }
 
