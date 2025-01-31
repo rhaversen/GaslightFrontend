@@ -1,9 +1,8 @@
 import { TournamentStanding, TournamentType } from '@/types/backendDataTypes'
 import { formatDate } from '@/lib/dateUtils'
 import { formatDuration } from '@/lib/timeUtils'
-import { WinnerDisplay } from './WinnerDisplay'
+import { PlacementDisplay } from './PlacementDisplay'
 import { StatsDisplay } from './StatsDisplay'
-import { RunnerUpDisplay } from './RunnersUp'
 import { useState } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
 import { DisqualificationsDisplay } from './DisqualificationsDisplay'
@@ -71,16 +70,17 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 			<div className="grid grid-cols-1">
 				<div className="grid grid-cols-1 lg:grid-cols-[60%_39%] gap-2">
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-						<WinnerDisplay
-							winner={tournament.standings[0]}
+						<PlacementDisplay
+							place={1}
+							standing={tournament.standings[0]}
 							isCurrentUser={tournament.standings[0].user === currentUserId}
 						/>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
 							{tournament.standings.slice(1, 3).map((standing) => (
-								<RunnerUpDisplay
+								<PlacementDisplay
 									key={standing.user}
 									place={standing.placement}
-									winner={standing}
+									standing={standing}
 									isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
 								/>
 							))}
@@ -119,10 +119,10 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 										))
 									) : (
 										allStandings.slice(3, 15).map((standing) => (
-											<RunnerUpDisplay 
+											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
-												winner={standing} 
+												standing={standing} 
 												isCurrentUser={standing.user === currentUserId}
 											/>
 										))
@@ -136,10 +136,10 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 										))
 									) : (
 										allStandings.slice(15, 30).map((standing) => (
-											<RunnerUpDisplay 
+											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
-												winner={standing} 
+												standing={standing} 
 												isCurrentUser={standing.user === currentUserId}
 												simpleStartIndex={13}
 											/>
