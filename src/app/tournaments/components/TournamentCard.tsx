@@ -55,7 +55,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 
 	return (
 		<div
-			className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}
+			className={`relative overflow-hidden bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}
 			style={{ minHeight: 160 }} // Match the loading state height
 		>
 			{isLatest ? (
