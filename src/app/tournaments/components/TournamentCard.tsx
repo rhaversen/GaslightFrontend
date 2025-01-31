@@ -50,7 +50,7 @@ export function TournamentCard({ tournament, currentUserId, isLatest = false, de
 			{isLatest && (
 				<>
 					<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
-					<div className="absolute top-0 left-0 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-1 rounded-br-lg text-white text-sm font-medium">
+					<div className="absolute -top-0.5 -left-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-1 rounded-br-lg rounded-tl-xl text-white text-sm font-medium">
 						{'Latest Tournament'}
 					</div>
 				</>
