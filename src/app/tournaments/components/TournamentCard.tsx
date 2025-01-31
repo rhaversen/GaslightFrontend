@@ -17,7 +17,7 @@ interface TournamentCardProps {
 	defaultExpanded?: boolean
 }
 
-export function TournamentCard({ tournament, currentUserId, isLatest = false, defaultExpanded = false }: TournamentCardProps) {
+export const TournamentCard = ({ tournament, currentUserId, isLatest = false, defaultExpanded = false }: TournamentCardProps) => {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 	const [hasLoadedAdditional, setHasLoadedAdditional] = useState(defaultExpanded)
@@ -49,7 +49,10 @@ export function TournamentCard({ tournament, currentUserId, isLatest = false, de
 	}
 
 	return (
-		<div className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}>
+		<div 
+			className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}
+			style={{ minHeight: 160 }} // Match the loading state height
+		>
 			{isLatest && (
 				<>
 					<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
