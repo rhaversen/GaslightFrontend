@@ -121,7 +121,7 @@ export const PlacementDisplay = ({
 
 			<div className={place === 1 ? 'space-y-6' : 'grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2'}>
 				<div className="space-y-1.5">
-					<div className={`${place === 1 ? 'text-xl' : ''} flex items-center gap-2`}>
+					<div className={`${place === 1 ? 'text-xl' : ''}`}>
 						<Link href={`/users/${standing.user}`}>
 							<span className="text-gray-100 hover:text-yellow-200 transition-colors" title={standing.userName}>
 								{standing.userName}
