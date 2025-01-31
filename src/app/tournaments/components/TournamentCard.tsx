@@ -9,6 +9,7 @@ import { DisqualificationsDisplay } from './DisqualificationsDisplay'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CurrentUserDisplay } from './CurrentUserDisplay'
 import axios from 'axios'
+import Link from 'next/link'
 
 const TOP_PLACES = 3 // Cannot be modified, as it's matched with the design
 const FULL_DISPLAY_PLACES = 8
@@ -66,12 +67,12 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 					</div>
 					<div className="flex flex-col">
 						<div className="flex justify-end">
-							<button
-								onClick={() => console.log('Navigate to tournament:', tournament._id)}
+							<Link
+								href={`/tournaments/${tournament._id}`}
 								className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/25"
 							>
 								{'View Latest Tournament →'}
-							</button>
+							</Link>
 						</div>
 						<div className='pb-2'>
 							<TournamentInfo tournament={tournament} />
@@ -81,12 +82,12 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 			) : (
 				<div className="font-medium flex justify-between items-center pb-2">
 					<TournamentInfo tournament={tournament} />
-					<button
-						onClick={() => console.log('Navigate to tournament:', tournament._id)}
+					<Link
+						href={`/tournaments/${tournament._id}`}
 						className="px-3 py-1 text-sm font-medium text-indigo-300 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-all duration-300 hover:border-indigo-500/50"
 					>
 						{'View Tournament →'}
-					</button>
+					</Link>
 				</div>
 			)}
 
