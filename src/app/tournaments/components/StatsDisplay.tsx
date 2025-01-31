@@ -31,7 +31,7 @@ export const StatsDisplay = ({
 
 	if (loading || !statistics) {
 		return(
-			<div>
+			<div className='h-40'>
 				<LoadingPlaceholder variant="dark"/>
 			</div>
 		)

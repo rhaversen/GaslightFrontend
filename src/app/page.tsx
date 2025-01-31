@@ -90,7 +90,7 @@ export default function Page(): ReactElement<any> {
 			if (userData.data.submissionCount > 0) {
 				router.push(`/users/${currentUser._id}/strategies`)
 			} else {
-				router.push(`/users/${currentUser._id}/strategies/new`)
+				router.push('/strategies/new')
 			}
 		} catch (error) {
 			console.error('Failed to fetch user data:', error)
@@ -112,7 +112,7 @@ export default function Page(): ReactElement<any> {
 
 	const ResultsLink = (): ReactElement => (
 		<Link
-			href="/tournament/results"
+			href="/tournaments"
 			className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300 
                 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
 		>
