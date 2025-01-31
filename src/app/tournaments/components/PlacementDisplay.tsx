@@ -94,24 +94,29 @@ export const PlacementDisplay = ({
 	return (
 		<div
 			className={`
-				bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-3 rounded-xl
+				bg-gradient-to-br from-gray-700/90 to-gray-800/90 rounded-xl
 				border transition-all duration-300 shadow-lg relative
 				${placeStyles.border}
 				${isCurrentUser ? placeStyles.placeGlow : ''}
+				${place === 1 ? 'p-6' : 'p-3'}
 			`}
 		>
-			<h3 className={`text-xs font-semibold mb-2 uppercase tracking-wider flex items-center gap-2 ${placeStyles.text}`}>
+			<h3 className={`
+				font-semibold uppercase tracking-wider flex items-center gap-2 
+				${placeStyles.text} 
+				${place === 1 ? 'text-lg mb-4' : 'text-xs mb-2'}
+			`}>
 				{getPlaceText(place)}
 				{isCurrentUser && (
-					<span className={`text-[10px] px-1.5 py-0.5 rounded-full ${placeStyles.bg}`}>
+					<span className={`${place === 1 ? 'text-sm' : 'text-[10px]'} px-1.5 py-0.5 rounded-full ${placeStyles.bg}`}>
 						{'You !'}
 					</span>
 				)}
 			</h3>
 
-			<div className="grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2">
+			<div className={place === 1 ? 'space-y-6' : 'grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2'}>
 				<div className="space-y-1.5">
-					<div>
+					<div className={place === 1 ? 'text-xl' : ''}>
 						<Link href={`/users/${standing.user}`}>
 							<span className="text-gray-100 hover:text-yellow-200 transition-colors" title={standing.userName}>
 								{standing.userName}
@@ -119,23 +124,49 @@ export const PlacementDisplay = ({
 						</Link>
 						<span className="text-gray-500">{' with '}</span>
 						<Link href={`/submissions/${standing.submission}`}>
-							<span className="text-sm text-gray-300 hover:text-yellow-200 transition-colors" title={standing.submissionName}>
+							<span className={`${place === 1 ? 'text-lg' : 'text-sm'} text-gray-300 hover:text-yellow-200 transition-colors`} title={standing.submissionName}>
 								{standing.submissionName}
 							</span>
 						</Link>
 					</div>
 				</div>
-				<div className="flex flex-col gap-1">
-					<div className="text-gray-200" title={`Score: ${standing.grade}`}>
-						{formatScore(standing.grade)}
+
+				{place === 1 ? (
+					<div className="grid grid-cols-2 gap-6 pt-2">
+						<div className="space-y-4">
+							<div className="space-y-1">
+								<div className="text-sm text-gray-400">{'Score'}</div>
+								<div className="text-2xl text-gray-200">{standing.grade.toFixed(3)}</div>
+							</div>
+							<div className="space-y-1">
+								<div className="text-sm text-gray-400">{'Percentile Rank'}</div>
+								<div className="text-xl text-gray-300">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+							</div>
+						</div>
+						<div className="space-y-4">
+							<div className="space-y-1">
+								<div className="text-sm text-gray-400">{'Z-Score'}</div>
+								<div className="text-2xl text-gray-200">{standing.zValue.toFixed(3)}</div>
+							</div>
+							<div className="space-y-1">
+								<div className="text-sm text-gray-400">{'Deviations'}</div>
+								<div className="text-xl text-gray-300">{standing.statistics.deviationsFromMean.toFixed(2)}{'σ'}</div>
+							</div>
+						</div>
 					</div>
-					<div className="text-gray-400 text-sm" title={`Z-Score: ${standing.zValue}`}>
-						{formatZScore(standing.zValue)}
+				) : (
+					<div className="flex flex-col gap-1">
+						<div className="text-gray-200" title={`Score: ${standing.grade}`}>
+							{formatScore(standing.grade)}
+						</div>
+						<div className="text-gray-400 text-sm" title={`Z-Score: ${standing.zValue}`}>
+							{formatZScore(standing.zValue)}
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 
-			{place <= 3 && (
+			{place > 1 && place <= 3 && (
 				<div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm mt-3">
 					<div className="flex items-center justify-between">
 						<span className="text-gray-400">{'Percentile Rank:'}</span>
