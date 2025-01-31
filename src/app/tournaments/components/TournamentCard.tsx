@@ -10,6 +10,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { CurrentUserDisplay } from './CurrentUserDisplay'
 import axios from 'axios'
 
+const TOP_PLACES = 3 // Cannot be modified, as it's matched with the design
+const FULL_DISPLAY_PLACES = 8
+const MAX_SIMPLIFIED_DISPLAY_PLACES = 20
+const SIMPLIFIED_DISPLAY_START = FULL_DISPLAY_PLACES + TOP_PLACES
+
 interface TournamentCardProps {
 	tournament: TournamentType
 	currentUserId?: string
@@ -24,8 +29,8 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 	const [allStandings, setAllStandings] = useState(tournament.standings)
 	const [isLoadingStandings, setIsLoadingStandings] = useState(false)
 
-	const chunk1Count = Math.min(Math.max(0, tournament.gradings.length - 3), 12)
-	const chunk2Count = Math.min(Math.max(0, tournament.gradings.length - 15), 15)
+	const chunk1Count = Math.min(Math.max(0, tournament.gradings.length - TOP_PLACES), FULL_DISPLAY_PLACES)
+	const chunk2Count = Math.min(Math.max(0, tournament.gradings.length - SIMPLIFIED_DISPLAY_START), MAX_SIMPLIFIED_DISPLAY_PLACES)
 
 	const fetchAdditionalStandings = async () => {
 		if (hasLoadedAdditional) return
@@ -135,7 +140,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-28" />
 										))
 									) : (
-										allStandings.slice(3, 3 + chunk1Count).map((standing) => (
+										allStandings.slice(TOP_PLACES, TOP_PLACES + chunk1Count).map((standing) => (
 											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
@@ -152,13 +157,13 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-10" />
 										))
 									) : (
-										allStandings.slice(15, 15 + chunk2Count).map((standing) => (
+										allStandings.slice(SIMPLIFIED_DISPLAY_START, SIMPLIFIED_DISPLAY_START + chunk2Count).map((standing) => (
 											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
 												standing={standing} 
 												isCurrentUser={standing.user === currentUserId}
-												simpleStartIndex={13}
+												simpleStartIndex={FULL_DISPLAY_PLACES}
 											/>
 										))
 									)}
