@@ -24,6 +24,9 @@ export function TournamentCard({ tournament, currentUserId, isLatest = false, de
 	const [allStandings, setAllStandings] = useState(tournament.standings)
 	const [isLoadingStandings, setIsLoadingStandings] = useState(false)
 
+	const chunk1Count = Math.min(Math.max(0, tournament.gradings.length - 3), 12)
+	const chunk2Count = Math.min(Math.max(0, tournament.gradings.length - 15), 15)
+
 	const fetchAdditionalStandings = async () => {
 		if (hasLoadedAdditional) return
 		setIsLoadingStandings(true)
@@ -125,11 +128,11 @@ export function TournamentCard({ tournament, currentUserId, isLatest = false, de
 				
 								<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
 									{isLoadingStandings ? (
-										Array(12).fill(0).map((_, idx) => (
+										Array(chunk1Count).fill(0).map((_, idx) => (
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-28" />
 										))
 									) : (
-										allStandings.slice(3, 15).map((standing) => (
+										allStandings.slice(3, 3 + chunk1Count).map((standing) => (
 											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
@@ -142,11 +145,11 @@ export function TournamentCard({ tournament, currentUserId, isLatest = false, de
 
 								<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
 									{isLoadingStandings ? (
-										Array(15).fill(0).map((_, idx) => (
+										Array(chunk2Count).fill(0).map((_, idx) => (
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-10" />
 										))
 									) : (
-										allStandings.slice(15, 30).map((standing) => (
+										allStandings.slice(15, 15 + chunk2Count).map((standing) => (
 											<PlacementDisplay 
 												key={standing.user} 
 												place={standing.placement} 
