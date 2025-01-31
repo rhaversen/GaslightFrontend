@@ -112,3 +112,8 @@ body {
 	--glow-color-1: rgba(205, 127, 50, 0.5);
 	--glow-color-2: rgba(184, 115, 51, 0.5);
 }
+
+.default-place-glow {
+	--glow-color-1: rgba(255, 255, 255, 0.5);
+	--glow-color-2: rgba(255, 255, 255, 0.5);
+}

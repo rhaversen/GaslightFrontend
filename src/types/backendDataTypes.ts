@@ -157,6 +157,8 @@ export interface TournamentType {
 	}]
 	/** Tournament winners */
 	standings: TournamentStanding[]
+	/** User standing */
+	userStanding: TournamentStanding | null
 
 	/** Tournament execution time in milliseconds */
 	tournamentExecutionTime: number
