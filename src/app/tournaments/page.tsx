@@ -6,7 +6,6 @@ import React, { useState, useEffect, type ReactElement } from 'react'
 import { TournamentType } from '@/types/backendDataTypes'
 import { useUser } from '@/contexts/UserProvider'
 import { TournamentCard } from './components/TournamentCard'
-import { LatestTournamentCard } from './components/LatestTournamentCard'
 
 export default function Page(): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -101,17 +100,13 @@ export default function Page(): ReactElement<any> {
 			</div>
 			<div className="space-y-6">
 				{tournaments.map((tournament, index) => (
-					index === 0 
-						? <LatestTournamentCard 
-							key={tournament._id} 
-							tournament={tournament} 
-							currentUserId={currentUser?._id} 
-						/>
-						: <TournamentCard 
-							key={tournament._id} 
-							tournament={tournament} 
-							currentUserId={currentUser?._id} 
-						/>
+					<TournamentCard
+						key={tournament._id}
+						tournament={tournament}
+						currentUserId={currentUser?._id}
+						isLatest={index === 0}
+						defaultExpanded={index === 0}
+					/>
 				))}
 			</div>
 			{
@@ -119,6 +114,6 @@ export default function Page(): ReactElement<any> {
 					<p className="text-white text-center mt-4">{'No tournaments found.'}</p>
 				)
 			}
-		</main >
+		</main>
 	)
 }

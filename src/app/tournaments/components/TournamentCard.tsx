@@ -13,12 +13,14 @@ import axios from 'axios'
 interface TournamentCardProps {
 	tournament: TournamentType
 	currentUserId?: string
+	isLatest?: boolean
+	defaultExpanded?: boolean
 }
 
-export function TournamentCard({ tournament, currentUserId }: TournamentCardProps) {
+export function TournamentCard({ tournament, currentUserId, isLatest = false, defaultExpanded = false }: TournamentCardProps) {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const [isExpanded, setIsExpanded] = useState(false)
-	const [hasLoadedAdditional, setHasLoadedAdditional] = useState(false)
+	const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+	const [hasLoadedAdditional, setHasLoadedAdditional] = useState(defaultExpanded)
 	const [allStandings, setAllStandings] = useState(tournament.standings)
 	const [isLoadingStandings, setIsLoadingStandings] = useState(false)
 
@@ -44,7 +46,16 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 	}
 
 	return (
-		<div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 border border-gray-700/30 backdrop-blur-sm">
+		<div className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}>
+			{isLatest && (
+				<>
+					<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
+					<div className="absolute top-0 left-0 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-1 rounded-br-lg text-white text-sm font-medium">
+						{'Latest Tournament'}
+					</div>
+				</>
+			)}
+
 			<div className="text-gray-400 mt-4 text-sm font-medium flex justify-between items-start">
 				<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
 					<div className="flex items-center gap-2">
@@ -93,7 +104,7 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 				</div>
 
 				<div>
-					<AnimatePresence>
+					<AnimatePresence initial={!defaultExpanded}>
 						{isExpanded && (
 							<motion.div
 								initial={{ height: 0, opacity: 0 }}
@@ -150,15 +161,17 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 							</motion.div>
 						)}
 					</AnimatePresence>
-					<button
-						onClick={handleExpand}
-						className="w-full border-t border-gray-700/30 mt-3 pt-2 flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-gray-300"
-					>
-						<span>{isExpanded ? 'Hide Details' : 'Show Details'}</span>
-						<div className="w-4 h-4">
-							{isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
-						</div>
-					</button>
+					{!isLatest && (
+						<button
+							onClick={handleExpand}
+							className="w-full border-t border-gray-700/30 mt-3 pt-2 flex items-center justify-center gap-2 text-sm text-gray-400 hover:text-gray-300"
+						>
+							<span>{isExpanded ? 'Hide Details' : 'Show Details'}</span>
+							<div className="w-4 h-4">
+								{isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+							</div>
+						</button>
+					)}
 				</div>
 			</div>
 		</div>
