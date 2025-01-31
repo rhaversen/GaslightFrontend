@@ -47,15 +47,15 @@ export function LatestTournamentCard({ tournament, currentUserId }: LatestTourna
 						<PlacementDisplay
 							place={1}
 							standing={tournament.standings[0]}
-							isCurrentUser={tournament.standings[0].user === currentUserId}
+							isCurrentUser={tournament.standings[0]?.user === currentUserId}
 						/>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-							{tournament.standings.slice(1, 3).map((standing) => (
+							{[2, 3].map((place) => (
 								<PlacementDisplay
-									key={standing.user}
-									place={standing.placement}
-									standing={standing}
-									isCurrentUser={(standing.user === currentUserId) && (currentUserId !== undefined)}
+									key={place}
+									place={place}
+									standing={tournament.standings.find(s => s.placement === place)}
+									isCurrentUser={tournament.standings.find(s => s.placement === place)?.user === currentUserId}
 								/>
 							))}
 						</div>
