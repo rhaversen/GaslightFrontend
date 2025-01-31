@@ -90,7 +90,7 @@ export default function Page(): ReactElement<any> {
 			if (userData.data.submissionCount > 0) {
 				router.push(`/users/${currentUser._id}/strategies`)
 			} else {
-				router.push(`/strategies/new`)
+				router.push('/strategies/new')
 			}
 		} catch (error) {
 			console.error('Failed to fetch user data:', error)
