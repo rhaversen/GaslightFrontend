@@ -28,14 +28,14 @@ export default function Page(): ReactElement<any> {
 						params: {
 							limit: winnerLimit,
 							limitStandings: winnerStandings,
-							userIdStanding: currentUser?._id || null
+							userIdStanding: currentUser?._id ?? null
 						}
 					}),
 					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
 						params: {
 							skip: otherSkip,
 							limitStandings: otherStandings,
-							userIdStanding: currentUser?._id || null
+							userIdStanding: currentUser?._id ?? null
 						}
 					})
 				])
@@ -57,7 +57,7 @@ export default function Page(): ReactElement<any> {
 		}
 
 		fetchTournaments()
-	}, [API_URL])
+	}, [API_URL, currentUser?._id])
 
 	if (loading) {
 		return (
