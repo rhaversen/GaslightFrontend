@@ -60,10 +60,10 @@ export const PlacementDisplay = ({
 
 	if (isSimplified) {
 		return (
-			<div className="text-sm text-gray-400">
-				<span className="font-medium">{`${place}. `}</span>
+			<div className="text-sm">
+				<span className="font-medium text-gray-400">{`${place}. `}</span>
 				<Link href={`/users/${standing?.user}`}>
-					<span className={`${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
+					<span className={`text-gray-400 hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
 						{standing?.userName}
 					</span>
 				</Link>
