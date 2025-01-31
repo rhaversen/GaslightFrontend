@@ -58,36 +58,37 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 			className={`relative bg-gradient-to-br from-gray-800${isLatest ? '/90' : ''} to-gray-900${isLatest ? '/90' : ''} rounded-xl shadow-2xl p-4 ${isLatest ? 'border-2 border-indigo-500/30' : 'border border-gray-700/30'} backdrop-blur-sm`}
 			style={{ minHeight: 160 }} // Match the loading state height
 		>
-			{isLatest && (
+			{isLatest ? (
 				<>
 					<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
 					<div className="absolute -top-0.5 -left-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-1 rounded-br-lg rounded-tl-xl text-white text-sm font-medium">
 						{'Latest Tournament'}
 					</div>
-				</>
-			)}
-
-			<div className="text-gray-400 mt-4 text-sm font-medium flex justify-between items-start">
-				<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-					<div className="flex items-center gap-2">
-						<span title={`Created: ${formatDate(tournament.createdAt)}`}>
-							{formatDate(tournament.createdAt)}
-						</span>
-						<span className="text-gray-500/80" title="Tournament execution time">
-							{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
-						</span>
+					<div className="flex flex-col">
+						<div className="flex justify-end">
+							<button
+								onClick={() => console.log('Navigate to tournament:', tournament._id)}
+								className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/25"
+							>
+								{'View Latest Tournament →'}
+							</button>
+						</div>
+						<div className='pb-2'>
+							<TournamentInfo tournament={tournament} />
+						</div>
 					</div>
-					<span className="text-gray-500/80" title="Number of submissions">
-						{tournament.gradings.length}{' submissions'}
-					</span>
+				</>
+			) : (
+				<div className="font-medium flex justify-between items-center pb-2">
+					<TournamentInfo tournament={tournament} />
+					<button
+						onClick={() => console.log('Navigate to tournament:', tournament._id)}
+						className="px-3 py-1 text-sm font-medium text-indigo-300 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-all duration-300 hover:border-indigo-500/50"
+					>
+						{'View Tournament →'}
+					</button>
 				</div>
-				<button
-					onClick={() => console.log('Navigate to tournament:', tournament._id)}
-					className="px-3 py-1 text-xs font-medium text-indigo-300 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-all duration-300 hover:border-indigo-500/50"
-				>
-					{'View Details →'}
-				</button>
-			</div>
+			)}
 
 			<div className="grid grid-cols-1">
 				<div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-2">
@@ -188,3 +189,19 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 		</div>
 	)
 }
+
+const TournamentInfo = ({ tournament }: { tournament: TournamentType }) => (
+	<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-gray-400 text-sm">
+		<div className="flex items-center gap-2">
+			<span title={`Created: ${formatDate(tournament.createdAt)}`}>
+				{formatDate(tournament.createdAt)}
+			</span>
+			<span className="text-gray-500/80" title="Tournament execution time">
+				{'('}{formatDuration(tournament.tournamentExecutionTime)}{')'}
+			</span>
+		</div>
+		<span className="text-gray-500/80" title="Number of submissions">
+			{tournament.gradings.length}{' submissions'}
+		</span>
+	</div>
+)
