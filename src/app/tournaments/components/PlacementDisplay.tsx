@@ -29,8 +29,8 @@ const getPlaceStyles = (place: number) => {
 			return {
 				border: 'border-gray-600/20 hover:border-gray-600/30',
 				text: 'text-gray-400',
-				bg: 'bg-gray-500/10',
-				placeGlow: ''
+				bg: 'bg-blue-500/20',
+				placeGlow: 'place-glow default-place-glow'
 			}
 	}
 }
@@ -70,6 +70,11 @@ export const PlacementDisplay = ({
 				<span className="text-gray-500 ml-2">
 					{standing?.grade.toFixed(2) ?? 0}
 				</span>
+				{isCurrentUser && place > 3 && (
+					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
+						{'You !\r'}
+					</span>
+				)}
 			</div>
 		)
 	}
@@ -116,7 +121,7 @@ export const PlacementDisplay = ({
 
 			<div className={place === 1 ? 'space-y-6' : 'grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2'}>
 				<div className="space-y-1.5">
-					<div className={place === 1 ? 'text-xl' : ''}>
+					<div className={`${place === 1 ? 'text-xl' : ''} flex items-center gap-2`}>
 						<Link href={`/users/${standing.user}`}>
 							<span className="text-gray-100 hover:text-yellow-200 transition-colors" title={standing.userName}>
 								{standing.userName}
