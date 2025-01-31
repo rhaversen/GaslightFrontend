@@ -27,13 +27,15 @@ export default function Page(): ReactElement<any> {
 					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
 						params: {
 							limit: winnerLimit,
-							limitStandings: winnerStandings
+							limitStandings: winnerStandings,
+							userIdStanding: currentUser?._id || null
 						}
 					}),
 					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
 						params: {
 							skip: otherSkip,
-							limitStandings: otherStandings
+							limitStandings: otherStandings,
+							userIdStanding: currentUser?._id || null
 						}
 					})
 				])

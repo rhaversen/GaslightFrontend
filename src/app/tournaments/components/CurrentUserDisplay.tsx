@@ -1,6 +1,12 @@
 import { TournamentStanding } from '@/types/backendDataTypes'
 
-export function CurrentUserDisplay({ standing }: { standing: TournamentStanding | undefined }) {
+export function CurrentUserDisplay({
+	standing,
+	isLoggedIn
+}: {
+	standing: TournamentStanding | null
+	isLoggedIn: boolean
+}) {
 	return (
 		<div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
 			<div className="text-indigo-300 text-sm font-medium mb-2">{'Your Standing'}</div>
@@ -14,9 +20,15 @@ export function CurrentUserDisplay({ standing }: { standing: TournamentStanding 
 					</div>
 				</div>
 			) : (
-				<div className="text-gray-400 text-sm">
-					{'You have not submitted to this tournament.\r'}
-				</div>
+				isLoggedIn ? (
+					<div className="text-gray-400 text-sm">
+						{'You have not submitted to this tournament.\r'}
+					</div>
+				) : (
+					<div className="text-gray-400 text-sm">
+						{'Login to view your position.\r'}
+					</div>
+				)
 			)}
 		</div>
 	)

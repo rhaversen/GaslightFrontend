@@ -13,8 +13,6 @@ interface LatestTournamentCardProps {
 }
 
 export function LatestTournamentCard({ tournament, currentUserId }: LatestTournamentCardProps) {
-	const currentUserStanding = tournament.standings.find(s => s.user === currentUserId)
-
 	return (
 		<div className="relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl shadow-2xl p-4 border-2 border-indigo-500/30 backdrop-blur-sm">
 			<div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
@@ -62,7 +60,10 @@ export function LatestTournamentCard({ tournament, currentUserId }: LatestTourna
 							))}
 						</div>
 					</div>
-					<CurrentUserDisplay standing={currentUserStanding} />
+					<CurrentUserDisplay
+						standing={tournament.userStanding}
+						isLoggedIn={currentUserId !== undefined}
+					/>
 				</div>
 				
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[350px_1fr] gap-2">
@@ -71,7 +72,7 @@ export function LatestTournamentCard({ tournament, currentUserId }: LatestTourna
 					/>
 					<StatsDisplay
 						tournamentId={tournament._id}
-						userGrade={currentUserStanding?.grade}
+						userGrade={tournament.userStanding?.grade}
 					/>
 				</div>
 				

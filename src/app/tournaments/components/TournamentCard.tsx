@@ -22,7 +22,6 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 	const [hasLoadedAdditional, setHasLoadedAdditional] = useState(false)
 	const [allStandings, setAllStandings] = useState(tournament.standings)
 	const [isLoadingStandings, setIsLoadingStandings] = useState(false)
-	const currentUserStanding = allStandings.find(s => s.user === currentUserId)
 
 	const fetchAdditionalStandings = async () => {
 		if (hasLoadedAdditional) return
@@ -87,7 +86,10 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 							))}
 						</div>
 					</div>
-					<CurrentUserDisplay standing={currentUserStanding} />
+					<CurrentUserDisplay
+						standing={tournament.userStanding}
+						isLoggedIn={currentUserId !== undefined}
+					/>
 				</div>
 
 				<div>
@@ -106,7 +108,7 @@ export function TournamentCard({ tournament, currentUserId }: TournamentCardProp
 									/>
 									<StatsDisplay
 										tournamentId={tournament._id}
-										userGrade={currentUserStanding?.grade}
+										userGrade={tournament.userStanding?.grade}
 									/>
 								</div>
 				
