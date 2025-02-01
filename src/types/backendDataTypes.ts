@@ -76,20 +76,6 @@ interface IGradingStatistics {
 	/** Relative performance (-1 to 1) compared to mean */
 	normalizedScore: number
 }
-export interface GradingType {
-	/** ID of the grading */
-	_id: string
-	/** Submission being graded */
-	submission: ISubmission['_id']
-	/** Score given to the submission */
-	score: number
-	/** Statistics of the grading */
-	statistics: IGradingStatistics
-
-	// Timestamps
-	createdAt: Date
-	updatedAt: Date
-}
 
 export interface TournamentStanding {
 	user: UserType['_id']
@@ -149,8 +135,6 @@ export interface TournamentStatistics {
 export interface TournamentType {
 	/** ID of the tournament */
 	_id: string
-	/** All gradings created from this tournament */
-	gradings: GradingType['_id'][]
 	/** All disqualifications from this tournament */
 	disqualified?: [{
 		submission: ISubmission['_id']
