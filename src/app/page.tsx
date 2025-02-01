@@ -9,8 +9,10 @@ import Link from 'next/link'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
 
-export default function Page(): ReactElement<any> {
-	// Time generation function
+const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
+	const [timeToTournamentString, setTimeToTournamentString] = useState('-- : -- : --')
+	const [timeSinceTournamentString, setTimeSinceTournamentString] = useState('-- : -- : --')
+
 	const timeToNextMidnight = (): string => {
 		const now = new Date()
 		const nextMidnight = new Date(now)
@@ -33,24 +35,16 @@ export default function Page(): ReactElement<any> {
 		return `${hours} : ${minutes} : ${seconds}`
 	}
 
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const router = useRouter()
-	const [timeToTournamentString, setTimeToTournamentString] = useState('-- : -- : --')
-	const [timeSinceTournamentString, setTimeSinceTournamentString] = useState('-- : -- : --')
-	const { currentUser } = useUser()
-	const userDataPromiseRef = useRef<Promise<any> | null>(null)
-	const tournamentInProgress = false // TODO: fetch from backend
-
-	// Start loading data on mount if user exists
-	useEffect(() => {
-		if ((currentUser?._id) != null) {
-			userDataPromiseRef.current = axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
-				.catch(err => {
-					console.error('Failed to fetch user data:', err)
-					return null
-				})
-		}
-	}, [currentUser, API_URL])
+	const TimerDisplay = ({ time, label }: { time: string, label: string }): ReactElement => (
+		<>
+			<div className='text-white text-xl font-medium tracking-wide'>
+				{label}
+			</div>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
+				{time}
+			</div>
+		</>
+	)
 
 	useEffect(() => {
 		setTimeToTournamentString(timeToNextMidnight())
@@ -67,6 +61,32 @@ export default function Page(): ReactElement<any> {
 		}, 1000)
 		return () => { clearInterval(interval) }
 	}, [])
+
+	return (
+		<TimerDisplay
+			time={tournamentInProgress ? timeSinceTournamentString : timeToTournamentString}
+			label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT TOURNAMENT'}
+		/>
+	)
+}
+
+export default function Page(): ReactElement<any> {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
+	const router = useRouter()
+	const { currentUser } = useUser()
+	const userDataPromiseRef = useRef<Promise<any> | null>(null)
+	const tournamentInProgress = true // TODO: fetch from backend
+
+	// Start loading data on mount if user exists
+	useEffect(() => {
+		if ((currentUser?._id) != null) {
+			userDataPromiseRef.current = axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
+				.catch(err => {
+					console.error('Failed to fetch user data:', err)
+					return null
+				})
+		}
+	}, [currentUser, API_URL])
 
 	const handleAmbigusClick = async (): Promise<void> => {
 		// If user is not logged in, redirect to signup page
@@ -122,17 +142,6 @@ export default function Page(): ReactElement<any> {
 		</Link>
 	)
 
-	const TimerDisplay = ({ time, label }: { time: string, label: string }): ReactElement => (
-		<>
-			<div className='text-white text-xl font-medium tracking-wide'>
-				{label}
-			</div>
-			<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
-				{time}
-			</div>
-		</>
-	)
-
 	return (
 		<div className="h-screen">
 			<Header />
@@ -142,10 +151,7 @@ export default function Page(): ReactElement<any> {
 					: <HaloCalm />
 				}
 				<div className="z-10 text-center flex flex-col items-center gap-8">
-					<TimerDisplay
-						time={tournamentInProgress ? timeSinceTournamentString : timeToTournamentString}
-						label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT RANKED TOURNAMENT IN'}
-					/>
+					<TimerSection tournamentInProgress={tournamentInProgress} />
 					<TournamentButton />
 					<ResultsLink />
 				</div>
