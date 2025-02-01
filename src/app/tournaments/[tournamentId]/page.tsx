@@ -5,12 +5,13 @@ import { TournamentStatistics, type TournamentType } from '@/types/backendDataTy
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { type ReactElement, useEffect, useState, use } from 'react'
+import React, { type ReactElement, useEffect, useState, use, useCallback } from 'react'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { formatDate } from '@/lib/dateUtils'
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-const STANDINGS_PER_PAGE = 0
+const STANDINGS_PER_PAGE = 100
 
 export default function Page(props: { params: Promise<{ tournamentId: string }> }): ReactElement {
 	const params = use(props.params)
@@ -19,12 +20,16 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 	
 	const [tournament, setTournament] = useState<TournamentType | null>(null)
 	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
+	const [standings, setStandings] = useState<TournamentType['standings']>([])
 	
 	const [tournamentLoading, setTournamentLoading] = useState(true)
 	const [statisticsLoading, setStatisticsLoading] = useState(true)
+	const [standingsLoading, setStandingsLoading] = useState(true)
 	
 	const [sortField, setSortField] = useState<'submissionName' | 'userName' | 'grade' | 'zValue' | 'statistics.percentileRank'>('grade')
 	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+	const [hasMore, setHasMore] = useState(true)
+	const [page, setPage] = useState(1)
 
 	const handleSort = (field: typeof sortField) => {
 		if (sortField === field) {
@@ -52,14 +57,13 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 		})
 	}
 
-	// Fetch tournament with standings included
+	// Fetch tournament with only user standing
 	useEffect(() => {
 		setTournamentLoading(true)
 		axios.get(`${API_URL}/v1/tournaments/${params.tournamentId}`, {
 			params: {
-				limitStandings: STANDINGS_PER_PAGE,
-				skipStandings: 0,
-				userIdStanding: currentUser?._id
+				userIdStanding: currentUser?._id,
+				getStandings: false
 			}
 		})
 			.then(response => setTournament(response.data))
@@ -78,6 +82,35 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 			.catch(error => console.error('Error fetching statistics:', error))
 			.finally(() => setStatisticsLoading(false))
 	}, [params.tournamentId])
+
+	// Fetch paginated standings
+	useEffect(() => {
+		setStandingsLoading(true)
+		axios.get(`${API_URL}/v1/tournaments/${params.tournamentId}/standings`, {
+			params: {
+				amount: STANDINGS_PER_PAGE,
+				skip: (page - 1) * STANDINGS_PER_PAGE
+			}
+		})
+			.then(response => {
+				setStandings(prev => 
+					page === 1 
+						? response.data 
+						: [...prev, ...response.data]
+				)
+				setHasMore(response.data.length === STANDINGS_PER_PAGE)
+			})
+			.catch(error => console.error('Error fetching standings:', error))
+			.finally(() => setStandingsLoading(false))
+	}, [params.tournamentId, page])
+
+	const loadMore = useCallback(() => {
+		if (!standingsLoading && hasMore) {
+			setPage(p => p + 1)
+		}
+	}, [standingsLoading, hasMore])
+
+	const infiniteScrollRef = useInfiniteScroll(loadMore, standingsLoading, hasMore)
 
 	if (tournamentLoading) {
 		return (
@@ -194,8 +227,8 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								</button>
 							</div>
 							
-							{/* Gradings */}
-							{getSortedStandings(tournament.standings).map((standing) => (
+							{/* Standings */}
+							{getSortedStandings(standings).map((standing) => (
 								<div 
 									key={standing.user}
 									className="grid grid-cols-[2fr_1fr_100px_100px_100px_100px] gap-2 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors"
@@ -218,6 +251,12 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 									</div>
 								</div>
 							))}
+
+							{standingsLoading && (
+								<div className="animate-pulse bg-gray-800/50 rounded-lg p-2 h-10"/>
+							)}
+
+							<div ref={infiniteScrollRef} className="h-px w-full" />
 						</div>
 					</div>
 				</div>
