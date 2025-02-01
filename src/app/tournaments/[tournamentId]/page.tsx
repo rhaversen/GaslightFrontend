@@ -210,7 +210,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 									<div className="text-gray-400 truncate" title={standing.userName}>
 										{standing.userName}
 									</div>
-									<div className="text-right text-gray-400">{/* Add token count */}</div>
+									<div className="text-right text-gray-400">{standing.tokenCount}</div>
 									<div className="text-right text-gray-300">{standing.grade.toFixed(3)}</div>
 									<div className="text-right text-gray-400">{standing.zValue.toFixed(2)}</div>
 									<div className="text-right text-gray-400">

@@ -98,6 +98,7 @@ export interface TournamentStanding {
 	submissionName: string
 	grade: number
 	zValue: number
+	tokenCount: number
 	placement: number
 	statistics: IGradingStatistics
 }
