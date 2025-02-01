@@ -134,9 +134,9 @@ export default function Page(): ReactElement<any> {
 	)
 
 	return (
-		<>
+		<div className="h-screen">
 			<Header />
-			<main className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
+			<main className="flex flex-col h-full items-center justify-center relative overflow-hidden">
 				{tournamentInProgress
 					? <HaloAgressive />
 					: <HaloCalm />
@@ -150,6 +150,6 @@ export default function Page(): ReactElement<any> {
 					<ResultsLink />
 				</div>
 			</main>
-		</>
+		</div>
 	)
 }
