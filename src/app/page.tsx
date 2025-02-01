@@ -9,62 +9,80 @@ import Link from 'next/link'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
 
-const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
-	const [timeToTournamentString, setTimeToTournamentString] = useState('-- : -- : --')
-	const [timeSinceTournamentString, setTimeSinceTournamentString] = useState('-- : -- : --')
+type TimeObject = {
+	hours: string
+	minutes: string
+	seconds: string
+}
 
-	const timeToNextMidnight = (): string => {
+const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
+	const [timeToTournament, setTimeToTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
+	const [timeSinceTournament, setTimeSinceTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
+
+	const timeToNextMidnight = (): TimeObject => {
 		const now = new Date()
 		const nextMidnight = new Date(now)
 		nextMidnight.setHours(24, 0, 0, 0)
 		const diff = nextMidnight.getTime() - now.getTime()
-		const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0')
-		const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')
-		const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		return `${hours} : ${minutes} : ${seconds}`
+		return {
+			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
+			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
+			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
+		}
 	}
 
-	const timeSinceMidnight = (): string => {
+	const timeSinceMidnight = (): TimeObject => {
 		const now = new Date()
 		const midnight = new Date(now)
 		midnight.setHours(0, 0, 0, 0) // Set to previous midnight
 		const diff = now.getTime() - midnight.getTime()
-		const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0')
-		const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')
-		const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		return `${hours} : ${minutes} : ${seconds}`
+		return {
+			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
+			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
+			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
+		}
 	}
 
-	const TimerDisplay = ({ time, label }: { time: string, label: string }): ReactElement => (
+	const TimerDisplay = ({ time, label }: { time: TimeObject, label: string }): ReactElement => (
 		<>
 			<div className='text-white text-xl font-medium tracking-wide'>
 				{label}
 			</div>
-			<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
-				{time}
+			<div className='flex justify-center items-center gap-2'>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.hours}
+				</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.minutes}
+				</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.seconds}
+				</div>
 			</div>
 		</>
 	)
 
 	useEffect(() => {
-		setTimeToTournamentString(timeToNextMidnight())
+		setTimeToTournament(timeToNextMidnight())
 		const interval = setInterval(() => {
-			setTimeToTournamentString(timeToNextMidnight())
+			setTimeToTournament(timeToNextMidnight())
 		}, 1000)
 		return () => { clearInterval(interval) }
 	}, [])
 
 	useEffect(() => {
-		setTimeSinceTournamentString(timeSinceMidnight())
+		setTimeSinceTournament(timeSinceMidnight())
 		const interval = setInterval(() => {
-			setTimeSinceTournamentString(timeSinceMidnight())
+			setTimeSinceTournament(timeSinceMidnight())
 		}, 1000)
 		return () => { clearInterval(interval) }
 	}, [])
 
 	return (
 		<TimerDisplay
-			time={tournamentInProgress ? timeSinceTournamentString : timeToTournamentString}
+			time={tournamentInProgress ? timeSinceTournament : timeToTournament}
 			label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT TOURNAMENT'}
 		/>
 	)
@@ -75,7 +93,7 @@ export default function Page(): ReactElement<any> {
 	const router = useRouter()
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<any> | null>(null)
-	const tournamentInProgress = true // TODO: fetch from backend
+	const tournamentInProgress = false // TODO: fetch from backend
 
 	// Start loading data on mount if user exists
 	useEffect(() => {
