@@ -94,7 +94,7 @@ export interface GradingType {
 export interface TournamentStanding {
 	user: UserType['_id']
 	userName: string
-	submission: GradingType['_id']
+	submission: ISubmission['_id']
 	submissionName: string
 	grade: number
 	zValue: number
@@ -153,7 +153,7 @@ export interface TournamentType {
 	gradings: GradingType['_id'][]
 	/** All disqualifications from this tournament */
 	disqualified?: [{
-		submission: GradingType['_id']
+		submission: ISubmission['_id']
 		reason: string
 	}]
 	/** Tournament winners */
