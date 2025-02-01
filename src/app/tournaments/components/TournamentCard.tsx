@@ -30,8 +30,8 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 	const [allStandings, setAllStandings] = useState(tournament.standings)
 	const [isLoadingStandings, setIsLoadingStandings] = useState(false)
 
-	const chunk1Count = Math.min(Math.max(0, tournament.gradings.length - TOP_PLACES), FULL_DISPLAY_PLACES)
-	const chunk2Count = Math.min(Math.max(0, tournament.gradings.length - SIMPLIFIED_DISPLAY_START), MAX_SIMPLIFIED_DISPLAY_PLACES)
+	const chunk1Count = Math.min(Math.max(0, tournament.submissionCount - TOP_PLACES), FULL_DISPLAY_PLACES)
+	const chunk2Count = Math.min(Math.max(0, tournament.submissionCount - SIMPLIFIED_DISPLAY_START), MAX_SIMPLIFIED_DISPLAY_PLACES)
 
 	const fetchAdditionalStandings = async () => {
 		if (hasLoadedAdditional) return
@@ -202,7 +202,7 @@ const TournamentInfo = ({ tournament }: { tournament: TournamentType }) => (
 			</span>
 		</div>
 		<span className="text-gray-500/80" title="Number of submissions">
-			{tournament.gradings.length}{' submissions'}
+			{tournament.submissionCount}{' submissions'}
 		</span>
 	</div>
 )

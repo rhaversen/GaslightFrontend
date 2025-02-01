@@ -140,6 +140,8 @@ export interface TournamentType {
 		submission: ISubmission['_id']
 		reason: string
 	}]
+	/** Amount of submissions in the tournament */
+	submissionCount: number
 	/** Tournament winners */
 	standings: TournamentStanding[]
 	/** User standing */
