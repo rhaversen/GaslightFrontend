@@ -11,23 +11,23 @@ import { formatDate } from '@/lib/dateUtils'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
-const STANDINGS_PER_PAGE = 100
+const STANDINGS_PER_PAGE = 10
 
 export default function Page(props: { params: Promise<{ tournamentId: string }> }): ReactElement {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const router = useRouter()
-	
+
 	const [tournament, setTournament] = useState<TournamentType | null>(null)
 	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
 	const [standings, setStandings] = useState<TournamentType['standings']>([])
-	
+
 	const [tournamentLoading, setTournamentLoading] = useState(true)
 	const [statisticsLoading, setStatisticsLoading] = useState(true)
 	const [standingsLoading, setStandingsLoading] = useState(true)
-	
-	const [sortField, setSortField] = useState<'submissionName' | 'userName' | 'score' | 'zValue' | 'statistics.percentileRank'>('score')
-	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+
+	const [sortField, setSortField] = useState<'placement' | 'tokenCount' | 'avgExecutionTime'>('placement')
+	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 	const [hasMore, setHasMore] = useState(true)
 	const [page, setPage] = useState(1)
 
@@ -38,23 +38,9 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 			setSortField(field)
 			setSortDirection('desc')
 		}
-	}
-
-	const getSortedStandings = (standings: TournamentType['standings']) => {
-		return [...standings].sort((a, b) => {
-			let aValue = sortField === 'statistics.percentileRank' ? a.statistics.percentileRank : a[sortField]
-			let bValue = sortField === 'statistics.percentileRank' ? b.statistics.percentileRank : b[sortField]
-			
-			if (typeof aValue === 'string') {
-				return sortDirection === 'asc' 
-					? aValue.localeCompare(bValue as string)
-					: (bValue as string).localeCompare(aValue)
-			}
-			
-			return sortDirection === 'asc' 
-				? (aValue as number) - (bValue as number)
-				: (bValue as number) - (aValue as number)
-		})
+		// Reset pagination and trigger new fetch
+		setPage(1)
+		setStandings([])
 	}
 
 	// Fetch tournament with only user standing
@@ -88,21 +74,23 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 		setStandingsLoading(true)
 		axios.get(`${API_URL}/v1/tournaments/${params.tournamentId}/standings`, {
 			params: {
-				amount: STANDINGS_PER_PAGE,
-				skip: (page - 1) * STANDINGS_PER_PAGE
+				limitStandings: STANDINGS_PER_PAGE,
+				skipStandings: (page - 1) * STANDINGS_PER_PAGE,
+				sortFieldStandings: sortField,
+				sortDirectionStandings: sortDirection
 			}
 		})
 			.then(response => {
-				setStandings(prev => 
-					page === 1 
-						? response.data 
-						: [...prev, ...response.data]
+				setStandings(prev =>
+					page === 1
+						? response.data // Replace all data on first page
+						: [...prev, ...response.data] // Append for subsequent pages
 				)
 				setHasMore(response.data.length === STANDINGS_PER_PAGE)
 			})
 			.catch(error => console.error('Error fetching standings:', error))
 			.finally(() => setStandingsLoading(false))
-	}, [params.tournamentId, page])
+	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetch
 
 	const loadMore = useCallback(() => {
 		if (!standingsLoading && hasMore) {
@@ -115,7 +103,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 	if (tournamentLoading) {
 		return (
 			<div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8">
-				<LoadingPlaceholder />
+				<LoadingPlaceholder variant="dark" />
 			</div>
 		)
 	}
@@ -126,6 +114,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 
 	return (
 		<main className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 md:p-8">
+			{/* Back button and title */}
 			<div className="flex items-center gap-4 mb-6">
 				<Link
 					href="/tournaments"
@@ -138,176 +127,184 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 				</h1>
 			</div>
 
-			{/* Tournament details */}
-			<div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
-				{/* Left column - Tournament Stats */}
-				<div className="space-y-6">
-					<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-						<h2 className="text-xl font-medium text-gray-200 mb-4">{'Tournament Statistics'}</h2>
-						{statisticsLoading ? (
-							<LoadingPlaceholder variant="dark"/>
-						) : statistics && (
-							<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-								{[
-									['Sample Size', statistics.sampleSize],
-									['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
-									['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
-									['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
-									['Median (P50)', statistics.percentiles.p50.toFixed(3)],
-									['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
-									['Variance', statistics.dispersion.variance.toFixed(3)],
-									['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
-									['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
-									['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
-									['Minimum', statistics.extrema.minimum.toFixed(3)],
-									['Maximum', statistics.extrema.maximum.toFixed(3)],
-									['Range', statistics.extrema.range.toFixed(3)],
-									['10th Percentile', statistics.percentiles.p10.toFixed(3)],
-									['90th Percentile', statistics.percentiles.p90.toFixed(3)]
-								].map(([label, value]) => (
-									<div key={label} className="space-y-1">
-										<div className="text-sm text-gray-400">{label}</div>
-										<div className="text-lg text-gray-200">{value}</div>
-									</div>
-								))}
+			{/* Personal Info Section */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Your Standing'}</h2>
+					{tournament.userStanding ? (
+						<div className="space-y-4">
+							<div className="text-3xl text-gray-100 font-medium">
+								{'#'}{tournament.userStanding.placement}
 							</div>
-						)}
-					</div>
-
-					<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-						<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
-						<div className="grid grid-cols-1 gap-2">
-							{/* Header */}
-							<div className="grid grid-cols-[2fr_1fr_100px_100px_100px_100px] gap-2 text-sm text-gray-400 font-medium p-2">
-								<button
-									onClick={() => handleSort('submissionName')}
-									className="text-left hover:text-gray-200 transition-colors flex items-center gap-1"
-								>
-									{'Submission\r'}
-									{sortField === 'submissionName' && (
-										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-									)}
-								</button>
-								<button
-									onClick={() => handleSort('userName')}
-									className="text-left hover:text-gray-200 transition-colors flex items-center gap-1"
-								>
-									{'User\r'}
-									{sortField === 'userName' && (
-										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-									)}
-								</button>
-								<div className="text-right">{'Tokens'}</div>
-								<button
-									onClick={() => handleSort('score')}
-									className="text-right hover:text-gray-200 transition-colors flex items-center justify-end gap-1"
-								>
-									{'Score\r'}
-									{sortField === 'score' && (
-										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-									)}
-								</button>
-								<button
-									onClick={() => handleSort('zValue')}
-									className="text-right hover:text-gray-200 transition-colors flex items-center justify-end gap-1"
-								>
-									{'Z-Score\r'}
-									{sortField === 'zValue' && (
-										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-									)}
-								</button>
-								<button
-									onClick={() => handleSort('statistics.percentileRank')}
-									className="text-right hover:text-gray-200 transition-colors flex items-center justify-end gap-1"
-								>
-									{'Percentile\r'}
-									{sortField === 'statistics.percentileRank' && (
-										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-									)}
-								</button>
-							</div>
-							
-							{/* Standings */}
-							{getSortedStandings(standings).map((standing) => (
-								<div 
-									key={standing.user}
-									className="grid grid-cols-[2fr_1fr_100px_100px_100px_100px] gap-2 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors"
-								>
-									<Link 
-										href={`/submissions/${standing.submission}`}
-										className="text-gray-300 hover:text-sky-300 transition-colors truncate"
-										title={standing.submissionName}
-									>
-										{standing.submissionName}
-									</Link>
-									<div className="text-gray-400 truncate" title={standing.userName}>
-										{standing.userName}
-									</div>
-									<div className="text-right text-gray-400">{standing.tokenCount}</div>
-									<div className="text-right text-gray-300">{standing.score.toFixed(3)}</div>
-									<div className="text-right text-gray-400">{standing.zValue.toFixed(2)}</div>
-									<div className="text-right text-gray-400">
-										{(standing.statistics.percentileRank).toFixed(1)}{'%\r'}
-									</div>
+							<div className="space-y-2">
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-400">{'Score'}</span>
+									<span className="text-gray-200">{tournament.userStanding.score.toFixed(3)}</span>
 								</div>
-							))}
-
-							{standingsLoading && (
-								<div className="animate-pulse bg-gray-800/50 rounded-lg p-2 h-10"/>
-							)}
-
-							<div ref={infiniteScrollRef} className="h-px w-full" />
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-400">{'Z-Score'}</span>
+									<span className="text-gray-200">{tournament.userStanding.zValue.toFixed(3)}</span>
+								</div>
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-400">{'Percentile'}</span>
+									<span className="text-gray-200">
+										{tournament.userStanding.statistics.percentileRank.toFixed(1)}{'%\r'}
+									</span>
+								</div>
+							</div>
 						</div>
-					</div>
+					) : (
+						<div className="text-gray-400">
+							{currentUser ? 'You did not participate in this tournament' : 'Login to view your standing'}
+						</div>
+					)}
 				</div>
 
-				{/* Right column - Tournament Info */}
-				<div className="space-y-6">
-					<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-						<h2 className="text-xl font-medium text-gray-200 mb-4">{'Your Standing'}</h2>
-						{tournament.userStanding ? (
-							<div className="space-y-4">
-								<div className="text-3xl text-gray-100 font-medium">
-									{'#'}{tournament.userStanding.placement}
+				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Disqualifications'}</h2>
+					<div className="space-y-2 max-h-[300px] overflow-y-auto">
+						{tournament.disqualified && tournament.disqualified.length > 0 ? (
+							tournament.disqualified.map((dq, index) => (
+								<div key={index} className="text-sm">
+									<span className="text-red-400">{'#'}{dq.submission.slice(-6)}</span>
+									<span className="text-gray-400 ml-2">{dq.reason}</span>
 								</div>
-								<div className="space-y-2">
-									<div className="flex justify-between text-sm">
-										<span className="text-gray-400">{'Score'}</span>
-										<span className="text-gray-200">{tournament.userStanding.score.toFixed(3)}</span>
-									</div>
-									<div className="flex justify-between text-sm">
-										<span className="text-gray-400">{'Z-Score'}</span>
-										<span className="text-gray-200">{tournament.userStanding.zValue.toFixed(3)}</span>
-									</div>
-									<div className="flex justify-between text-sm">
-										<span className="text-gray-400">{'Percentile'}</span>
-										<span className="text-gray-200">
-											{tournament.userStanding.statistics.percentileRank.toFixed(1)}{'%\r'}
-										</span>
-									</div>
-								</div>
-							</div>
+							))
 						) : (
-							<div className="text-gray-400">
-								{currentUser ? 'You did not participate in this tournament' : 'Login to view your standing'}
-							</div>
+							<div className="text-gray-400">{'No disqualifications'}</div>
 						)}
 					</div>
+				</div>
+			</div>
 
-					<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-						<h2 className="text-xl font-medium text-gray-200 mb-4">{'Disqualifications'}</h2>
-						<div className="space-y-2 max-h-[300px] overflow-y-auto">
-							{tournament.disqualified && tournament.disqualified.length > 0 ? (
-								tournament.disqualified.map((dq, index) => (
-									<div key={index} className="text-sm">
-										<span className="text-red-400">{'#'}{dq.submission.slice(-6)}</span>
-										<span className="text-gray-400 ml-2">{dq.reason}</span>
-									</div>
-								))
-							) : (
-								<div className="text-gray-400">{'No disqualifications'}</div>
-							)}
+			{/* Main Content */}
+			<div className="space-y-6">
+				{/* Tournament Statistics */}
+				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Tournament Statistics'}</h2>
+					{statisticsLoading ? (
+						<LoadingPlaceholder variant="dark" />
+					) : statistics && (
+						<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+							{[
+								['Sample Size', statistics.sampleSize],
+								['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
+								['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
+								['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
+								['Median (P50)', statistics.percentiles.p50.toFixed(3)],
+								['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
+								['Variance', statistics.dispersion.variance.toFixed(3)],
+								['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
+								['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
+								['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
+								['Minimum', statistics.extrema.minimum.toFixed(3)],
+								['Maximum', statistics.extrema.maximum.toFixed(3)],
+								['Range', statistics.extrema.range.toFixed(3)],
+								['10th Percentile', statistics.percentiles.p10.toFixed(3)],
+								['90th Percentile', statistics.percentiles.p90.toFixed(3)]
+							].map(([label, value]) => (
+								<div key={label} className="space-y-1">
+									<div className="text-sm text-gray-400">{label}</div>
+									<div className="text-lg text-gray-200">{value}</div>
+								</div>
+							))}
 						</div>
+					)}
+				</div>
+
+				{/* All Submissions */}
+				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+					<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
+					<div className="grid grid-cols-1 gap-2">
+						{/* Header */}
+						<div className="grid grid-cols-[80px_2fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
+							<button
+								onClick={() => handleSort('placement')}
+								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+							>
+								{'Standing'}
+								{sortField === 'placement' && (
+									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+								)}
+							</button>
+							<div>{'Submission'}</div>
+							<div>{'User'}</div>
+							<button
+								onClick={() => handleSort('tokenCount')}
+								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+							>
+								{'Tokens'}
+								{sortField === 'tokenCount' && (
+									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+								)}
+							</button>
+							<button
+								onClick={() => handleSort('avgExecutionTime')}
+								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+							>
+								{'Time'}
+								{sortField === 'avgExecutionTime' && (
+									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+								)}
+							</button>
+							<div className="text-center">{'Performance Metrics'}</div>
+						</div>
+
+						{/* Standings */}
+						{standings.sort((a, b) => { // Sort standings based on sortField and sortDirection
+							const aField = a[sortField]
+							const bField = b[sortField]
+							if (aField === bField) return 0
+							return (aField > bField ? 1 : -1) * (sortDirection === 'asc' ? 1 : -1)
+						}).map(standing => (
+							<div
+								key={standing.user}
+								className="grid grid-cols-[80px_2fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
+							>
+								<div className="text-center">
+									<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
+								</div>
+								<Link
+									href={`/submissions/${standing.submission}`}
+									className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
+									title={standing.submissionName}
+								>
+									{standing.submissionName}
+								</Link>
+								<Link
+									href={`/users/${standing.user}`}
+									className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
+									title={standing.userName}
+								>
+									{standing.userName}
+								</Link>
+								<div className="text-center text-gray-400">{standing.tokenCount}</div>
+								<div className="text-center text-gray-400">{standing.avgExecutionTime.toFixed(2)}{'ms'}</div>
+								<div className="text-right flex items-center justify-end gap-2 text-sm divide-x divide-gray-600">
+									<div className="w-[90px] text-center text-gray-300 font-medium" title="Raw Score">
+										{standing.score.toFixed(3)}
+									</div>
+									<div className="w-[100px] text-center text-gray-400" title="Number of Standard Deviations from Mean">
+										{standing.statistics.deviationsFromMean > 0 ? '+' : ''}{standing.statistics.deviationsFromMean.toFixed(2)} {'σ\r'}
+									</div>
+									<div className="w-[80px] text-center text-gray-400" title="Percentile Rank">
+										{standing.statistics.percentileRank.toFixed(1)}{'th'}
+									</div>
+									<div className="w-[90px] text-center text-gray-500 text-xs" title="Standard Score (Z-Score)">
+										{'z='}{standing.statistics.standardScore.toFixed(2)}
+									</div>
+									<div className="w-[90px] text-center text-gray-500 text-xs" title="Normalized Performance (-1 to 1)">
+										{'n='}{standing.statistics.normalizedScore.toFixed(3)}
+									</div>
+								</div>
+							</div>
+						))}
+
+						{standingsLoading && (
+							<div className="animate-pulse bg-gray-800/50 rounded-lg p-2 h-10" />
+						)}
+
+						<div ref={infiniteScrollRef} className="h-px w-full" />
 					</div>
 				</div>
 			</div>

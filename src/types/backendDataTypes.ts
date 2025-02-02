@@ -87,6 +87,7 @@ export interface TournamentStanding {
 	tokenCount: number
 	placement: number
 	statistics: IGradingStatistics
+	avgExecutionTime: number
 }
 
 export interface TournamentStatistics {
