@@ -5,10 +5,10 @@ import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
 export const StatsDisplay = ({ 
 	tournamentId,
-	userGrade
+	userScore
 }: { 
 	tournamentId: string,
-	userGrade?: number
+	userScore?: number
 }) => {
 	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
 	const [loading, setLoading] = useState(true)
@@ -78,7 +78,7 @@ export const StatsDisplay = ({
 					{[
 						['bg-yellow-400', 'Mean'],
 						['bg-white', 'Median'],
-						...(userGrade != null ? [['bg-blue-400', 'Your Score']] : [])
+						...(userScore != null ? [['bg-blue-400', 'Your Score']] : [])
 					].map(([bg, label]) => (
 						<div key={label} className="flex items-center gap-1.5">
 							<div className={`w-1.5 h-1.5 ${bg} rounded-full`}/>
@@ -93,8 +93,8 @@ export const StatsDisplay = ({
 				{/* Grid lines */}
 				{[
 					...keyPoints,
-					...(userGrade != null ? [{
-						value: userGrade,
+					...(userScore != null ? [{
+						value: userScore,
 						label: 'user-score'
 					}] : [])
 				].map(({ value, label }) => (
@@ -163,7 +163,7 @@ export const StatsDisplay = ({
 					{[
 						[stats.median, 'white'],
 						[stats.mean, 'yellow-400'],
-						...(userGrade != null ? [[userGrade, 'blue-400']] : [])
+						...(userScore != null ? [[userScore, 'blue-400']] : [])
 					].map(([value, color]) => (
 						<div 
 							key={color}
@@ -191,8 +191,8 @@ export const StatsDisplay = ({
 				{/* Labels */}
 				{[
 					...keyPoints,
-					...(userGrade != null ? [{
-						value: userGrade,
+					...(userScore != null ? [{
+						value: userScore,
 						label: 'You',
 						color: 'text-blue-400',
 						position: 'bottom-1'

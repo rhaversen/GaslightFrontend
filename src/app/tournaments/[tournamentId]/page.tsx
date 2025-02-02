@@ -26,7 +26,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 	const [statisticsLoading, setStatisticsLoading] = useState(true)
 	const [standingsLoading, setStandingsLoading] = useState(true)
 	
-	const [sortField, setSortField] = useState<'submissionName' | 'userName' | 'grade' | 'zValue' | 'statistics.percentileRank'>('grade')
+	const [sortField, setSortField] = useState<'submissionName' | 'userName' | 'score' | 'zValue' | 'statistics.percentileRank'>('score')
 	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 	const [hasMore, setHasMore] = useState(true)
 	const [page, setPage] = useState(1)
@@ -199,11 +199,11 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								</button>
 								<div className="text-right">{'Tokens'}</div>
 								<button
-									onClick={() => handleSort('grade')}
+									onClick={() => handleSort('score')}
 									className="text-right hover:text-gray-200 transition-colors flex items-center justify-end gap-1"
 								>
 									{'Score\r'}
-									{sortField === 'grade' && (
+									{sortField === 'score' && (
 										<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
 									)}
 								</button>
@@ -244,7 +244,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 										{standing.userName}
 									</div>
 									<div className="text-right text-gray-400">{standing.tokenCount}</div>
-									<div className="text-right text-gray-300">{standing.grade.toFixed(3)}</div>
+									<div className="text-right text-gray-300">{standing.score.toFixed(3)}</div>
 									<div className="text-right text-gray-400">{standing.zValue.toFixed(2)}</div>
 									<div className="text-right text-gray-400">
 										{(standing.statistics.percentileRank).toFixed(1)}{'%\r'}
@@ -273,7 +273,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								<div className="space-y-2">
 									<div className="flex justify-between text-sm">
 										<span className="text-gray-400">{'Score'}</span>
-										<span className="text-gray-200">{tournament.userStanding.grade.toFixed(3)}</span>
+										<span className="text-gray-200">{tournament.userStanding.score.toFixed(3)}</span>
 									</div>
 									<div className="flex justify-between text-sm">
 										<span className="text-gray-400">{'Z-Score'}</span>

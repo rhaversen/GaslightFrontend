@@ -132,7 +132,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 									/>
 									<StatsDisplay
 										tournamentId={tournament._id}
-										userGrade={tournament.userStanding?.grade}
+										userScore={tournament.userStanding?.score}
 									/>
 								</div>
 

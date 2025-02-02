@@ -82,7 +82,7 @@ export interface TournamentStanding {
 	userName: string
 	submission: ISubmission['_id']
 	submissionName: string
-	grade: number
+	score: number
 	zValue: number
 	tokenCount: number
 	placement: number
