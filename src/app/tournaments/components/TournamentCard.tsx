@@ -15,6 +15,8 @@ const TOP_PLACES = 3 // Cannot be modified, as it's matched with the design
 const FULL_DISPLAY_PLACES = 8
 const MAX_SIMPLIFIED_DISPLAY_PLACES = 20
 const SIMPLIFIED_DISPLAY_START = FULL_DISPLAY_PLACES + TOP_PLACES
+const MAX_STANDINGS = 30
+const OTHER_STANDINGS = MAX_STANDINGS - TOP_PLACES
 
 interface TournamentCardProps {
 	tournament: TournamentType
@@ -37,8 +39,15 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 		if (hasLoadedAdditional) return
 		setIsLoadingStandings(true)
 		try {
-			const response = await axios.get<TournamentStanding[]>(`${API_URL}/v1/tournaments/${tournament._id}/standings?amount=30`)
-			setAllStandings([...tournament.standings, ...response.data.slice(3)])
+			const response = await axios.get<TournamentStanding[]>(`${API_URL}/v1/tournaments/${tournament._id}/standings`, {
+				params: {
+					limitStandings: OTHER_STANDINGS,
+					skipStandings: TOP_PLACES,
+					sortFieldStandings: 'placement',
+					sortDirectionStandings: 'asc',
+				}
+			})
+			setAllStandings([...tournament.standings, ...response.data])
 			setHasLoadedAdditional(true)
 		} catch (error) {
 			console.error('Error fetching additional standings:', error)
@@ -96,16 +105,16 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
 						<PlacementDisplay
 							place={1}
-							standing={tournament.standings[0]}
-							isCurrentUser={tournament.standings[0]?.user === currentUserId}
+							standing={allStandings.find(s => s.placement === 1)}
+							isCurrentUser={allStandings.find(s => s.placement === 1)?.user === currentUserId}
 						/>
 						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 gap-2">
 							{[2, 3].map((place) => (
 								<PlacementDisplay
 									key={place}
 									place={place}
-									standing={tournament.standings.find(s => s.placement === place)}
-									isCurrentUser={tournament.standings.find(s => s.placement === place)?.user === currentUserId}
+									standing={allStandings.find(s => s.placement === place)}
+									isCurrentUser={allStandings.find(s => s.placement === place)?.user === currentUserId}
 								/>
 							))}
 						</div>
@@ -142,7 +151,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-28" />
 										))
 									) : (
-										allStandings.slice(TOP_PLACES, TOP_PLACES + chunk1Count).map((standing) => (
+										allStandings.sort((a, b) => a.placement - b.placement).slice(TOP_PLACES, TOP_PLACES + chunk1Count).map((standing) => (
 											<PlacementDisplay
 												key={standing.user}
 												place={standing.placement}
@@ -159,7 +168,7 @@ export const TournamentCard = ({ tournament, currentUserId, isLatest = false, de
 											<div key={idx} className="animate-pulse bg-gray-800 rounded-lg h-10" />
 										))
 									) : (
-										allStandings.slice(SIMPLIFIED_DISPLAY_START, SIMPLIFIED_DISPLAY_START + chunk2Count).map((standing) => (
+										allStandings.sort((a, b) => a.placement - b.placement).slice(SIMPLIFIED_DISPLAY_START, SIMPLIFIED_DISPLAY_START + chunk2Count).map((standing) => (
 											<PlacementDisplay
 												key={standing.user}
 												place={standing.placement}

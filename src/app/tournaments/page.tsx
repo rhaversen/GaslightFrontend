@@ -48,6 +48,8 @@ export default function Page(): ReactElement<any> {
 			params: {
 				limit: LATEST_LIMIT,
 				limitStandings: LATEST_STANDINGS,
+				sortFieldStandings: 'placement',
+				sortDirectionStandings: 'asc',
 				userIdStanding: currentUser?._id ?? null
 			}
 		})
@@ -64,6 +66,8 @@ export default function Page(): ReactElement<any> {
 				skip: LATEST_LIMIT + ((page - 1) * TOURNAMENTS_PER_PAGE),
 				limit: TOURNAMENTS_PER_PAGE,
 				limitStandings: OTHER_STANDINGS,
+				sortFieldStandings: 'placement',
+				sortDirectionStandings: 'asc',
 				userIdStanding: currentUser?._id ?? null
 			}
 		})
