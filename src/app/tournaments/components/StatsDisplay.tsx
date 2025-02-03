@@ -3,18 +3,26 @@ import axios from 'axios'
 import { TournamentStatistics } from '@/types/backendDataTypes'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
-export const StatsDisplay = ({ 
+export const StatsDisplay = ({
 	tournamentId,
-	userGrade
-}: { 
+	userScore,
+	statistics: passedStatistics
+}: {
 	tournamentId: string,
-	userGrade?: number
+	userScore?: number,
+	statistics?: TournamentStatistics
 }) => {
-	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
-	const [loading, setLoading] = useState(true)
+	const [statistics, setStatistics] = useState<TournamentStatistics | null>(passedStatistics || null)
+	const [loading, setLoading] = useState(passedStatistics ?? false)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	useEffect(() => {
+		if (passedStatistics) {
+			setStatistics(passedStatistics)
+			setLoading(false)
+			return
+		}
+
 		const fetchStatistics = async () => {
 			try {
 				const response = await axios.get<TournamentStatistics>(`${API_URL}/v1/tournaments/${tournamentId}/statistics`)
@@ -27,12 +35,12 @@ export const StatsDisplay = ({
 		}
 
 		fetchStatistics()
-	}, [tournamentId, API_URL])
+	}, [tournamentId, API_URL, passedStatistics])
 
-	if (loading || !statistics) {
-		return(
+	if (loading === true || statistics === null) {
+		return (
 			<div className='h-40'>
-				<LoadingPlaceholder variant="dark"/>
+				<LoadingPlaceholder variant="dark" />
 			</div>
 		)
 	}
@@ -50,7 +58,7 @@ export const StatsDisplay = ({
 		tukeyMin: statistics.tukeyCriteria.lowerBound,
 		tukeyMax: statistics.tukeyCriteria.upperBound,
 	}
-    
+
 	// Use absolute extrema between actual values and Tukey bounds
 	const absoluteMin = Math.min(stats.min, stats.tukeyMin)
 	const absoluteMax = Math.max(stats.max, stats.tukeyMax)
@@ -78,10 +86,10 @@ export const StatsDisplay = ({
 					{[
 						['bg-yellow-400', 'Mean'],
 						['bg-white', 'Median'],
-						...(userGrade != null ? [['bg-blue-400', 'Your Score']] : [])
+						...(userScore != null ? [['bg-blue-400', 'Your Score']] : [])
 					].map(([bg, label]) => (
 						<div key={label} className="flex items-center gap-1.5">
-							<div className={`w-1.5 h-1.5 ${bg} rounded-full`}/>
+							<div className={`w-1.5 h-1.5 ${bg} rounded-full`} />
 							<span className="text-gray-300">{label}</span>
 						</div>
 					))}
@@ -93,8 +101,8 @@ export const StatsDisplay = ({
 				{/* Grid lines */}
 				{[
 					...keyPoints,
-					...(userGrade != null ? [{
-						value: userGrade,
+					...(userScore != null ? [{
+						value: userScore,
 						label: 'user-score'
 					}] : [])
 				].map(({ value, label }) => (
@@ -106,7 +114,7 @@ export const StatsDisplay = ({
 				))}
 
 				{/* Base line */}
-				<div className="absolute w-full h-px bg-gray-600/50 top-1/2"/>
+				<div className="absolute w-full h-px bg-gray-600/50 top-1/2" />
 
 				{/* Box plot */}
 				<div className="absolute top-1/2 -translate-y-1/2 w-full h-8">
@@ -151,7 +159,7 @@ export const StatsDisplay = ({
 					))}
 
 					{/* Box */}
-					<div 
+					<div
 						className="absolute h-full bg-indigo-500/20 border border-indigo-500/40"
 						style={{
 							left: `${getPosition(stats.q1)}%`,
@@ -163,16 +171,16 @@ export const StatsDisplay = ({
 					{[
 						[stats.median, 'white'],
 						[stats.mean, 'yellow-400'],
-						...(userGrade != null ? [[userGrade, 'blue-400']] : [])
+						...(userScore != null ? [[userScore, 'blue-400']] : [])
 					].map(([value, color]) => (
-						<div 
+						<div
 							key={color}
 							className={`absolute top-1/2 -translate-y-1/2 transition-transform duration-300
                             hover:scale-150 z-10`}
 							style={{ left: `calc(${getPosition(value as number)}% - 4px)` }}
 							title={color === 'blue-400' ? `Your score: ${(value as number).toFixed(3)}` : undefined}
 						>
-							<div className={`w-2 h-2 rounded-full bg-${color} shadow-lg`}/>
+							<div className={`w-2 h-2 rounded-full bg-${color} shadow-lg`} />
 						</div>
 					))}
 
@@ -191,8 +199,8 @@ export const StatsDisplay = ({
 				{/* Labels */}
 				{[
 					...keyPoints,
-					...(userGrade != null ? [{
-						value: userGrade,
+					...(userScore != null ? [{
+						value: userScore,
 						label: 'You',
 						color: 'text-blue-400',
 						position: 'bottom-1'
@@ -201,9 +209,9 @@ export const StatsDisplay = ({
 					<div
 						key={label}
 						className={`absolute text-center -translate-x-1/2 ${color}`}
-						style={{ 
+						style={{
 							left: `${getPosition(value)}%`,
-							top: position === 'top' 
+							top: position === 'top'
 								? '-10%'
 								: position === 'bottom-1'
 									? '75%'

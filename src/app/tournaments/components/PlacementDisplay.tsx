@@ -68,7 +68,7 @@ export const PlacementDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{standing?.grade.toFixed(2) ?? 0}
+					{standing?.score.toFixed(2) ?? 0}
 				</span>
 				{isCurrentUser && place > 3 && (
 					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
@@ -141,7 +141,7 @@ export const PlacementDisplay = ({
 						<div className="space-y-4">
 							<div className="space-y-1">
 								<div className="text-sm text-gray-400">{'Score'}</div>
-								<div className="text-2xl text-gray-200">{standing.grade.toFixed(3)}</div>
+								<div className="text-2xl text-gray-200">{standing.score.toFixed(3)}</div>
 							</div>
 							<div className="space-y-1">
 								<div className="text-sm text-gray-400">{'Percentile Rank'}</div>
@@ -161,8 +161,8 @@ export const PlacementDisplay = ({
 					</div>
 				) : (
 					<div className="flex flex-col gap-1">
-						<div className="text-gray-200" title={`Score: ${standing.grade}`}>
-							{formatScore(standing.grade)}
+						<div className="text-gray-200" title={`Score: ${standing.score}`}>
+							{formatScore(standing.score)}
 						</div>
 						<div className="text-gray-400 text-sm" title={`Z-Score: ${standing.zValue}`}>
 							{formatZScore(standing.zValue)}
