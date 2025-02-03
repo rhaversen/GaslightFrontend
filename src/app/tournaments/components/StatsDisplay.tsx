@@ -3,18 +3,26 @@ import axios from 'axios'
 import { TournamentStatistics } from '@/types/backendDataTypes'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 
-export const StatsDisplay = ({ 
+export const StatsDisplay = ({
 	tournamentId,
-	userScore
-}: { 
+	userScore,
+	statistics: passedStatistics
+}: {
 	tournamentId: string,
-	userScore?: number
+	userScore?: number,
+	statistics?: TournamentStatistics
 }) => {
-	const [statistics, setStatistics] = useState<TournamentStatistics | null>(null)
-	const [loading, setLoading] = useState(true)
+	const [statistics, setStatistics] = useState<TournamentStatistics | null>(passedStatistics || null)
+	const [loading, setLoading] = useState(passedStatistics ?? false)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	useEffect(() => {
+		if (passedStatistics) {
+			setStatistics(passedStatistics)
+			setLoading(false)
+			return
+		}
+
 		const fetchStatistics = async () => {
 			try {
 				const response = await axios.get<TournamentStatistics>(`${API_URL}/v1/tournaments/${tournamentId}/statistics`)
@@ -27,9 +35,9 @@ export const StatsDisplay = ({
 		}
 
 		fetchStatistics()
-	}, [tournamentId, API_URL])
+	}, [tournamentId, API_URL, passedStatistics])
 
-	if (loading || !statistics) {
+	if (loading === true || statistics === null) {
 		return(
 			<div className='h-40'>
 				<LoadingPlaceholder variant="dark"/>
