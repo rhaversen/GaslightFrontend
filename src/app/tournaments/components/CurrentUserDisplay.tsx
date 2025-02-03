@@ -58,7 +58,10 @@ export function CurrentUserDisplay({
 					</div>
 				) : (
 					<div className="text-gray-400 text-sm">
-						{'Login to view your position.\r'}
+						<Link href="/login" className="text-sky-400 hover:text-sky-300 transition-colors">
+							{'Login'}
+						</Link>
+						{' to view your position.\r'}
 					</div>
 				)
 			)}
