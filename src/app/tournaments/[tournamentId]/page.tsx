@@ -10,6 +10,8 @@ import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { formatDate } from '@/lib/dateUtils'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 import { StatsDisplay } from '../components/StatsDisplay'
+import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
+import { CurrentUserDisplay } from '../components/CurrentUserDisplay'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
@@ -130,52 +132,11 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 
 			{/* Personal Info Section */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Your Standing'}</h2>
-					{tournament.userStanding ? (
-						<div className="space-y-4">
-							<div className="text-3xl text-gray-100 font-medium">
-								{'#'}{tournament.userStanding.placement}
-							</div>
-							<div className="space-y-2">
-								<div className="flex justify-between text-sm">
-									<span className="text-gray-400">{'Score'}</span>
-									<span className="text-gray-200">{tournament.userStanding.score.toFixed(3)}</span>
-								</div>
-								<div className="flex justify-between text-sm">
-									<span className="text-gray-400">{'Z-Score'}</span>
-									<span className="text-gray-200">{tournament.userStanding.zValue.toFixed(3)}</span>
-								</div>
-								<div className="flex justify-between text-sm">
-									<span className="text-gray-400">{'Percentile'}</span>
-									<span className="text-gray-200">
-										{tournament.userStanding.statistics.percentileRank.toFixed(1)}{'%\r'}
-									</span>
-								</div>
-							</div>
-						</div>
-					) : (
-						<div className="text-gray-400">
-							{currentUser ? 'You did not participate in this tournament' : 'Login to view your standing'}
-						</div>
-					)}
-				</div>
-
-				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Disqualifications'}</h2>
-					<div className="space-y-2 max-h-[300px] overflow-y-auto">
-						{tournament.disqualified && tournament.disqualified.length > 0 ? (
-							tournament.disqualified.map((dq, index) => (
-								<div key={index} className="text-sm">
-									<span className="text-red-400">{'#'}{dq.submission.slice(-6)}</span>
-									<span className="text-gray-400 ml-2">{dq.reason}</span>
-								</div>
-							))
-						) : (
-							<div className="text-gray-400">{'No disqualifications'}</div>
-						)}
-					</div>
-				</div>
+				<CurrentUserDisplay 
+					standing={tournament.userStanding ?? null} 
+					isLoggedIn={Boolean(currentUser)} 
+				/>
+				<DisqualificationsDisplay disqualified={tournament.disqualified} />
 			</div>
 
 			{/* Main Content */}
