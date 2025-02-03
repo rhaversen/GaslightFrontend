@@ -186,7 +186,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 					<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
 					<div className="grid grid-cols-1 gap-2">
 						{/* Header */}
-						<div className="grid grid-cols-[80px_2fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
+						<div className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
 							<button
 								onClick={() => handleSort('placement')}
 								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
@@ -196,8 +196,8 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
 								)}
 							</button>
-							<div>{'Submission'}</div>
-							<div>{'User'}</div>
+							<div className='text-center flex items-center justify-center gap-1'>{'Submission'}</div>
+							<div className='text-center flex items-center justify-center gap-1'>{'User'}</div>
 							<button
 								onClick={() => handleSort('tokenCount')}
 								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
@@ -228,7 +228,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 						}).map(standing => (
 							<div
 								key={standing.user}
-								className="grid grid-cols-[80px_2fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
+								className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
 							>
 								<div className="text-center">
 									<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
