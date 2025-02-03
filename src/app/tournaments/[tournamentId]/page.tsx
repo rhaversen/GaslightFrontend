@@ -12,6 +12,7 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 import { StatsDisplay } from '../components/StatsDisplay'
 import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
 import { CurrentUserDisplay } from '../components/CurrentUserDisplay'
+import { TournamentList } from './components/TournamentList'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
@@ -117,163 +118,173 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 
 	return (
 		<main className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 md:p-8">
-			{/* Back button and title */}
-			<div className="flex items-center gap-4 mb-6">
-				<Link
-					href="/tournaments"
-					className="px-3 py-1.5 text-sm font-medium text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:border-gray-600"
-				>
-					{'←'}<span className="ml-2">{'Back'}</span>
-				</Link>
-				<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-300">
-					{formatDate(tournament.createdAt)}
-				</h1>
-			</div>
-
-			{/* Personal Info Section */}
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-				<CurrentUserDisplay 
-					standing={tournament.userStanding ?? null} 
-					isLoggedIn={Boolean(currentUser)} 
-				/>
-				<DisqualificationsDisplay disqualified={tournament.disqualified} />
-			</div>
-
-			{/* Main Content */}
-			<div className="space-y-6">
-				{/* Tournament Statistics */}
-				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-					<h2 className="text-xl font-medium text-gray-200 mb-4">{'Tournament Statistics'}</h2>
-					{statisticsLoading ? (
-						<LoadingPlaceholder variant="dark" />
-					) : statistics && (
+			<div className="flex gap-6">
+				<TournamentList selectedId={params.tournamentId} />
+				<div className="flex-1">
+					<div className="grid grid-cols-1 gap-6">
+						{/* Top section with info */}
 						<div className="space-y-6">
-							<StatsDisplay
-								tournamentId={params.tournamentId}
-								statistics={statistics}
-								userScore={tournament.userStanding?.score}
-							/>
-							<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-								{[
-									['Sample Size', statistics.sampleSize],
-									['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
-									['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
-									['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
-									['Median (P50)', statistics.percentiles.p50.toFixed(3)],
-									['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
-									['Variance', statistics.dispersion.variance.toFixed(3)],
-									['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
-									['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
-									['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
-									['Minimum', statistics.extrema.minimum.toFixed(3)],
-									['Maximum', statistics.extrema.maximum.toFixed(3)],
-									['Range', statistics.extrema.range.toFixed(3)],
-									['10th Percentile', statistics.percentiles.p10.toFixed(3)],
-									['90th Percentile', statistics.percentiles.p90.toFixed(3)]
-								].map(([label, value]) => (
-									<div key={label} className="space-y-1">
-										<div className="text-sm text-gray-400">{label}</div>
-										<div className="text-lg text-gray-200">{value}</div>
+							{/* Back button and title */}
+							<div className="flex items-center gap-4 mb-6">
+								<Link
+									href="/tournaments"
+									className="px-3 py-1.5 text-sm font-medium text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:border-gray-600"
+								>
+									{'←'}<span className="ml-2">{'Back'}</span>
+								</Link>
+								<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-300">
+									{formatDate(tournament.createdAt)}
+								</h1>
+							</div>
+
+							{/* Personal Info Section */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+								<CurrentUserDisplay
+									standing={tournament.userStanding ?? null}
+									isLoggedIn={Boolean(currentUser)}
+								/>
+								<DisqualificationsDisplay disqualified={tournament.disqualified} />
+							</div>
+
+							{/* Main Content */}
+							<div className="space-y-6">
+								{/* Tournament Statistics */}
+								<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+									<h2 className="text-xl font-medium text-gray-200 mb-4">{'Tournament Statistics'}</h2>
+									{statisticsLoading ? (
+										<LoadingPlaceholder variant="dark" />
+									) : statistics && (
+										<div className="space-y-6">
+											<StatsDisplay
+												tournamentId={params.tournamentId}
+												statistics={statistics}
+												userScore={tournament.userStanding?.score}
+											/>
+											<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+												{[
+													['Sample Size', statistics.sampleSize],
+													['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
+													['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
+													['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
+													['Median (P50)', statistics.percentiles.p50.toFixed(3)],
+													['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
+													['Variance', statistics.dispersion.variance.toFixed(3)],
+													['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
+													['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
+													['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
+													['Minimum', statistics.extrema.minimum.toFixed(3)],
+													['Maximum', statistics.extrema.maximum.toFixed(3)],
+													['Range', statistics.extrema.range.toFixed(3)],
+													['10th Percentile', statistics.percentiles.p10.toFixed(3)],
+													['90th Percentile', statistics.percentiles.p90.toFixed(3)]
+												].map(([label, value]) => (
+													<div key={label} className="space-y-1">
+														<div className="text-sm text-gray-400">{label}</div>
+														<div className="text-lg text-gray-200">{value}</div>
+													</div>
+												))}
+											</div>
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+
+						{/* All Submissions */}
+						<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
+							<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
+							<div className="grid grid-cols-1 gap-2">
+								{/* Header */}
+								<div className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
+									<button
+										onClick={() => handleSort('placement')}
+										className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+									>
+										{'Standing'}
+										{sortField === 'placement' && (
+											<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+										)}
+									</button>
+									<div className='text-center flex items-center justify-center gap-1'>{'Submission'}</div>
+									<div className='text-center flex items-center justify-center gap-1'>{'User'}</div>
+									<button
+										onClick={() => handleSort('tokenCount')}
+										className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+									>
+										{'Tokens'}
+										{sortField === 'tokenCount' && (
+											<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+										)}
+									</button>
+									<button
+										onClick={() => handleSort('avgExecutionTime')}
+										className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+									>
+										{'Time'}
+										{sortField === 'avgExecutionTime' && (
+											<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+										)}
+									</button>
+									<div className="text-center">{'Performance Metrics'}</div>
+								</div>
+
+								{/* Standings */}
+								{standings.sort((a, b) => { // Sort standings based on sortField and sortDirection
+									const aField = a[sortField]
+									const bField = b[sortField]
+									if (aField === bField) return 0
+									return (aField > bField ? 1 : -1) * (sortDirection === 'asc' ? 1 : -1)
+								}).map(standing => (
+									<div
+										key={standing.user}
+										className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
+									>
+										<div className="text-center">
+											<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
+										</div>
+										<Link
+											href={`/submissions/${standing.submission}`}
+											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
+											title={standing.submissionName}
+										>
+											{standing.submissionName}
+										</Link>
+										<Link
+											href={`/users/${standing.user}`}
+											className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
+											title={standing.userName}
+										>
+											{standing.userName}
+										</Link>
+										<div className="text-center text-gray-400">{standing.tokenCount}</div>
+										<div className="text-center text-gray-400">{standing.avgExecutionTime.toFixed(2)}{'ms'}</div>
+										<div className="text-right flex items-center justify-end gap-2 text-sm divide-x divide-gray-600">
+											<div className="w-[90px] text-center text-gray-300 font-medium" title="Raw Score">
+												{standing.score.toFixed(3)}
+											</div>
+											<div className="w-[100px] text-center text-gray-400" title="Number of Standard Deviations from Mean">
+												{standing.statistics.deviationsFromMean > 0 ? '+' : ''}{standing.statistics.deviationsFromMean.toFixed(2)} {'σ\r'}
+											</div>
+											<div className="w-[80px] text-center text-gray-400" title="Percentile Rank">
+												{standing.statistics.percentileRank.toFixed(1)}{'th'}
+											</div>
+											<div className="w-[90px] text-center text-gray-500 text-xs" title="Standard Score (Z-Score)">
+												{'z='}{standing.statistics.standardScore.toFixed(2)}
+											</div>
+											<div className="w-[90px] text-center text-gray-500 text-xs" title="Normalized Performance (-1 to 1)">
+												{'n='}{standing.statistics.normalizedScore.toFixed(3)}
+											</div>
+										</div>
 									</div>
 								))}
+
+								{standingsLoading && (
+									<div className="animate-pulse bg-gray-800/50 rounded-lg p-2 h-10" />
+								)}
+
+								<div ref={infiniteScrollRef} className="h-px w-full" />
 							</div>
 						</div>
-					)}
-				</div>
-
-				{/* All Submissions */}
-				<div className="bg-gradient-to-br from-gray-700/90 to-gray-800/90 p-6 rounded-xl border border-indigo-500/30">
-					<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
-					<div className="grid grid-cols-1 gap-2">
-						{/* Header */}
-						<div className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
-							<button
-								onClick={() => handleSort('placement')}
-								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
-							>
-								{'Standing'}
-								{sortField === 'placement' && (
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								)}
-							</button>
-							<div className='text-center flex items-center justify-center gap-1'>{'Submission'}</div>
-							<div className='text-center flex items-center justify-center gap-1'>{'User'}</div>
-							<button
-								onClick={() => handleSort('tokenCount')}
-								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
-							>
-								{'Tokens'}
-								{sortField === 'tokenCount' && (
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								)}
-							</button>
-							<button
-								onClick={() => handleSort('avgExecutionTime')}
-								className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
-							>
-								{'Time'}
-								{sortField === 'avgExecutionTime' && (
-									<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
-								)}
-							</button>
-							<div className="text-center">{'Performance Metrics'}</div>
-						</div>
-
-						{/* Standings */}
-						{standings.sort((a, b) => { // Sort standings based on sortField and sortDirection
-							const aField = a[sortField]
-							const bField = b[sortField]
-							if (aField === bField) return 0
-							return (aField > bField ? 1 : -1) * (sortDirection === 'asc' ? 1 : -1)
-						}).map(standing => (
-							<div
-								key={standing.user}
-								className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
-							>
-								<div className="text-center">
-									<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
-								</div>
-								<Link
-									href={`/submissions/${standing.submission}`}
-									className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
-									title={standing.submissionName}
-								>
-									{standing.submissionName}
-								</Link>
-								<Link
-									href={`/users/${standing.user}`}
-									className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
-									title={standing.userName}
-								>
-									{standing.userName}
-								</Link>
-								<div className="text-center text-gray-400">{standing.tokenCount}</div>
-								<div className="text-center text-gray-400">{standing.avgExecutionTime.toFixed(2)}{'ms'}</div>
-								<div className="text-right flex items-center justify-end gap-2 text-sm divide-x divide-gray-600">
-									<div className="w-[90px] text-center text-gray-300 font-medium" title="Raw Score">
-										{standing.score.toFixed(3)}
-									</div>
-									<div className="w-[100px] text-center text-gray-400" title="Number of Standard Deviations from Mean">
-										{standing.statistics.deviationsFromMean > 0 ? '+' : ''}{standing.statistics.deviationsFromMean.toFixed(2)} {'σ\r'}
-									</div>
-									<div className="w-[80px] text-center text-gray-400" title="Percentile Rank">
-										{standing.statistics.percentileRank.toFixed(1)}{'th'}
-									</div>
-									<div className="w-[90px] text-center text-gray-500 text-xs" title="Standard Score (Z-Score)">
-										{'z='}{standing.statistics.standardScore.toFixed(2)}
-									</div>
-									<div className="w-[90px] text-center text-gray-500 text-xs" title="Normalized Performance (-1 to 1)">
-										{'n='}{standing.statistics.normalizedScore.toFixed(3)}
-									</div>
-								</div>
-							</div>
-						))}
-
-						{standingsLoading && (
-							<div className="animate-pulse bg-gray-800/50 rounded-lg p-2 h-10" />
-						)}
-
-						<div ref={infiniteScrollRef} className="h-px w-full" />
 					</div>
 				</div>
 			</div>
