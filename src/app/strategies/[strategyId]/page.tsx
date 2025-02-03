@@ -1,6 +1,6 @@
 'use client'
 
-import { type ISubmission } from '@/types/backendDataTypes'
+import { type SubmissionType } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
@@ -16,10 +16,10 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 	const params = use(props.params)
 	const router = useRouter()
 	const { currentUser } = useUser()
-	const [strategy, setStrategy] = useState<ISubmission | null>(null)
+	const [strategy, setStrategy] = useState<SubmissionType | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [hasChanges, setHasChanges] = useState(false)
-	const [originalStrategy, setOriginalStrategy] = useState<ISubmission | null>(null)
+	const [originalStrategy, setOriginalStrategy] = useState<SubmissionType | null>(null)
 	const didPushRef = React.useRef(false)
 	const [isLoading, setIsLoading] = useState(true)
 	const [isEvaluating, setIsEvaluating] = useState(false)
@@ -28,7 +28,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
 			try {
-				const response = await axios.get<ISubmission>(
+				const response = await axios.get<SubmissionType>(
 					`${API_URL}/v1/submissions/${params.strategyId}`,
 					{ withCredentials: true }
 				)
@@ -113,7 +113,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 		if (strategy == null) return
 		setIsSubmitting(true)
 
-		axios.patch<ISubmission>(
+		axios.patch<SubmissionType>(
 			`${API_URL}/v1/submissions/${params.strategyId}`,
 			strategy,
 			{ withCredentials: true }
@@ -146,7 +146,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 	const handleEvaluate = async (): Promise<void> => {
 		setIsEvaluating(true)
 		try {
-			const { data: updatedStrategy } = await axios.post<ISubmission>(
+			const { data: updatedStrategy } = await axios.post<SubmissionType>(
 				`${API_URL}/v1/submissions/${params.strategyId}/evaluate`,
 				{},
 				{ withCredentials: true }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useUser } from '@/contexts/UserProvider'
-import { type UserType, type ISubmission } from '@/types/backendDataTypes'
+import { type UserType, type SubmissionType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
@@ -13,7 +13,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 export default function Page(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
 	const params = use(props.params)
 	const { currentUser } = useUser()
-	const [strategies, setStrategies] = useState<ISubmission[]>([])
+	const [strategies, setStrategies] = useState<SubmissionType[]>([])
 	const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null)
 	const [username, setUsername] = useState<string>('')
 	const isOwnProfile = currentUser?._id === params.userId
@@ -24,7 +24,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 			setIsLoading(true)
 			try {
 				const [strategiesResponse, userResponse] = await Promise.all([
-					axios.get<ISubmission[]>(`${API_URL}/v1/submissions`, {
+					axios.get<SubmissionType[]>(`${API_URL}/v1/submissions`, {
 						params: { user: params.userId },
 						withCredentials: true
 					}),
@@ -66,7 +66,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 		}))
 
 		try {
-			await axios.patch<ISubmission>(
+			await axios.patch<SubmissionType>(
 				`${API_URL}/v1/submissions/${strategyId}`,
 				{ active },
 				{ withCredentials: true }
@@ -87,7 +87,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 		}
 	}
 
-	const handleDelete = async (strategy: ISubmission): Promise<void> => {
+	const handleDelete = async (strategy: SubmissionType): Promise<void> => {
 		if (!window.confirm(`Are you sure you want to delete "${strategy.title}"? It cannot be recovered.`)) {
 			return
 		}
@@ -104,7 +104,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 
 	const handleEvaluate = async (strategyId: string): Promise<void> => {
 		try {
-			const { data: updatedStrategy } = await axios.post<ISubmission>(
+			const { data: updatedStrategy } = await axios.post<SubmissionType>(
 				`${API_URL}/v1/submissions/${strategyId}/evaluate`,
 				{},
 				{ withCredentials: true }

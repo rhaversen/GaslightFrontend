@@ -19,7 +19,7 @@ export interface UserType {
 	updatedAt: Date
 }
 
-export interface ISubmission {
+export interface SubmissionType {
 	/** ID of the submission */
 	_id: string
 	/** Title of the submission */
@@ -66,7 +66,7 @@ export interface ISubmission {
 	updatedAt: Date
 }
 
-interface IGradingStatistics {
+interface GradingStatisticsType {
 	/** Percentile rank (0-100) of this grading's score */
 	percentileRank: number
 	/** Standard score (z-score) */
@@ -80,13 +80,13 @@ interface IGradingStatistics {
 export interface TournamentStanding {
 	user: UserType['_id']
 	userName: string
-	submission: ISubmission['_id']
+	submission: SubmissionType['_id']
 	submissionName: string
 	score: number
 	zValue: number
 	tokenCount: number
 	placement: number
-	statistics: IGradingStatistics
+	statistics: GradingStatisticsType
 	avgExecutionTime: number
 }
 
@@ -138,7 +138,7 @@ export interface TournamentType {
 	_id: string
 	/** All disqualifications from this tournament */
 	disqualified?: [{
-		submission: ISubmission['_id']
+		submission: SubmissionType['_id']
 		reason: string
 	}]
 	/** Amount of submissions in the tournament */
