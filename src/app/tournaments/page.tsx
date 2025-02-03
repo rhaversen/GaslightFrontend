@@ -50,7 +50,8 @@ export default function Page(): ReactElement<any> {
 				limitStandings: LATEST_STANDINGS,
 				sortFieldStandings: 'placement',
 				sortDirectionStandings: 'asc',
-				userIdStanding: currentUser?._id ?? null
+				userIdStanding: currentUser?._id ?? null,
+				getStandings: true
 			}
 		})
 			.then(response => setLatestTournament(response.data))
@@ -68,7 +69,8 @@ export default function Page(): ReactElement<any> {
 				limitStandings: OTHER_STANDINGS,
 				sortFieldStandings: 'placement',
 				sortDirectionStandings: 'asc',
-				userIdStanding: currentUser?._id ?? null
+				userIdStanding: currentUser?._id ?? null,
+				getStandings: true
 			}
 		})
 			.then(response => {
