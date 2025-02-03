@@ -19,7 +19,7 @@ export function CurrentUserDisplay({
 						</div>
 						<div>
 							<span className="text-indigo-200 text-sm">{'Score:'}</span>{' '}
-							<span className="text-gray-400 text-sm font-medium">{standing.grade.toFixed(2)}</span>
+							<span className="text-gray-400 text-sm font-medium">{standing.score.toFixed(2)}</span>
 						</div>
 					</div>
 					<div className="border-t border-indigo-500/20 pt-2">
@@ -58,7 +58,10 @@ export function CurrentUserDisplay({
 					</div>
 				) : (
 					<div className="text-gray-400 text-sm">
-						{'Login to view your position.\r'}
+						<Link href="/login" className="text-sky-400 hover:text-sky-300 transition-colors">
+							{'Login'}
+						</Link>
+						{' to view your position.\r'}
 					</div>
 				)
 			)}

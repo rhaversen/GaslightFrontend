@@ -1,12 +1,12 @@
 import { type ReactElement } from 'react'
 import ExecutionTimeHistogram from './ExecutionTimeHistogram'
-import { type ISubmission } from '@/types/backendDataTypes'
+import { type SubmissionType } from '@/types/backendDataTypes'
 import { formatDate } from '@/lib/dateUtils'
 
 const EvaluationResults = ({
 	strategy
 }: {
-	strategy: ISubmission
+	strategy: SubmissionType
 }): ReactElement<any> | null => {
 	if (strategy?.evaluation === undefined) return null
 

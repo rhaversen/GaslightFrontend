@@ -1,13 +1,13 @@
 import { formatDate } from '@/lib/dateUtils'
-import { type ISubmission } from '@/types/backendDataTypes'
+import { type SubmissionType } from '@/types/backendDataTypes'
 import Link from 'next/link'
 import { type ReactElement, useState } from 'react'
 
 interface Props {
-	strategy: ISubmission
+	strategy: SubmissionType
 	isOwnProfile: boolean
 	onToggleActive: (strategyId: string, active: boolean) => Promise<void>
-	onDelete: (strategy: ISubmission) => Promise<void>
+	onDelete: (strategy: SubmissionType) => Promise<void>
 	activeStrategyId: string | null
 	onEvaluate: (strategyId: string) => Promise<void>
 }

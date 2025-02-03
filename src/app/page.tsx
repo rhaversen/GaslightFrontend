@@ -9,34 +9,88 @@ import Link from 'next/link'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
 
-export default function Page(): ReactElement<any> {
-	// Time generation function
-	const timeToNextMidnight = (): string => {
+type TimeObject = {
+	hours: string
+	minutes: string
+	seconds: string
+}
+
+const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
+	const [timeToTournament, setTimeToTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
+	const [timeSinceTournament, setTimeSinceTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
+
+	const timeToNextMidnight = (): TimeObject => {
 		const now = new Date()
 		const nextMidnight = new Date(now)
 		nextMidnight.setHours(24, 0, 0, 0)
 		const diff = nextMidnight.getTime() - now.getTime()
-		const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0')
-		const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')
-		const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		return `${hours} : ${minutes} : ${seconds}`
+		return {
+			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
+			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
+			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
+		}
 	}
 
-	const timeSinceMidnight = (): string => {
+	const timeSinceMidnight = (): TimeObject => {
 		const now = new Date()
 		const midnight = new Date(now)
 		midnight.setHours(0, 0, 0, 0) // Set to previous midnight
 		const diff = now.getTime() - midnight.getTime()
-		const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0')
-		const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')
-		const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		return `${hours} : ${minutes} : ${seconds}`
+		return {
+			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
+			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
+			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
+		}
 	}
 
+	const TimerDisplay = ({ time, label }: { time: TimeObject, label: string }): ReactElement => (
+		<>
+			<div className='text-white text-xl font-medium tracking-wide'>
+				{label}
+			</div>
+			<div className='flex justify-center items-center gap-2'>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.hours}
+				</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.minutes}
+				</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+					{time.seconds}
+				</div>
+			</div>
+		</>
+	)
+
+	useEffect(() => {
+		setTimeToTournament(timeToNextMidnight())
+		const interval = setInterval(() => {
+			setTimeToTournament(timeToNextMidnight())
+		}, 1000)
+		return () => { clearInterval(interval) }
+	}, [])
+
+	useEffect(() => {
+		setTimeSinceTournament(timeSinceMidnight())
+		const interval = setInterval(() => {
+			setTimeSinceTournament(timeSinceMidnight())
+		}, 1000)
+		return () => { clearInterval(interval) }
+	}, [])
+
+	return (
+		<TimerDisplay
+			time={tournamentInProgress ? timeSinceTournament : timeToTournament}
+			label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT TOURNAMENT'}
+		/>
+	)
+}
+
+export default function Page(): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
-	const [timeToTournamentString, setTimeToTournamentString] = useState('-- : -- : --')
-	const [timeSinceTournamentString, setTimeSinceTournamentString] = useState('-- : -- : --')
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<any> | null>(null)
 	const tournamentInProgress = false // TODO: fetch from backend
@@ -51,22 +105,6 @@ export default function Page(): ReactElement<any> {
 				})
 		}
 	}, [currentUser, API_URL])
-
-	useEffect(() => {
-		setTimeToTournamentString(timeToNextMidnight())
-		const interval = setInterval(() => {
-			setTimeToTournamentString(timeToNextMidnight())
-		}, 1000)
-		return () => { clearInterval(interval) }
-	}, [])
-
-	useEffect(() => {
-		setTimeSinceTournamentString(timeSinceMidnight())
-		const interval = setInterval(() => {
-			setTimeSinceTournamentString(timeSinceMidnight())
-		}, 1000)
-		return () => { clearInterval(interval) }
-	}, [])
 
 	const handleAmbigusClick = async (): Promise<void> => {
 		// If user is not logged in, redirect to signup page
@@ -122,34 +160,20 @@ export default function Page(): ReactElement<any> {
 		</Link>
 	)
 
-	const TimerDisplay = ({ time, label }: { time: string, label: string }): ReactElement => (
-		<>
-			<div className='text-white text-xl font-medium tracking-wide'>
-				{label}
-			</div>
-			<div className='text-white text-4xl md:text-7xl font-light tracking-wider whitespace-nowrap'>
-				{time}
-			</div>
-		</>
-	)
-
 	return (
-		<>
+		<div className="h-screen">
 			<Header />
-			<main className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
+			<main className="flex flex-col h-full items-center justify-center relative overflow-hidden">
 				{tournamentInProgress
 					? <HaloAgressive />
 					: <HaloCalm />
 				}
 				<div className="z-10 text-center flex flex-col items-center gap-8">
-					<TimerDisplay
-						time={tournamentInProgress ? timeSinceTournamentString : timeToTournamentString}
-						label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT RANKED TOURNAMENT IN'}
-					/>
+					<TimerSection tournamentInProgress={tournamentInProgress} />
 					<TournamentButton />
 					<ResultsLink />
 				</div>
 			</main>
-		</>
+		</div>
 	)
 }

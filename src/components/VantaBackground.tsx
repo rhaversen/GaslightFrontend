@@ -29,7 +29,7 @@ export const HaloCalm = (): ReactElement<any> => {
 		}
 	}, [])
 
-	return <div ref={vantaRef} className="absolute w-full h-full -z-10" />
+	return <div ref={vantaRef} className="absolute w-full h-screen -z-10" />
 }
 
 export const HaloAgressive = (): ReactElement<any> => {
@@ -58,7 +58,7 @@ export const HaloAgressive = (): ReactElement<any> => {
 		}
 	}, [])
 
-	return <div ref={vantaRef} className="absolute w-full h-full -z-10" />
+	return <div ref={vantaRef} className="absolute w-full h-screen -z-10" />
 }
 
 export const Net = (): ReactElement<any> => {
@@ -91,5 +91,5 @@ export const Net = (): ReactElement<any> => {
 		}
 	}, [])
 
-	return <div ref={vantaRef} className="absolute w-full h-full -z-10" />
+	return <div ref={vantaRef} className="absolute w-full h-screen -z-10" />
 }
