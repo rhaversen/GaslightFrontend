@@ -9,6 +9,7 @@ import React, { type ReactElement, useEffect, useState, use, useCallback } from 
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { formatDate } from '@/lib/dateUtils'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { StatsDisplay } from '../components/StatsDisplay'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
@@ -185,29 +186,36 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 					{statisticsLoading ? (
 						<LoadingPlaceholder variant="dark" />
 					) : statistics && (
-						<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-							{[
-								['Sample Size', statistics.sampleSize],
-								['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
-								['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
-								['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
-								['Median (P50)', statistics.percentiles.p50.toFixed(3)],
-								['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
-								['Variance', statistics.dispersion.variance.toFixed(3)],
-								['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
-								['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
-								['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
-								['Minimum', statistics.extrema.minimum.toFixed(3)],
-								['Maximum', statistics.extrema.maximum.toFixed(3)],
-								['Range', statistics.extrema.range.toFixed(3)],
-								['10th Percentile', statistics.percentiles.p10.toFixed(3)],
-								['90th Percentile', statistics.percentiles.p90.toFixed(3)]
-							].map(([label, value]) => (
-								<div key={label} className="space-y-1">
-									<div className="text-sm text-gray-400">{label}</div>
-									<div className="text-lg text-gray-200">{value}</div>
-								</div>
-							))}
+						<div className="space-y-6">
+							<StatsDisplay
+								tournamentId={params.tournamentId}
+								statistics={statistics}
+								userScore={tournament.userStanding?.score}
+							/>
+							<div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+								{[
+									['Sample Size', statistics.sampleSize],
+									['Arithmetic Mean', statistics.centralTendency.arithmeticMean.toFixed(3)],
+									['Harmonic Mean', statistics.centralTendency.harmonicMean?.toFixed(3) ?? 'N/A'],
+									['Mode', statistics.centralTendency.mode.map(m => m.toFixed(3)).join(', ')],
+									['Median (P50)', statistics.percentiles.p50.toFixed(3)],
+									['Standard Deviation', statistics.dispersion.standardDeviation.toFixed(3)],
+									['Variance', statistics.dispersion.variance.toFixed(3)],
+									['IQR', statistics.dispersion.interquartileRange.toFixed(3)],
+									['Skewness', statistics.distribution.skewness?.toFixed(3) ?? 'N/A'],
+									['Kurtosis', statistics.distribution.kurtosis?.toFixed(3) ?? 'N/A'],
+									['Minimum', statistics.extrema.minimum.toFixed(3)],
+									['Maximum', statistics.extrema.maximum.toFixed(3)],
+									['Range', statistics.extrema.range.toFixed(3)],
+									['10th Percentile', statistics.percentiles.p10.toFixed(3)],
+									['90th Percentile', statistics.percentiles.p90.toFixed(3)]
+								].map(([label, value]) => (
+									<div key={label} className="space-y-1">
+										<div className="text-sm text-gray-400">{label}</div>
+										<div className="text-lg text-gray-200">{value}</div>
+									</div>
+								))}
+							</div>
 						</div>
 					)}
 				</div>
