@@ -251,7 +251,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 									</>
 								)}
 
-								{!hasChanges && (
+								{!hasChanges && strategy.passedEvaluation !== null && (
 									<button
 										type="button"
 										onClick={() => { void handleEvaluate() }}
