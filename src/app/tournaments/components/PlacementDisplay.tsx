@@ -76,18 +76,20 @@ export const PlacementDisplay = ({
 
 	if (isSimplified) {
 		return (
-			<div className="text-sm">
-				<span className="font-medium text-gray-400">{`${place}. `}</span>
-				<Link href={`/users/${standing.user}`}>
-					<span className={`text-gray-400 hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
-						{standing?.userName}
+			<div className="text-sm flex items-center min-w-0">
+				<span className="font-medium text-gray-400 flex-none mr-2">{`${place}. `}</span>
+				<div className="flex min-w-0 flex-1 items-center">
+					<Link href={`/users/${standing.user}`} className="min-w-0 flex-shrink">
+						<span className={`text-gray-400 truncate block hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
+							{standing.userName}
+						</span>
+					</Link>
+					<span className="text-gray-500 flex-none ml-2">
+						{`${standing.percentileRank.toFixed(1)}%`}
 					</span>
-				</Link>
-				<span className="text-gray-500 ml-2">
-					{`${standing.percentileRank.toFixed(1)}%`}
-				</span>
+				</div>
 				{isCurrentUser && place > 3 && (
-					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
+					<span className="flex-none ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
 						{'You !'}
 					</span>
 				)}
@@ -136,18 +138,18 @@ export const PlacementDisplay = ({
 				</div>
 
 				{place === 1 && (
-					<div className="grid grid-cols-4 gap-6 pt-2">
+					<div className="grid grid-cols-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
 							<div className="text-2xl text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
-						<div className="space-y-1" title="Average scored per game">
-							<div className="text-sm text-gray-400">{'Raw Score'}</div>
-							<div className="text-xl text-gray-300">{standing.score.toFixed(3)}</div>
-						</div>
 						<div className="space-y-1" title="Total number of syntax tokens in the strategy code. Each token represents a basic programming element like a keyword, operator, or identifier.">
 							<div className="text-sm text-gray-400">{'Strategy Tokens'}</div>
 							<div className="text-xl text-gray-300">{standing.tokenCount}</div>
+						</div>
+						<div className="space-y-1" title="Average scored per game">
+							<div className="text-sm text-gray-400">{'Raw Score'}</div>
+							<div className="text-xl text-gray-300">{standing.score.toFixed(3)}</div>
 						</div>
 						<div className="space-y-1" title="Average time taken to execute the strategy">
 							<div className="text-sm text-gray-400">{'Execution time'}</div>
@@ -157,7 +159,7 @@ export const PlacementDisplay = ({
 				)}
 
 				{place > 1 && place <= 3 && (
-					<div className="grid grid-cols-2 gap-6 pt-2">
+					<div className="grid grid-cols-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
 							<div className="text-md text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
@@ -170,7 +172,7 @@ export const PlacementDisplay = ({
 				)}
 
 				{place > 3 && (
-					<div className="grid grid-cols-2 gap-6 pt-2">
+					<div className="grid grid-cols-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
 							<div className="text-sm text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
