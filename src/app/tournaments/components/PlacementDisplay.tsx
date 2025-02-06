@@ -57,27 +57,6 @@ export const PlacementDisplay = ({
 	const placeStyles = getPlaceStyles(place)
 	const isSimplified = simpleStartIndex != null && place >= simpleStartIndex
 
-	if (isSimplified) {
-		return (
-			<div className="text-sm">
-				<span className="font-medium text-gray-400">{`${place}. `}</span>
-				<Link href={`/users/${standing?.user}`}>
-					<span className={`text-gray-400 hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
-						{standing?.userName}
-					</span>
-				</Link>
-				<span className="text-gray-500 ml-2">
-					{standing ? `${standing.percentileRank.toFixed(1)}%` : '0'}
-				</span>
-				{isCurrentUser && place > 3 && (
-					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
-						{'You !'}
-					</span>
-				)}
-			</div>
-		)
-	}
-
 	if (!standing) {
 		return (
 			<div
@@ -91,6 +70,27 @@ export const PlacementDisplay = ({
 					{getPlaceText(place)}
 				</div>
 				<div className="text-gray-400">{'None'}</div>
+			</div>
+		)
+	}
+
+	if (isSimplified) {
+		return (
+			<div className="text-sm">
+				<span className="font-medium text-gray-400">{`${place}. `}</span>
+				<Link href={`/users/${standing.user}`}>
+					<span className={`text-gray-400 hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
+						{standing?.userName}
+					</span>
+				</Link>
+				<span className="text-gray-500 ml-2">
+					{`${standing.percentileRank.toFixed(1)}%`}
+				</span>
+				{isCurrentUser && place > 3 && (
+					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
+						{'You !'}
+					</span>
+				)}
 			</div>
 		)
 	}
