@@ -67,7 +67,7 @@ export const PlacementDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{standing ? `${(standing.percentileRank * 100).toFixed(1)}%` : '0'}
+					{standing ? `${standing.percentileRank.toFixed(1)}%` : '0'}
 				</span>
 				{isCurrentUser && place > 3 && (
 					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
