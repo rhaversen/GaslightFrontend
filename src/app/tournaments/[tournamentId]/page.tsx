@@ -272,7 +272,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											title="Relative standing among all participants"
 										>
 											<div className="text-xl text-gray-200">
-												{standing.statistics.percentileRank.toFixed(1)}{'%'}
+												{standing.percentileRank.toFixed(1)}{'%'}
 											</div>
 										</div>
 										<div className="text-end" title="Average scored per game">

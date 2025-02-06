@@ -18,7 +18,7 @@ export function CurrentUserDisplay({
 							{'#'}{standing.placement}
 						</div>
 						<div>
-							<div className="text-2xl text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+							<div className="text-2xl text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
 					</div>
 					<div className="border-t border-indigo-500/20 pt-2">

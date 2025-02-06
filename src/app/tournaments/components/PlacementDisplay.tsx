@@ -67,7 +67,7 @@ export const PlacementDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{standing ? `${(standing.statistics.normalizedScore * 100).toFixed(1)}%` : '0'}
+					{standing ? `${(standing.percentileRank * 100).toFixed(1)}%` : '0'}
 				</span>
 				{isCurrentUser && place > 3 && (
 					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
@@ -139,7 +139,7 @@ export const PlacementDisplay = ({
 					<div className="grid grid-cols-4 gap-6 pt-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
-							<div className="text-2xl text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+							<div className="text-2xl text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
 						<div className="space-y-1" title="Average scored per game">
 							<div className="text-sm text-gray-400">{'Raw Score'}</div>
@@ -160,7 +160,7 @@ export const PlacementDisplay = ({
 					<div className="grid grid-cols-2 gap-6 pt-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
-							<div className="text-md text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+							<div className="text-md text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
 						<div className="space-y-1" title="Average scored per game">
 							<div className="text-sm text-gray-400">{'Raw Score'}</div>
@@ -173,7 +173,7 @@ export const PlacementDisplay = ({
 					<div className="grid grid-cols-2 gap-6 pt-2">
 						<div className="space-y-1" title="Relative standing among all participants">
 							<div className="text-sm text-gray-400">{'Score'}</div>
-							<div className="text-sm text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+							<div className="text-sm text-gray-200">{standing.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
 						<div className="space-y-1" title="Average scored per game">
 							<div className="text-sm text-gray-400">{'Raw Score'}</div>

@@ -66,27 +66,15 @@ export interface SubmissionType {
 	updatedAt: Date
 }
 
-interface GradingStatisticsType {
-	/** Percentile rank (0-100) of this grading's score */
-	percentileRank: number
-	/** Standard score (z-score) */
-	standardScore: number
-	/** How many standard deviations from mean */
-	deviationsFromMean: number
-	/** Relative performance (-1 to 1) compared to mean */
-	normalizedScore: number
-}
-
 export interface TournamentStanding {
 	user: UserType['_id']
 	userName: string
 	submission: SubmissionType['_id']
 	submissionName: string
 	score: number
-	zValue: number
 	tokenCount: number
 	placement: number
-	statistics: GradingStatisticsType
+	percentileRank: number
 	avgExecutionTime: number
 }
 
