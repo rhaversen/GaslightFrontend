@@ -15,11 +15,10 @@ export function CurrentUserDisplay({
 				<div className="space-y-3">
 					<div className="flex items-center justify-evenly">
 						<div className="text-2xl font-bold text-white">
-							{'Position #'}{standing.placement}
+							{'#'}{standing.placement}
 						</div>
 						<div>
-							<span className="text-indigo-200 text-sm">{'Score:'}</span>{' '}
-							<span className="text-gray-400 text-sm font-medium">{standing.score.toFixed(2)}</span>
+							<div className="text-2xl text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
 					</div>
 					<div className="border-t border-indigo-500/20 pt-2">
@@ -32,21 +31,17 @@ export function CurrentUserDisplay({
 							</Link>
 						</div>
 						<div className="space-y-1.5">
-							<div className="flex items-center gap-3">
-								<span className="text-indigo-200 text-sm">{'Percentile Rank:'}</span>
-								<span className="text-gray-400 text-sm font-medium">{standing.statistics.percentileRank.toFixed(1)}{'%'}</span>
+							<div className="flex items-center gap-3" title="Average scored per game">
+								<span className="text-indigo-200 text-sm">{'Raw score::'}</span>
+								<span className="text-gray-400 text-sm font-medium">{standing.score.toFixed(2)}</span>
 							</div>
-							<div className="flex items-center gap-3">
-								<span className="text-indigo-200 text-sm">{'Standard Score:'}</span>
-								<span className="text-gray-400 text-sm font-medium">{standing.statistics.standardScore.toFixed(2)}</span>
+							<div className="flex items-center gap-3" title="Total number of syntax tokens in the strategy code. Each token represents a basic programming element like a keyword, operator, or identifier.">
+								<span className="text-indigo-200 text-sm">{'Strategy Tokens:'}</span>
+								<span className="text-gray-400 text-sm font-medium">{standing.tokenCount}</span>
 							</div>
-							<div className="flex items-center gap-3">
-								<span className="text-indigo-200 text-sm">{'Deviations:'}</span>
-								<span className="text-gray-400 text-sm font-medium">{standing.statistics.deviationsFromMean.toFixed(2)}{'σ'}</span>
-							</div>
-							<div className="flex items-center gap-3">
-								<span className="text-indigo-200 text-sm">{'Normalized:'}</span>
-								<span className="text-gray-400 text-sm font-medium">{(standing.statistics.normalizedScore * 100).toFixed(1)}{'%'}</span>
+							<div className="flex items-center gap-3" title="Average time taken to execute the strategy">
+								<span className="text-indigo-200 text-sm">{'Execution time:'}</span>
+								<span className="text-gray-400 text-sm font-medium">{standing.avgExecutionTime.toFixed(2)}{'ms'}</span>
 							</div>
 						</div>
 					</div>
