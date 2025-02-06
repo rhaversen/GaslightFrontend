@@ -195,7 +195,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 							<h2 className="text-xl font-medium text-gray-200 mb-4">{'All Submissions'}</h2>
 							<div className="grid grid-cols-1 gap-2">
 								{/* Header */}
-								<div className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
+								<div className="grid grid-cols-[80px_1fr_1fr_90px_90px_100px_100px] gap-4 text-sm text-gray-400 font-medium p-2 divide-x divide-gray-600">
 									<button
 										onClick={() => handleSort('placement')}
 										className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
@@ -205,11 +205,23 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
 										)}
 									</button>
-									<div className='text-center flex items-center justify-center gap-1'>{'Submission'}</div>
 									<div className='text-center flex items-center justify-center gap-1'>{'User'}</div>
+									<div className='text-center flex items-center justify-center gap-1'>{'Submission'}</div>
+									<div
+										className='text-center flex items-center justify-center gap-1'
+										title="Relative standing among all participants"
+									>
+										{'Score'}
+									</div>
+									<div className='text-center flex items-center justify-center gap-1'
+										title="Average scored per game"
+									>
+										{'Raw Score'}
+									</div>
 									<button
 										onClick={() => handleSort('tokenCount')}
 										className="text-center hover:text-gray-200 transition-colors flex items-center justify-center gap-1"
+										title="Total number of syntax tokens in the strategy code. Each token represents a basic programming element like a keyword, operator, or identifier."
 									>
 										{'Tokens'}
 										{sortField === 'tokenCount' && (
@@ -225,7 +237,6 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											<span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
 										)}
 									</button>
-									<div className="text-center">{'Performance Metrics'}</div>
 								</div>
 
 								{/* Standings */}
@@ -237,18 +248,11 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								}).map(standing => (
 									<div
 										key={standing.user}
-										className="grid grid-cols-[80px_1fr_1fr_100px_100px_470px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
+										className="grid grid-cols-[80px_1fr_1fr_90px_90px_100px_100px] gap-4 bg-gray-800/50 rounded-lg p-2 items-center hover:bg-gray-800/70 transition-colors divide-x divide-gray-600"
 									>
 										<div className="text-center">
 											<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
 										</div>
-										<Link
-											href={`/submissions/${standing.submission}`}
-											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
-											title={standing.submissionName}
-										>
-											{standing.submissionName}
-										</Link>
 										<Link
 											href={`/users/${standing.user}`}
 											className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
@@ -256,24 +260,34 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 										>
 											{standing.userName}
 										</Link>
-										<div className="text-center text-gray-400">{standing.tokenCount}</div>
-										<div className="text-center text-gray-400">{standing.avgExecutionTime.toFixed(2)}{'ms'}</div>
-										<div className="text-right flex items-center justify-end gap-2 text-sm divide-x divide-gray-600">
-											<div className="w-[90px] text-center text-gray-300 font-medium" title="Raw Score">
+										<Link
+											href={`/submissions/${standing.submission}`}
+											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
+											title={standing.submissionName}
+										>
+											{standing.submissionName}
+										</Link>
+										<div
+											className="text-end"
+											title="Relative standing among all participants"
+										>
+											<div className="text-xl text-gray-200">
+												{standing.statistics.percentileRank.toFixed(1)}{'%'}
+											</div>
+										</div>
+										<div className="text-end" title="Average scored per game">
+											<div className="text-gray-400">
 												{standing.score.toFixed(3)}
 											</div>
-											<div className="w-[100px] text-center text-gray-400" title="Number of Standard Deviations from Mean">
-												{standing.statistics.deviationsFromMean > 0 ? '+' : ''}{standing.statistics.deviationsFromMean.toFixed(2)} {'σ\r'}
-											</div>
-											<div className="w-[80px] text-center text-gray-400" title="Percentile Rank">
-												{standing.statistics.percentileRank.toFixed(1)}{'th'}
-											</div>
-											<div className="w-[90px] text-center text-gray-500 text-xs" title="Standard Score (Z-Score)">
-												{'z='}{standing.statistics.standardScore.toFixed(2)}
-											</div>
-											<div className="w-[90px] text-center text-gray-500 text-xs" title="Normalized Performance (-1 to 1)">
-												{'n='}{standing.statistics.normalizedScore.toFixed(3)}
-											</div>
+										</div>
+										<div
+											className="text-center text-gray-400"
+											title="Total number of syntax tokens in the strategy code. Each token represents a basic programming element like a keyword, operator, or identifier."
+										>
+											{standing.tokenCount}
+										</div>
+										<div className="text-center text-gray-400">
+											{standing.avgExecutionTime.toFixed(2)}{'ms'}
 										</div>
 									</div>
 								))}

@@ -1,9 +1,8 @@
 import { TournamentStanding } from '@/types/backendDataTypes'
-import { formatScore, formatZScore } from '@/lib/scoreUtils'
 import Link from 'next/link'
 
 const getPlaceStyles = (place: number) => {
-	switch(place) {
+	switch (place) {
 		case 1:
 			return {
 				border: 'border-yellow-500/20 hover:border-yellow-500/40 hover:shadow-yellow-500/10',
@@ -36,7 +35,7 @@ const getPlaceStyles = (place: number) => {
 }
 
 const getPlaceText = (place: number) => {
-	switch(place) {
+	switch (place) {
 		case 1: return 'Winner'
 		case 2: return '2nd Place'
 		case 3: return '3rd Place'
@@ -68,11 +67,11 @@ export const PlacementDisplay = ({
 					</span>
 				</Link>
 				<span className="text-gray-500 ml-2">
-					{standing?.score.toFixed(2) ?? 0}
+					{standing ? `${(standing.statistics.normalizedScore * 100).toFixed(1)}%` : '0'}
 				</span>
 				{isCurrentUser && place > 3 && (
 					<span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-300">
-						{'You !\r'}
+						{'You !'}
 					</span>
 				)}
 			</div>
@@ -136,61 +135,53 @@ export const PlacementDisplay = ({
 					</div>
 				</div>
 
-				{place === 1 ? (
-					<div className="grid grid-cols-2 gap-6 pt-2">
-						<div className="space-y-4">
-							<div className="space-y-1">
-								<div className="text-sm text-gray-400">{'Score'}</div>
-								<div className="text-2xl text-gray-200">{standing.score.toFixed(3)}</div>
-							</div>
-							<div className="space-y-1">
-								<div className="text-sm text-gray-400">{'Percentile Rank'}</div>
-								<div className="text-xl text-gray-300">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
-							</div>
+				{place === 1 && (
+					<div className="grid grid-cols-4 gap-6 pt-2">
+						<div className="space-y-1" title="Relative standing among all participants">
+							<div className="text-sm text-gray-400">{'Score'}</div>
+							<div className="text-2xl text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
-						<div className="space-y-4">
-							<div className="space-y-1">
-								<div className="text-sm text-gray-400">{'Z-Score'}</div>
-								<div className="text-2xl text-gray-200">{standing.zValue.toFixed(3)}</div>
-							</div>
-							<div className="space-y-1">
-								<div className="text-sm text-gray-400">{'Deviations'}</div>
-								<div className="text-xl text-gray-300">{standing.statistics.deviationsFromMean.toFixed(2)}{'σ'}</div>
-							</div>
+						<div className="space-y-1" title="Average scored per game">
+							<div className="text-sm text-gray-400">{'Raw Score'}</div>
+							<div className="text-xl text-gray-300">{standing.score.toFixed(3)}</div>
+						</div>
+						<div className="space-y-1" title="Total number of syntax tokens in the strategy code. Each token represents a basic programming element like a keyword, operator, or identifier.">
+							<div className="text-sm text-gray-400">{'Strategy Tokens'}</div>
+							<div className="text-xl text-gray-300">{standing.tokenCount}</div>
+						</div>
+						<div className="space-y-1" title="Average time taken to execute the strategy">
+							<div className="text-sm text-gray-400">{'Execution time'}</div>
+							<div className="text-xl text-gray-300">{standing.avgExecutionTime.toFixed(2)}{'ms'}</div>
 						</div>
 					</div>
-				) : (
-					<div className="flex flex-col gap-1">
-						<div className="text-gray-200" title={`Score: ${standing.score}`}>
-							{formatScore(standing.score)}
+				)}
+
+				{place > 1 && place <= 3 && (
+					<div className="grid grid-cols-2 gap-6 pt-2">
+						<div className="space-y-1" title="Relative standing among all participants">
+							<div className="text-sm text-gray-400">{'Score'}</div>
+							<div className="text-md text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
 						</div>
-						<div className="text-gray-400 text-sm" title={`Z-Score: ${standing.zValue}`}>
-							{formatZScore(standing.zValue)}
+						<div className="space-y-1" title="Average scored per game">
+							<div className="text-sm text-gray-400">{'Raw Score'}</div>
+							<div className="text-sm text-gray-300">{standing.score.toFixed(3)}</div>
+						</div>
+					</div>
+				)}
+
+				{place > 3 && (
+					<div className="grid grid-cols-2 gap-6 pt-2">
+						<div className="space-y-1" title="Relative standing among all participants">
+							<div className="text-sm text-gray-400">{'Score'}</div>
+							<div className="text-sm text-gray-200">{standing.statistics.percentileRank.toFixed(1)}{'%'}</div>
+						</div>
+						<div className="space-y-1" title="Average scored per game">
+							<div className="text-sm text-gray-400">{'Raw Score'}</div>
+							<div className="text-sm text-gray-300">{standing.score.toFixed(3)}</div>
 						</div>
 					</div>
 				)}
 			</div>
-
-			{place > 1 && place <= 3 && (
-				<div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm mt-3">
-					<div className="flex items-center justify-between">
-						<span className="text-gray-400">{'Percentile Rank:'}</span>
-						<span className="text-gray-300">{standing.statistics.percentileRank.toFixed(1)}{'%'}</span>
-					</div>
-					<div className="flex items-center justify-between">
-						<span className="text-gray-400">{'Standard Score:'}</span>
-						<span className="text-gray-300">{standing.statistics.standardScore.toFixed(2)}</span>
-					</div>
-					<div className="flex items-center justify-between">
-						<span className="text-gray-400">{'Deviations:'}</span>
-						<span className="text-gray-300">{standing.statistics.deviationsFromMean.toFixed(2)}{'σ'}</span>
-					</div>
-					<div className="flex items-center justify-between">
-						<span className="text-gray-400">{'Normalized:'}</span>
-						<span className="text-gray-300">{(standing.statistics.normalizedScore * 100).toFixed(1)}{'%'}</span>
-					</div>
-				</div>
-			)}
 		</div>
 	)
 }

@@ -43,7 +43,7 @@ const EvaluationResults = ({
 							<div className="space-y-2">
 								<div className="flex items-center gap-x-2 text-gray-600 mb-1">
 									<span className="font-medium">{'Scores'}</span>
-									<span className="text-sm text-gray-400">{'(Lower is better)'}</span>
+									<span className="text-sm text-gray-400">{'(Higher is better)'}</span>
 								</div>
 								<div className="flex gap-x-8 pl-2">
 									<span className="text-gray-600">{'Yours:'}
