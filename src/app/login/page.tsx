@@ -30,12 +30,28 @@ export default function Page (): ReactElement<any> {
 	const isFormValid = formData.email.length > 0 && formData.password.length >= 4
 
 	const login = useCallback(async (credentials: any) => {
-		const response = await axios.post<{
+		await axios.post<{
 			auth: boolean
 			user: UserType
 		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
 		await refetchUser() // Refetch to update the user context
-		router.push(`/users/${response.data.user._id}`)
+		
+		const canGoBack = () => {
+			try {
+				if (!document.referrer) return false
+				const referrerUrl = new URL(document.referrer)
+				return window.location.href !== document.referrer && 
+					   referrerUrl.origin === window.location.origin
+			} catch {
+				return false
+			}
+		}
+
+		if (canGoBack()) {
+			router.back()
+		} else {
+			router.push('/')
+		}
 	}, [API_URL, router, refetchUser])
 
 	useEffect(() => {
