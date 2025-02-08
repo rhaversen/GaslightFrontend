@@ -5,9 +5,9 @@ import { HaloCalm, HaloAgressive } from '../components/VantaBackground'
 import Header from '@/components/header/Header'
 import { useUser } from '@/contexts/UserProvider'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
+import TournamentsSection from '@/components/TournamentsSection'
 
 type TimeObject = {
 	hours: string
@@ -93,6 +93,7 @@ export default function Page(): ReactElement<any> {
 	const router = useRouter()
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<any> | null>(null)
+	const tournamentsRef = useRef<HTMLDivElement>(null)
 	const tournamentInProgress = false // TODO: fetch from backend
 
 	// Start loading data on mount if user exists
@@ -135,6 +136,10 @@ export default function Page(): ReactElement<any> {
 		}
 	}
 
+	const scrollToTournaments = (): void => {
+		tournamentsRef.current?.scrollIntoView({ behavior: 'smooth' })
+	}
+
 	const TournamentButton = (): ReactElement => (
 		<button
 			className="bg-gradient-to-r from-blue-500/80 to-purple-500/80 px-10 py-4 rounded-xl
@@ -148,32 +153,36 @@ export default function Page(): ReactElement<any> {
 		</button>
 	)
 
-	const ResultsLink = (): ReactElement => (
-		<Link
-			href="/tournaments"
-			className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300 
-                hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+	const ResultsScrollButton = (): ReactElement => (
+		<button
+			className="backdrop-blur-md bg-black/60 m-1 sm:m-2 rounded-full transition duration-300 
+            hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black px-4 py-3 flex items-center"
+			onClick={scrollToTournaments}
+			type="button"
 		>
-			<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
-				{'SHOW LAST TOURNAMENT RESULTS\r'}
-			</div>
-		</Link>
+			{'SHOW LAST TOURNAMENT RESULTS'}
+			<span className="ml-2 text-2xl">{'↓'}</span>
+		</button>
 	)
 
 	return (
-		<div className="h-screen">
-			<Header />
-			<main className="flex flex-col h-full items-center justify-center relative overflow-hidden">
-				{tournamentInProgress
-					? <HaloAgressive />
-					: <HaloCalm />
-				}
-				<div className="z-10 text-center flex flex-col items-center gap-8">
-					<TimerSection tournamentInProgress={tournamentInProgress} />
-					<TournamentButton />
-					<ResultsLink />
+		<>
+			<div className="fixed inset-0">
+				{tournamentInProgress ? <HaloAgressive /> : <HaloCalm />}
+			</div>
+			<div className="relative">
+				<main className="flex flex-col min-h-screen items-center">
+					<Header />
+					<div className="text-center flex flex-col items-center gap-8 flex-grow justify-center">
+						<TimerSection tournamentInProgress={tournamentInProgress} />
+						<TournamentButton />
+					</div>
+					<ResultsScrollButton />
+				</main>
+				<div ref={tournamentsRef} className="relative">
+					<TournamentsSection />
 				</div>
-			</main>
-		</div>
+			</div>
+		</>
 	)
 }
