@@ -1,5 +1,6 @@
 'use client'
 import { type UserType } from '@/types/backendDataTypes'
+import axios from 'axios'
 import React, {
 	createContext,
 	type Dispatch,
@@ -31,6 +32,22 @@ export default function UserProvider ({ children }: { readonly children: ReactNo
 		}
 		return null
 	})
+
+	const fetchUserData = async (): Promise<void> => {
+		try {
+			const { data } = await axios.get<UserType>('/api/v1/users/me', {
+				withCredentials: true
+			})
+			setCurrentUser(data)
+		} catch (error) {
+			console.error('Failed to fetch user data:', error)
+			setCurrentUser(null)
+		}
+	}
+
+	useEffect(() => {
+		void fetchUserData()
+	}, [])
 
 	useEffect(() => {
 		if (currentUser !== null) {
