@@ -154,6 +154,18 @@ export default function Page(): ReactElement<any> {
 		</button>
 	)
 
+	const ResultsLink = (): ReactElement => (
+		<Link
+			href="/tournaments"
+			className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300 
+                hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
+		>
+			<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
+				{'SHOW LAST TOURNAMENT RESULTS\r'}
+			</div>
+		</Link>
+	)
+
 	const GamesScrollButton = (): ReactElement => (
 		<button
 			className="backdrop-blur-md bg-black/60 m-1 sm:m-2 rounded-full transition duration-300 
@@ -177,6 +189,7 @@ export default function Page(): ReactElement<any> {
 					<div className="text-center flex flex-col items-center gap-8 flex-grow justify-center">
 						<TimerSection tournamentInProgress={tournamentInProgress} />
 						<TournamentButton />
+						<ResultsLink />
 					</div>
 					<GamesScrollButton />
 				</main>
