@@ -143,3 +143,26 @@ export interface TournamentType {
 	createdAt: Date
 	updatedAt: Date
 }
+
+export interface FileMap {
+	'main.ts': string;
+	'apiTypes.ts': string;
+	[key: string]: string;
+}
+
+export interface GameType {
+	/** ID of the game */
+	_id: string
+	/** Name of the game */
+	name: string
+	/** Description of the game */
+	description: string
+	/** Files of the game */
+	files: FileMap
+	/** Amount of players in a game */
+	batchSize: number
+
+	// Timestamps
+	createdAt: Date
+	updatedAt: Date
+}

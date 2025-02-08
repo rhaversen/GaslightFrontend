@@ -7,7 +7,8 @@ import { useUser } from '@/contexts/UserProvider'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import type { UserType } from '@/types/backendDataTypes'
-import TournamentsSection from '@/components/TournamentsSection'
+import GamesSection from '@/components/GamesSection'
+import Link from 'next/link'
 
 type TimeObject = {
 	hours: string
@@ -93,7 +94,7 @@ export default function Page(): ReactElement<any> {
 	const router = useRouter()
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<any> | null>(null)
-	const tournamentsRef = useRef<HTMLDivElement>(null)
+	const gamesSectionRef = useRef<HTMLDivElement>(null)
 	const tournamentInProgress = false // TODO: fetch from backend
 
 	// Start loading data on mount if user exists
@@ -136,8 +137,8 @@ export default function Page(): ReactElement<any> {
 		}
 	}
 
-	const scrollToTournaments = (): void => {
-		tournamentsRef.current?.scrollIntoView({ behavior: 'smooth' })
+	const scrollToGames = (): void => {
+		gamesSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
 	}
 
 	const TournamentButton = (): ReactElement => (
@@ -153,14 +154,14 @@ export default function Page(): ReactElement<any> {
 		</button>
 	)
 
-	const ResultsScrollButton = (): ReactElement => (
+	const GamesScrollButton = (): ReactElement => (
 		<button
 			className="backdrop-blur-md bg-black/60 m-1 sm:m-2 rounded-full transition duration-300 
             hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black px-4 py-3 flex items-center"
-			onClick={scrollToTournaments}
+			onClick={scrollToGames}
 			type="button"
 		>
-			{'SHOW LAST TOURNAMENT RESULTS'}
+			{'VIEW AVAILABLE GAMES'}
 			<span className="ml-2 text-2xl">{'↓'}</span>
 		</button>
 	)
@@ -177,10 +178,10 @@ export default function Page(): ReactElement<any> {
 						<TimerSection tournamentInProgress={tournamentInProgress} />
 						<TournamentButton />
 					</div>
-					<ResultsScrollButton />
+					<GamesScrollButton />
 				</main>
-				<div ref={tournamentsRef} className="relative">
-					<TournamentsSection />
+				<div ref={gamesSectionRef} className="relative">
+					<GamesSection />
 				</div>
 			</div>
 		</>
