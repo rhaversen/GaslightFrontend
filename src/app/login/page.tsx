@@ -11,7 +11,7 @@ import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
-	const { setCurrentUser } = useUser()
+	const { refetchUser } = useUser()
 	const [formError, setFormError] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showPassword, setShowPassword] = useState(false)
@@ -34,9 +34,9 @@ export default function Page (): ReactElement<any> {
 			auth: boolean
 			user: UserType
 		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
-		setCurrentUser(response.data.user)
+		await refetchUser() // Refetch to update the user context
 		router.push(`/users/${response.data.user._id}`)
-	}, [API_URL, router, setCurrentUser])
+	}, [API_URL, router, refetchUser])
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })
@@ -60,9 +60,8 @@ export default function Page (): ReactElement<any> {
 				console.error(error)
 				setFormError('Invalid email or password')
 				setIsSubmitting(false)
-				setCurrentUser(null)
 			})
-	}, [login, setCurrentUser])
+	}, [login])
 
 	return (
 		<main className="container mx-auto max-w-md p-4">

@@ -7,14 +7,12 @@ export const useLogout = (): { logout: () => void } => {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
 	const { addError } = useError()
-	const { setCurrentUser } = useUser()
+	const { refetchUser } = useUser()
 
 	const logout = (): void => {
 		axios.post(`${API_URL}/v1/auth/logout-local`, {}, { withCredentials: true })
-			.then(() => {
-				setCurrentUser(null)
-				router.push('/')
-			})
+			.then(() => refetchUser())
+			.then(() => router.push('/'))
 			.catch(addError)
 	}
 

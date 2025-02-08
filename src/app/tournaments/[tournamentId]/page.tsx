@@ -94,7 +94,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 			})
 			.catch(error => console.error('Error fetching standings:', error))
 			.finally(() => setStandingsLoading(false))
-	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetch
+	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetchUser
 
 	const loadMore = useCallback(() => {
 		if (!standingsLoading && hasMore) {
