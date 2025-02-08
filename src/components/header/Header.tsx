@@ -40,7 +40,7 @@ const Header = (): ReactElement<any> => {
 	}
 
 	if (!mounted) {
-		return <div className='p-5'></div> // Return empty container while mounting
+		return <div className='p-10 sm:p-16 md:p-20'></div> // Return empty container while mounting
 	}
 
 	const buttonsLeft = currentUser !== null ? authenticatedButtonsLeft : unauthenticatedButtonsLeft
