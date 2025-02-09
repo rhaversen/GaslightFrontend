@@ -40,7 +40,7 @@ export default function NewStrategy(): ReactElement<any> {
 	}
 
 	const handleCreate = async (): Promise<void> => {
-		if (title.trim() === '' || !selectedGame) {
+		if (title.trim() === '' || selectedGame === null) {
 			return
 		}
 
@@ -91,7 +91,7 @@ export default function NewStrategy(): ReactElement<any> {
 						id="game"
 						className="w-full p-4 border border-gray-200 text-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
 						onChange={handleGameChange}
-						value={selectedGame ? selectedGame._id : ''}
+						value={selectedGame !== null ? selectedGame._id : ''}
 					>
 						{games.map(game => (
 							<option key={game._id} value={game._id}>
@@ -125,7 +125,7 @@ export default function NewStrategy(): ReactElement<any> {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => { void handleCreate() }}
-						disabled={isSubmitting || title.trim().length === 0 || !selectedGame}
+						disabled={isSubmitting || title.trim().length === 0 || selectedGame === null}
 						className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
 					>
 						{isSubmitting ? 'Creating...' : 'Create Strategy'}
