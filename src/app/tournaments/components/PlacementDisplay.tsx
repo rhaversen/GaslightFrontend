@@ -129,7 +129,7 @@ export const PlacementDisplay = ({
 							</span>
 						</Link>
 						<span className="text-gray-500">{' with '}</span>
-						<Link href={`/submissions/${standing.submission}`}>
+						<Link href={`/strategies/${standing.submission}`}>
 							<span className={`${place === 1 ? 'text-lg' : 'text-sm'} text-gray-300 hover:text-yellow-200 transition-colors`} title={standing.submissionName}>
 								{standing.submissionName}
 							</span>

@@ -261,7 +261,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											{standing.userName}
 										</Link>
 										<Link
-											href={`/submissions/${standing.submission}`}
+											href={`/strategies/${standing.submission}`}
 											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.submissionName}
 										>

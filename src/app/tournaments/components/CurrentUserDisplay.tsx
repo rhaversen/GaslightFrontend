@@ -24,7 +24,7 @@ export function CurrentUserDisplay({
 					<div className="border-t border-indigo-500/20 pt-2">
 						<div className="mb-3">
 							<span className="text-indigo-200 text-sm">{'Submission:'}</span>{' '}
-							<Link href={`/submissions/${standing.submission}`}>
+							<Link href={`/strategies/${standing.submission}`}>
 								<span className="text-gray-300 text-sm font-medium hover:text-sky-200 transition-colors">
 									{standing.submissionName}
 								</span>
