@@ -1,6 +1,6 @@
 'use client'
 
-import { type SubmissionType } from '@/types/backendDataTypes'
+import { GameType, type SubmissionType } from '@/types/backendDataTypes'
 import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
@@ -17,6 +17,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 	const router = useRouter()
 	const { currentUser } = useUser()
 	const [strategy, setStrategy] = useState<SubmissionType | null>(null)
+	const [gameApiTypes, setGameApiTypes] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [hasChanges, setHasChanges] = useState(false)
 	const [originalStrategy, setOriginalStrategy] = useState<SubmissionType | null>(null)
@@ -35,6 +36,13 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 				setStrategy(response.data)
 				setOriginalStrategy(response.data)
 				setHasChanges(false)
+
+				// Fetch game data using game ID from strategy
+				const gameResponse = await axios.get<GameType>(
+					`${API_URL}/v1/games/${response.data.game}`,
+					{ withCredentials: true }
+				)
+				setGameApiTypes(gameResponse.data.apiType)
 			} catch (error) {
 				console.error('Error fetching data:', error)
 			} finally {
@@ -314,6 +322,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 
 					<div className="rounded-xl overflow-hidden shadow-sm relative">
 						<MonacoEditor
+							apiTypes={gameApiTypes ?? ''}
 							value={strategy?.code ?? ''}
 							onChange={(value) => {
 								if (value !== undefined) {
@@ -323,7 +332,8 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 						/>
 					</div>
 				</div>
-			)}
-		</main>
+	)
+}
+		</main >
 	)
 }
