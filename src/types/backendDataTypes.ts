@@ -28,6 +28,8 @@ export interface SubmissionType {
 	code: string | null
 	/** User who submitted the code */
 	user: UserType['_id']
+	/** Foreign key referencing game */
+	game: GameType['_id']
 	/** Decides if the submission is part of the tournament (Can only have one active submission per user) */
 	active: boolean
 	/** Decides if the submission has passed an evaluation and is ready for tournaments. Null if not evaluated yet */
@@ -135,9 +137,10 @@ export interface TournamentType {
 	standings: TournamentStanding[]
 	/** User standing */
 	userStanding: TournamentStanding | null
-
 	/** Tournament execution time in milliseconds */
 	tournamentExecutionTime: number
+	/** Foreign key referencing game for which the tournament is held */
+	game: GameType['_id']
 
 	// Timestamps
 	createdAt: Date
