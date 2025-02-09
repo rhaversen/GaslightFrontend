@@ -146,7 +146,6 @@ export interface TournamentType {
 
 export interface FileMap {
 	'main.ts': string;
-	'apiTypes.ts': string;
 	[key: string]: string;
 }
 
@@ -159,6 +158,10 @@ export interface GameType {
 	description: string
 	/** Files of the game */
 	files: FileMap
+	/** API type of the game */
+	apiType: string
+	/** Example strategy for the game */
+	exampleStrategy: string
 	/** Amount of players in a game */
 	batchSize: number
 
