@@ -24,7 +24,7 @@ export default function NewStrategy(): ReactElement<any> {
 			.then(response => {
 				setGames(response.data)
 				if (response.data.length > 0) {
-					const preselectedGame = gameParam 
+					const preselectedGame = gameParam !== null
 						? response.data.find(g => g._id === gameParam)
 						: response.data[0]
 					

@@ -332,8 +332,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 						/>
 					</div>
 				</div>
-	)
-}
+			)}
 		</main >
 	)
 }

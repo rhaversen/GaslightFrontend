@@ -175,7 +175,7 @@ const MonacoEditor = ({
 				extraLibDisposableRef.current = null
 			}
 		}
-	}, [showDocumentation])
+	}, [showDocumentation, apiTypes])
 
 	useEffect(() => {
 		if (isFullscreen) {
