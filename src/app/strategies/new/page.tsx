@@ -1,7 +1,7 @@
 'use client'
-import React, { useState, useEffect, ReactElement } from 'react' // <- added useEffect
+import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useUser } from '@/contexts/UserProvider'
 import { GameType } from '@/types/backendDataTypes'
 
@@ -9,29 +9,34 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function NewStrategy(): ReactElement<any> {
 	const router = useRouter()
+	const searchParams = useSearchParams()
+	const gameParam = searchParams.get('game')
 	const { currentUser } = useUser()
 	const [title, setTitle] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState('')
-	// New state for games and selected game; strategy code state
 	const [games, setGames] = useState<any[]>([])
 	const [selectedGame, setSelectedGame] = useState<any>(null)
 	const [strategyCode, setStrategyCode] = useState<string>('')
 
-	// Fetch games from API on mount
 	useEffect(() => {
 		axios.get<GameType[]>(`${API_URL}/v1/games`, { withCredentials: true })
 			.then(response => {
 				setGames(response.data)
 				if (response.data.length > 0) {
-					setSelectedGame(response.data[0])
-					setStrategyCode(response.data[0].exampleStrategy)
+					const preselectedGame = gameParam 
+						? response.data.find(g => g._id === gameParam)
+						: response.data[0]
+					
+					if (preselectedGame) {
+						setSelectedGame(preselectedGame)
+						setStrategyCode(preselectedGame.exampleStrategy)
+					}
 				}
 			})
 			.catch(err => console.error('Error fetching games:', err))
-	}, [])
+	}, [gameParam])
 
-	// Handle game selection change
 	const handleGameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const gameId = e.target.value
 		const game = games.find(g => g._id === gameId)
@@ -82,7 +87,6 @@ export default function NewStrategy(): ReactElement<any> {
 			</div>
 
 			<div className="space-y-8">
-				{/* New UI for selecting a game */}
 				<div>
 					<label htmlFor="game" className="block text-sm font-medium text-gray-700 mb-2">
 						{'Select Game\r'}
