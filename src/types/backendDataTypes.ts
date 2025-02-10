@@ -167,6 +167,8 @@ export interface GameType {
 	exampleStrategy: string
 	/** Amount of players in a game */
 	batchSize: number
+	/** Amount of submissions in latest tournament */
+	submissionCount: number
 
 	// Timestamps
 	createdAt: Date
