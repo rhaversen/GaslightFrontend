@@ -157,7 +157,9 @@ export interface GameType {
 	_id: string
 	/** Name of the game */
 	name: string
-	/** Description of the game */
+	/** Short summary of the game */
+	summary: string
+	/** Long description of the game */
 	description: string
 	/** Files of the game */
 	files: FileMap

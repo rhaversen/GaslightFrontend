@@ -33,7 +33,7 @@ export default function GamesSection(): ReactElement {
 						>
 							<div className="flex flex-col gap-4 p-5">
 								<h3 className="text-2xl font-bold text-center">{game.name}</h3>
-								<p className="text-base font-semibold">{game.description}</p>
+								<p className="text-base font-semibold">{game.summary}</p>
 							</div>
 						</Link>
 					))
