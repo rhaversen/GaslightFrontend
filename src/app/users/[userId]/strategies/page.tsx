@@ -160,7 +160,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 				<div className="flex justify-end w-20">
 					{isOwnProfile && (
 						<Link
-							href="/strategies/new"
+							href={`/strategies/new?game=${selectedGame?._id}`}
 							className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-md whitespace-nowrap"
 						>
 							{'Create Strategy'}
