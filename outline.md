@@ -42,6 +42,7 @@ Even though both represent the same underlying data, each resource offers a dist
   - fewest tokens
   - most recent
   - highest engagement (most active users)
+  - Top 10 over time
 
 - **Tournaments:**
   - most recent
@@ -56,6 +57,11 @@ Even though both represent the same underlying data, each resource offers a dist
   - Amount of standings over time:
     - A line for every standing
     - x-axis is time, y-axis is amount of standings
+    - Lines will start at the time the standing appeared
+    - User standings will be highlighted and connected with a line, which will end up crossing the other lines
+  - Raw score per standing over time:
+    - A line for every standing
+    - x-axis is time, y-axis is raw score
     - Lines will start at the time the standing appeared
     - User standings will be highlighted and connected with a line, which will end up crossing the other lines
 
