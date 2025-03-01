@@ -1,4 +1,3 @@
-import Header from '@/components/Header'
 import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,7 +17,6 @@ export default function GamesLayout ({
 }>): React.JSX.Element {
 	return (
 		<>
-			<Header/>
 			{children}
 		</>
 	)
