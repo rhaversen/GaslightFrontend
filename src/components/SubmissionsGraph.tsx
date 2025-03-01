@@ -19,6 +19,14 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 	const [width, setWidth] = React.useState(0)
 	const containerRef = React.useRef<HTMLDivElement>(null)
 
+	if (tournaments.length <= 1) {
+		return (
+			<div ref={containerRef} className="w-full h-full flex items-center justify-center">
+				<p className="text-gray-500">No tournaments available</p>
+			</div>
+		)
+	}
+
 	// Update resize observer to only track width
 	React.useEffect(() => {
 		if (!containerRef.current) return
