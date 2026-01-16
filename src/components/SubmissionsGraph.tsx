@@ -1,6 +1,7 @@
 import React from 'react'
+
+import { formatDate } from '@/lib/dateUtils'
 import { TournamentType } from '@/types/backendDataTypes'
-import { formatDate } from '@/lib/dateUtils';
 
 type Props = {
 	tournaments: TournamentType[];
@@ -22,14 +23,14 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 	if (tournaments.length <= 1) {
 		return (
 			<div ref={containerRef} className="w-full h-full flex items-center justify-center">
-				<p className="text-gray-500">No tournaments available</p>
+				<p className="text-gray-500">{'No tournaments available'}</p>
 			</div>
 		)
 	}
 
 	// Update resize observer to only track width
 	React.useEffect(() => {
-		if (!containerRef.current) return
+		if (!containerRef.current) { return }
 
 		const resizeObserver = new ResizeObserver(entries => {
 			const containerWidth = entries[0].contentRect.width
@@ -129,7 +130,7 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 	})
 
 	// Add computed tooltip x position to avoid label overflow
-	const tooltipPosX = tooltip ? (tooltip.x + 10 + tooltipWidth > width ? tooltip.x - tooltipWidth - 10 : tooltip.x + 10) : 0;
+	const tooltipPosX = tooltip ? (tooltip.x + 10 + tooltipWidth > width ? tooltip.x - tooltipWidth - 10 : tooltip.x + 10) : 0
 
 	return (
 		<div ref={containerRef} className="w-full">

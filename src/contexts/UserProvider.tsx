@@ -1,8 +1,9 @@
 'use client'
-import { type UserType } from '@/types/backendDataTypes'
-import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import React, { createContext, type ReactNode, type ReactElement, useContext } from 'react'
+
+import { type UserType } from '@/types/backendDataTypes'
 
 interface UserContextType {
 	currentUser: UserType | null
@@ -33,13 +34,13 @@ const fetchUser = async (): Promise<UserType | null> => {
 	}
 }
 
-export default function UserProvider({ children }: { readonly children: ReactNode }): ReactElement {
+export default function UserProvider ({ children }: { readonly children: ReactNode }): ReactElement {
 	// Update useQuery generic types to allow null result.
 	const { data: currentUser, isLoading, error, refetch } = useQuery<UserType | null, Error, UserType | null, string[]>({
 		queryKey: ['user'],
 		queryFn: fetchUser,
 		retry: false,
-		staleTime: 5 * 60 * 1000, // Consider data stale after 5 minutes
+		staleTime: 5 * 60 * 1000 // Consider data stale after 5 minutes
 	})
 
 	const value = React.useMemo(() => ({

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, ReactElement } from 'react'
 import Editor, { type Monaco } from '@monaco-editor/react'
-import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
+import type * as monaco from 'monaco-editor'
+import React, { useState, useEffect, useRef, ReactElement } from 'react'
 import { createHighlighter } from 'shiki'
 
 // Commented out themes are found to be not working with Shiki 1.27.2
@@ -153,7 +153,7 @@ const MonacoEditor = ({
 	}, [isFullscreen])
 
 	useEffect(() => {
-		if (monacoRef.current === null) return
+		if (monacoRef.current === null) { return }
 
 		// Cleanup previous lib if it exists
 		if (extraLibDisposableRef.current !== null) {
@@ -204,7 +204,6 @@ const MonacoEditor = ({
 		editor.updateOptions({ theme })
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function handleEditorValidation (_markers: monaco.editor.IMarker[]): void {
 		// model markers
 		// markers.forEach(marker => console.log('onValidate:', marker.message));
@@ -227,7 +226,7 @@ const MonacoEditor = ({
 	}
 
 	const handleMouseMove = (e: MouseEvent): void => {
-		if (!isDraggingRef.current || containerRef.current === null) return
+		if (!isDraggingRef.current || containerRef.current === null) { return }
 
 		const containerRect = containerRef.current.getBoundingClientRect()
 

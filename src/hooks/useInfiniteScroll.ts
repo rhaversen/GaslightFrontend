@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export function useInfiniteScroll(
+export function useInfiniteScroll (
 	callback: () => void,
 	isLoading: boolean,
 	hasMore: boolean
@@ -9,7 +9,7 @@ export function useInfiniteScroll(
 
 	useEffect(() => {
 		const target = observerTarget.current
-		if (!target || isLoading || !hasMore) return
+		if (!target || isLoading || !hasMore) { return }
 
 		const observer = new IntersectionObserver(
 			(entries) => {

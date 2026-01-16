@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { GameType, TournamentType, SubmissionType } from '@/types/backendDataTypes'
-import { useUser } from '@/contexts/UserProvider'
+import { useParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+
 import SubmissionsGraph from '@/components/SubmissionsGraph'
+import { useUser } from '@/contexts/UserProvider'
+import { GameType, TournamentType, SubmissionType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function GamePage() {
+export default function GamePage () {
 	const params = useParams()
 	const gameId = params.gameId
 	const { currentUser } = useUser()
@@ -54,12 +55,12 @@ export default function GamePage() {
 					axios.get<SubmissionType[]>(`${API_URL}/v1/submissions`, {
 						params: {
 							active: true,
-							game: gameId,
+							game: gameId
 						}
 					}),
 					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
 						params: {
-							game: gameId,
+							game: gameId
 						}
 					}),
 					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {

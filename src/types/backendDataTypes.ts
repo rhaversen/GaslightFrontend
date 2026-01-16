@@ -55,7 +55,7 @@ export interface SubmissionType {
 		strategyLoadingTimings: number | undefined
 		/** Time taken to execute the strategy */
 		strategyExecutionTimings: number[] | undefined
-		/** Averate time taken to execute the strategy */
+		/** Average time taken to execute the strategy */
 		averageExecutionTime: number | undefined
 
 		// Timestamps

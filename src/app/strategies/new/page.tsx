@@ -1,13 +1,14 @@
 'use client'
-import React, { useState, useEffect, ReactElement } from 'react'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useState, useEffect, ReactElement } from 'react'
+
 import { useUser } from '@/contexts/UserProvider'
 import { GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function NewStrategy(): ReactElement<any> {
+export default function NewStrategy (): ReactElement<any> {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const gameParam = searchParams.get('game')
@@ -27,7 +28,7 @@ export default function NewStrategy(): ReactElement<any> {
 					const preselectedGame = gameParam !== null
 						? response.data.find(g => g._id === gameParam)
 						: response.data[0]
-					
+
 					if (preselectedGame) {
 						setSelectedGame(preselectedGame)
 						setStrategyCode(preselectedGame.exampleStrategy)

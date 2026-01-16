@@ -1,18 +1,19 @@
 'use client'
 
-import { GameType, type SubmissionType } from '@/types/backendDataTypes'
-import MonacoEditor from '@/components/MonacoEditor'
 import axios from 'axios'
-import React, { type ReactElement, useEffect, useState, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import React, { type ReactElement, useEffect, useState, use } from 'react'
+
 import EvaluationResults from '@/components/EvaluationResults'
+import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import MonacoEditor from '@/components/MonacoEditor'
 import { useUser } from '@/contexts/UserProvider'
+import { GameType, type SubmissionType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page(props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
 	const params = use(props.params)
 	const router = useRouter()
 	const { currentUser } = useUser()
@@ -118,7 +119,7 @@ export default function Page(props: { params: Promise<{ strategyId: string }> })
 	}
 
 	const handleSubmit = (): void => {
-		if (strategy == null) return
+		if (strategy == null) { return }
 		setIsSubmitting(true)
 
 		axios.patch<SubmissionType>(

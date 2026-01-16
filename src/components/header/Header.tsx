@@ -1,9 +1,11 @@
 'use client'
 
 import React, { type ReactElement, useState, useEffect } from 'react'
-import Button from './Button'
+
 import { useUser } from '@/contexts/UserProvider'
 import { useLogout } from '@/hooks/useLogout'
+
+import Button from './Button'
 
 const Header = (): ReactElement<any> => {
 	const { currentUser } = useUser()

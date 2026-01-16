@@ -1,23 +1,26 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { TournamentStatistics, type TournamentType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useEffect, useState, use, useCallback } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
-import { formatDate } from '@/lib/dateUtils'
+import { useUser } from '@/contexts/UserProvider'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
-import { StatsDisplay } from '../components/StatsDisplay'
-import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
+import { formatDate } from '@/lib/dateUtils'
+import { TournamentStatistics, type TournamentType } from '@/types/backendDataTypes'
+
 import { CurrentUserDisplay } from '../components/CurrentUserDisplay'
+import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
+import { StatsDisplay } from '../components/StatsDisplay'
+
 import { TournamentList } from './components/TournamentList'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
 
-export default function Page(props: { params: Promise<{ tournamentId: string }> }): ReactElement {
+export default function Page (props: { params: Promise<{ tournamentId: string }> }): ReactElement {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const router = useRouter()
@@ -243,7 +246,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								{standings.sort((a, b) => { // Sort standings based on sortField and sortDirection
 									const aField = a[sortField]
 									const bField = b[sortField]
-									if (aField === bField) return 0
+									if (aField === bField) { return 0 }
 									return (aField > bField ? 1 : -1) * (sortDirection === 'asc' ? 1 : -1)
 								}).map(standing => (
 									<div

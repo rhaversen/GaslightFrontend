@@ -5,7 +5,7 @@ const LoadingPlaceholder = ({ variant = 'light' }: { variant?: 'light' | 'dark' 
 		light: 'bg-gray-200',
 		dark: 'bg-gray-700'
 	}
-	
+
 	const containerBg = {
 		light: 'bg-gray-50',
 		dark: 'bg-gray-800'

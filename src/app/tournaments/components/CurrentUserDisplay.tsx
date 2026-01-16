@@ -1,7 +1,8 @@
-import { TournamentStanding } from '@/types/backendDataTypes'
 import Link from 'next/link'
 
-export function CurrentUserDisplay({
+import { TournamentStanding } from '@/types/backendDataTypes'
+
+export function CurrentUserDisplay ({
 	standing,
 	isLoggedIn
 }: {

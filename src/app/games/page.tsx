@@ -1,14 +1,15 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
-import { GameType } from '@/types/backendDataTypes'
+import React, { useEffect, useState } from 'react'
+
 import { useUser } from '@/contexts/UserProvider'
+import { GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function GamesPage() {
+export default function GamesPage () {
 	const [games, setGames] = useState<GameType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const { currentUser } = useUser()
@@ -38,7 +39,7 @@ export default function GamesPage() {
 	}, [])
 
 	useEffect(() => {
-		if (!currentUser || games.length === 0) return
+		if (!currentUser || games.length === 0) { return }
 		const fetchUserStats = async () => {
 			const stats: { [key: string]: any } = {}
 			await Promise.all(games.map(async (game) => {
