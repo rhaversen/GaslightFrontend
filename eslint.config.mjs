@@ -44,7 +44,6 @@ const eslintConfig = [
 			n: nPlugin,
 			promise: promisePlugin,
 			react: reactPlugin,
-			'react-hooks': reactHooksPlugin,
 			'@typescript-eslint': tsEslintPlugin
 		},
 		languageOptions: {
