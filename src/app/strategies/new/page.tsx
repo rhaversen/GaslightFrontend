@@ -1,14 +1,14 @@
 'use client'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useState, useEffect, ReactElement } from 'react'
+import React, { useState, useEffect, ReactElement, Suspense } from 'react'
 
 import { useUser } from '@/contexts/UserProvider'
 import { GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function NewStrategy (): ReactElement<any> {
+function NewStrategyContent (): ReactElement<any> {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const gameParam = searchParams.get('game')
@@ -144,5 +144,12 @@ export default function NewStrategy (): ReactElement<any> {
 				</div>
 			</div>
 		</main>
+	)
+}
+export default function NewStrategy (): ReactElement<any> {
+	return (
+		<Suspense fallback={<div>{'Loading...'}</div>}>
+			<NewStrategyContent />
+		</Suspense>
 	)
 }

@@ -3,7 +3,7 @@
 import axios from 'axios'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 
 import { useUser } from '@/contexts/UserProvider'
 import { HomeIcon } from '@/lib/icons'
@@ -12,7 +12,7 @@ import { GameType } from '@/types/backendDataTypes'
 import LatestTournaments from './components/LatestTournaments'
 import SingleGameTournaments from './components/SingleGameTournaments'
 
-export default function Page () {
+function TournamentsContent () {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const searchParams = useSearchParams()
 	const router = useRouter()
@@ -90,5 +90,12 @@ export default function Page () {
 				/>
 			)}
 		</main>
+	)
+}
+export default function Page () {
+	return (
+		<Suspense fallback={<div>{'Loading...'}</div>}>
+			<TournamentsContent />
+		</Suspense>
 	)
 }
