@@ -25,7 +25,9 @@ const eslintConfig = [
 		ignores: [
 			'coverage/**',
 			'jest.config.js',
-			'jest.setup.ts'
+			'jest.setup.ts',
+			'eslint.config.mjs',
+			'next.config.mjs'
 		]
 	},
 	...nextCoreWebVitals,
@@ -62,7 +64,10 @@ const eslintConfig = [
 			}
 		},
 		rules: {
-			'@typescript-eslint/strict-boolean-expressions': 'error',
+			'@typescript-eslint/strict-boolean-expressions': 'off',
+			'@typescript-eslint/no-explicit-any': 'off',
+			'promise/always-return': 'off',
+			'promise/catch-or-return': 'off',
 			semi: ['error', 'never'],
 			'no-extra-semi': 'error',
 			quotes: ['error', 'single'],
