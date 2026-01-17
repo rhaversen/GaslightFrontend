@@ -18,6 +18,27 @@ type TimeObject = {
 	seconds: string
 }
 
+const TimerDisplay = ({ time, label }: { time: TimeObject, label: string }): ReactElement => (
+	<>
+		<div className='text-white text-xl font-medium tracking-wide'>
+			{label}
+		</div>
+		<div className='flex justify-center items-center gap-2'>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+				{time.hours}
+			</div>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+				{time.minutes}
+			</div>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
+			<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
+				{time.seconds}
+			</div>
+		</div>
+	</>
+)
+
 const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
 	const [timeToTournament, setTimeToTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
 	const [timeSinceTournament, setTimeSinceTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
@@ -45,27 +66,6 @@ const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean 
 			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
 		}
 	}
-
-	const TimerDisplay = ({ time, label }: { time: TimeObject, label: string }): ReactElement => (
-		<>
-			<div className='text-white text-xl font-medium tracking-wide'>
-				{label}
-			</div>
-			<div className='flex justify-center items-center gap-2'>
-				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
-					{time.hours}
-				</div>
-				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
-				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
-					{time.minutes}
-				</div>
-				<div className='text-white text-4xl md:text-7xl font-light tracking-wider'>{':'}</div>
-				<div className='text-white text-4xl md:text-7xl font-light tracking-wider w-[2ch]'>
-					{time.seconds}
-				</div>
-			</div>
-		</>
-	)
 
 	useEffect(() => {
 		setTimeToTournament(timeToNextMidnight())

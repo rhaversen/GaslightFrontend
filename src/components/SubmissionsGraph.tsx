@@ -19,16 +19,11 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 	const padding = 40
 	const [width, setWidth] = React.useState(0)
 	const containerRef = React.useRef<HTMLDivElement>(null)
+	const [tooltip, setTooltip] = React.useState<TooltipData | null>(null)
+	const [tooltipWidth, setTooltipWidth] = React.useState(0)
+	const tooltipTextRef = React.useRef<SVGTextElement | null>(null)
+	const [isPercentileView, setIsPercentileView] = React.useState(false)
 
-	if (tournaments.length <= 1) {
-		return (
-			<div ref={containerRef} className="w-full h-full flex items-center justify-center">
-				<p className="text-gray-500">{'No tournaments available'}</p>
-			</div>
-		)
-	}
-
-	// Update resize observer to only track width
 	React.useEffect(() => {
 		if (!containerRef.current) { return }
 
@@ -41,23 +36,23 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 		return () => resizeObserver.disconnect()
 	}, [])
 
-	const graphWidth = width - padding * 2
-	const graphHeight = FIXED_HEIGHT - padding * 2
-
-	const [tooltip, setTooltip] = React.useState<TooltipData | null>(null)
-	// Add state and ref for dynamic tooltip width
-	const [tooltipWidth, setTooltipWidth] = React.useState(0)
-	const tooltipTextRef = React.useRef<SVGTextElement | null>(null)
-
 	React.useLayoutEffect(() => {
-		if (tooltip && tooltipTextRef.current) {
+		if (tooltip !== null && tooltip !== undefined && tooltipTextRef.current !== null) {
 			const bbox = tooltipTextRef.current.getBBox()
 			setTooltipWidth(bbox.width)
 		}
 	}, [tooltip])
 
-	// Add view mode state
-	const [isPercentileView, setIsPercentileView] = React.useState(false)
+	if (tournaments.length <= 1) {
+		return (
+			<div ref={containerRef} className="w-full h-full flex items-center justify-center">
+				<p className="text-gray-500">{'No tournaments available'}</p>
+			</div>
+		)
+	}
+
+	const graphWidth = width - padding * 2
+	const graphHeight = FIXED_HEIGHT - padding * 2
 
 	// Prepare data points with computed x and y for submissions and standing.
 	const sortedData = tournaments.sort(
