@@ -1,19 +1,20 @@
 'use client'
 
-import { useError } from '@/contexts/ErrorContext/ErrorContext'
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
+
 import PasswordInput from '@/components/PasswordInput'
+import { useError } from '@/contexts/ErrorContext/ErrorContext'
+import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+import { type UserType } from '@/types/backendDataTypes'
 
 export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
 	const { addError } = useError()
-	const { setCurrentUser } = useUser()
+	const { refetchUser } = useUser()
 	const [formError, setFormError] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showPasswords, setShowPasswords] = useState(false)
@@ -35,17 +36,16 @@ export default function Page (): ReactElement<any> {
 				password: userData.password,
 				confirmPassword: userData.confirmPassword
 			}, { withCredentials: true })
-			setCurrentUser(response.data.user)
-			router.push('/')
+			await refetchUser()
+			router.push(`/users/${response.data.user._id}`)
 		} catch (error: any) {
-			setCurrentUser(null)
 			if (error.response?.status === 401) {
 				setFormError('User already exists but the password is incorrect')
 				return
 			}
 			addError(error)
 		}
-	}, [API_URL, addError, router, setCurrentUser])
+	}, [API_URL, addError, router, refetchUser])
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })

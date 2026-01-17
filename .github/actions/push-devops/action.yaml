@@ -32,22 +32,23 @@ runs:
                 git commit -m "${{ github.sha }}"
             shell: bash
 
-        -   name: Checkout GaslightFrontend-DevOps
+        -   name: Checkout DevOps
             uses: actions/checkout@v4
             with:
-                repository: "rhaversen/GaslightFrontend-DevOps"
+                repository: "rhaversen/DevOps"
                 token: ${{ inputs.devops_repo_token }}
-                path: "GaslightFrontend-DevOps"
+                path: "DevOps"
 
-        -   name: Copy files to GaslightFrontend-DevOps
+        -   name: Copy files to DevOps
             run: |
-                cp -r k8s/${{ inputs.environment }}/* GaslightFrontend-DevOps/k8s/${{ inputs.environment }}/
+                mkdir -p DevOps/GaslightFrontend/${{ inputs.environment }}
+                cp -r k8s/${{ inputs.environment }}/* DevOps/GaslightFrontend/${{ inputs.environment }}/
             shell: bash
 
-        -   name: Push changes to GaslightFrontend-DevOps
+        -   name: Push changes to DevOps
             run: |
-                cd GaslightFrontend-DevOps
-                git add k8s/${{ inputs.environment }}/*
-                git commit -m "${{ inputs.environment }}: ${{ github.sha }}"
+                cd DevOps
+                git add GaslightFrontend/${{ inputs.environment }}/*
+                git commit -m "GaslightFrontend/${{ inputs.environment }}: ${{ github.sha }}"
                 git push origin HEAD
             shell: bash

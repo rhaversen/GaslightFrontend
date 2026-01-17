@@ -2,160 +2,100 @@
 
 import axios from 'axios'
 import Link from 'next/link'
-import React, { useState, useEffect, type ReactElement, useCallback } from 'react'
-import dynamic from 'next/dynamic'
-import { TournamentType } from '@/types/backendDataTypes'
+import { useSearchParams, useRouter } from 'next/navigation'
+import React, { useState, useEffect, Suspense } from 'react'
+
 import { useUser } from '@/contexts/UserProvider'
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
-import { TournamentCard as RegularTournamentCard } from './components/TournamentCard'
+import { HomeIcon } from '@/lib/icons'
+import { GameType } from '@/types/backendDataTypes'
 
-// Add card height constant
-const CARD_HEIGHT = 160 // px
+import LatestTournaments from './components/LatestTournaments'
+import SingleGameTournaments from './components/SingleGameTournaments'
 
-// Lazy load only the paginated tournament cards
-const LazyTournamentCard = dynamic(
-	() => import('./components/TournamentCard').then(mod => ({ default: mod.TournamentCard })),
-	{ 
-		loading: () => (
-			<div 
-				className="h-[160px] bg-gray-800 rounded-lg animate-pulse"
-				style={{ height: CARD_HEIGHT }}
-				aria-hidden="true"
-			/>
-		),
-		ssr: false 
-	}
-)
-
-const TOURNAMENTS_PER_PAGE = 5
-const LATEST_LIMIT = 1
-const LATEST_STANDINGS = 30
-const OTHER_STANDINGS = 3
-
-export default function Page(): ReactElement<any> {
+function TournamentsContent () {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const [latestTournament, setLatestTournament] = useState<TournamentType[]>([])
-	const [otherTournaments, setOtherTournaments] = useState<TournamentType[]>([])
-	const [latestLoading, setLatestLoading] = useState(true)
-	const [othersLoading, setOthersLoading] = useState(true)
-	const [hasMore, setHasMore] = useState(true)
-	const [page, setPage] = useState(1)
+	const searchParams = useSearchParams()
+	const router = useRouter()
 	const { currentUser } = useUser()
+	const [selectedGame, setSelectedGame] = useState<string>(searchParams.get('game') ?? '')
+	const [games, setGames] = useState<GameType[]>([])
 
-	// Fetch latest tournament
+	// Fetch available games
 	useEffect(() => {
-		axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-			params: {
-				limit: LATEST_LIMIT,
-				limitStandings: LATEST_STANDINGS,
-				sortFieldStandings: 'placement',
-				sortDirectionStandings: 'asc',
-				userIdStanding: currentUser?._id ?? null,
-				getStandings: true
-			}
-		})
-			.then(response => setLatestTournament(response.data))
-			.catch(error => console.error('Error fetching latest tournament:', error))
-			.finally(() => setLatestLoading(false))
-	}, [API_URL, currentUser?._id])
-
-	// Fetch paginated tournaments
-	useEffect(() => {
-		setOthersLoading(true)
-		axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-			params: {
-				skip: LATEST_LIMIT + ((page - 1) * TOURNAMENTS_PER_PAGE),
-				limit: TOURNAMENTS_PER_PAGE,
-				limitStandings: OTHER_STANDINGS,
-				sortFieldStandings: 'placement',
-				sortDirectionStandings: 'asc',
-				userIdStanding: currentUser?._id ?? null,
-				getStandings: true
-			}
-		})
+		axios.get<GameType[]>(`${API_URL}/v1/games`)
 			.then(response => {
-				setOtherTournaments(prev => 
-					page === 1 
-						? response.data 
-						: [...prev, ...response.data]
-				)
-				setHasMore(response.data.length === TOURNAMENTS_PER_PAGE)
+				setGames(response.data)
+				if (selectedGame && !response.data.find(g => g._id === selectedGame)) {
+					setSelectedGame('')
+					router.replace('/tournaments')
+				}
 			})
-			.catch(error => console.error('Error fetching other tournaments:', error))
-			.finally(() => setOthersLoading(false))
-	}, [API_URL, currentUser?._id, page])
+			.catch(error => console.error('Error fetching games:', error))
+	}, [API_URL, router, selectedGame])
 
-	const loadMore = useCallback(() => {
-		setPage(p => p + 1)
-	}, [])
-
-	const infiniteScrollRef = useInfiniteScroll(loadMore, othersLoading, hasMore)
+	const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const gameId = event.target.value
+		setSelectedGame(gameId)
+		if (gameId) {
+			router.push(`/tournaments?game=${gameId}`)
+		} else {
+			router.push('/tournaments')
+		}
+	}
 
 	return (
 		<main className="p-2 sm:p-4 md:p-8 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-			<div className="flex items-center gap-4 mb-6">
-				<Link
-					href="/"
-					className="px-3 py-1.5 text-sm font-medium text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:border-gray-600"
-				>
-					{'←'}<span className="ml-2">{'Home'}</span>
-				</Link>
-				<h1 className="text-4xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
-					{'Tournaments'}
-				</h1>
+			<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+				<div className="flex items-center gap-4">
+					<Link
+						href="/"
+						className="p-2 text-sm font-medium text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:border-gray-600 flex items-center gap-2"
+						aria-label="Go to home page"
+					>
+						<HomeIcon />
+					</Link>
+					<h1 className="text-4xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
+						{'Tournaments\r'}
+					</h1>
+				</div>
+				<div className="w-full sm:w-auto sm:ml-auto">
+					<select
+						value={selectedGame}
+						onChange={handleGameChange}
+						aria-label="Select game"
+						className="w-full sm:w-64 bg-gray-800 text-gray-200 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					>
+						<option value="">{'All Games'}</option>
+						{games.map(game => (
+							<option key={game._id} value={game._id}>
+								{game.name}
+							</option>
+						))}
+					</select>
+				</div>
 			</div>
-      
-			{/* Latest Tournament Section */}
-			{latestLoading ? (
-				<div 
-					className="animate-pulse bg-gray-800 rounded-lg p-6 mb-6"
-					style={{ height: CARD_HEIGHT }}
-					role="status"
-					aria-label="Loading latest tournament"
+
+			{/* Render tournaments based on game selection */}
+			{selectedGame && games.length > 0 ? (
+				<SingleGameTournaments
+					game={games.find(g => g._id === selectedGame)!}
+					API_URL={API_URL}
+					currentUser={currentUser}
 				/>
 			) : (
-				latestTournament.map((tournament) => (
-					<div key={tournament._id} className="mb-6 relative z-10">
-						<RegularTournamentCard
-							tournament={tournament}
-							currentUserId={currentUser?._id}
-							isLatest={true}
-							defaultExpanded={true}
-						/>
-					</div>
-				))
+				<LatestTournaments
+					games={games}
+					API_URL={API_URL}
+					currentUser={currentUser}
+				/>
 			)}
-
-			{/* Other Tournaments Section */}
-			<div className="space-y-6 relative z-0">
-				{otherTournaments.map((tournament) => (
-					<LazyTournamentCard
-						key={tournament._id}
-						tournament={tournament}
-						currentUserId={currentUser?._id}
-						isLatest={false}
-						defaultExpanded={false}
-					/>
-				))}
-        
-				{othersLoading && (
-					<div 
-						className="animate-pulse bg-gray-800 rounded-lg p-6"
-						style={{ height: CARD_HEIGHT }}
-						aria-hidden="true"
-					/>
-				)}
-
-				<div ref={infiniteScrollRef} className="h-px w-full" />
-			</div>
-			{
-				latestTournament.length === 0 && 
-        otherTournaments.length === 0 && 
-        !latestLoading && 
-        !othersLoading && (
-					<p className="text-white text-center mt-4">{'No tournaments found.'}</p>
-				)
-			}
 		</main>
+	)
+}
+export default function Page () {
+	return (
+		<Suspense fallback={<div>{'Loading...'}</div>}>
+			<TournamentsContent />
+		</Suspense>
 	)
 }

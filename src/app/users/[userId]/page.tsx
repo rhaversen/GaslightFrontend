@@ -1,18 +1,19 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
-import React, { type ReactElement, useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
+import React, { type ReactElement, useEffect, useState, use } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
-import { formatDate } from '@/lib/dateUtils'
 import PasswordInput from '@/components/PasswordInput'
+import { useUser } from '@/contexts/UserProvider'
+import { formatDate } from '@/lib/dateUtils'
 import { SettingsIcon, VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+import { type UserType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement<any> {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [userData, setUserData] = useState<UserType | null>(null)

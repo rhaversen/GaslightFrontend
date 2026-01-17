@@ -1,73 +1,52 @@
 'use client'
-import React, { useState, ReactElement } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useState, useEffect, ReactElement, Suspense } from 'react'
+
 import { useUser } from '@/contexts/UserProvider'
+import { GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-const defaultCode = `const main = (api: MeyerStrategyAPI) => {
-	// YOUR CODE HERE
-
-	// This is an example strategy
-	// It will make some naive decisions based on the current state of the game
-	// You can use this as a starting point for your own strategy or write your own from scratch
-
-	// If we're first in the round, we need to roll
-	if (api.isFirstInRound()) {
-		api.roll()
-		// We can't make any more actions the first turn, so we return
-		return
-	}
-
-	// Get previous announced values
-	const lastScores = api.getPreviousActions()
-
-	// If the last score is a pair or larger, reveal
-	if (lastScores !== null && lastScores[0] >= 100) {
-		api.reveal()
-		// We can't make any more actions after revealing, so we return
-		return
-	}
-
-	// If the previous player called the same score as the player before them, reveal
-	if (lastScores !== null && lastScores[0] === lastScores[1]) {
-		api.reveal()
-		return
-	}
-
-	// Roll the dice
-	const currentScore = api.roll()
-
-	// If our score is higher or equal, finish the turn
-	if (lastScores === null || currentScore >= lastScores[0]) {
-		return
-	}
-
-	// If our score is lower, we can either lie or call "det eller derover"
-	if (Math.random() > 0.5) {
-		api.lie(lastScores[0])
-		// We cant make any more actions after lying
-	} else {
-		api.detEllerDerover()
-		// We cant make any more actions after calling "det eller derover"
-	}
-
-	// END CODE
-}
-
-export default main
-`
-
-export default function NewStrategy(): ReactElement<any> {
+function NewStrategyContent (): ReactElement<any> {
 	const router = useRouter()
+	const searchParams = useSearchParams()
+	const gameParam = searchParams.get('game')
 	const { currentUser } = useUser()
 	const [title, setTitle] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState('')
+	const [games, setGames] = useState<any[]>([])
+	const [selectedGame, setSelectedGame] = useState<any>(null)
+	const [strategyCode, setStrategyCode] = useState<string>('')
+
+	useEffect(() => {
+		axios.get<GameType[]>(`${API_URL}/v1/games`, { withCredentials: true })
+			.then(response => {
+				setGames(response.data)
+				if (response.data.length > 0) {
+					const preselectedGame = gameParam !== null
+						? response.data.find(g => g._id === gameParam)
+						: response.data[0]
+
+					if (preselectedGame) {
+						setSelectedGame(preselectedGame)
+						setStrategyCode(preselectedGame.exampleStrategy)
+					}
+				}
+			})
+			.catch(err => console.error('Error fetching games:', err))
+	}, [gameParam])
+
+	const handleGameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const gameId = e.target.value
+		const game = games.find(g => g._id === gameId)
+		setSelectedGame(game)
+		setStrategyCode(game.exampleStrategy)
+	}
 
 	const handleCreate = async (): Promise<void> => {
-		if (title.trim() === '') {
+		if (title.trim() === '' || selectedGame === null) {
 			return
 		}
 
@@ -77,10 +56,10 @@ export default function NewStrategy(): ReactElement<any> {
 		try {
 			const response = await axios.post(
 				`${API_URL}/v1/submissions`,
-				{ title, code: defaultCode },
+				{ title, code: strategyCode, game: selectedGame._id },
 				{ withCredentials: true }
 			)
-			router.push(`/strategies/${response.data._id}`)
+			router.push(`/strategies/${response.data._id}/edit`)
 		} catch (error) {
 			console.error('Error creating strategy:', error)
 			setError('Failed to create strategy. Please try again.')
@@ -110,6 +89,24 @@ export default function NewStrategy(): ReactElement<any> {
 
 			<div className="space-y-8">
 				<div>
+					<label htmlFor="game" className="block text-sm font-medium text-gray-700 mb-2">
+						{'Select Game\r'}
+					</label>
+					<select
+						id="game"
+						className="w-full p-4 border border-gray-200 text-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+						onChange={handleGameChange}
+						value={selectedGame !== null ? selectedGame._id : ''}
+					>
+						{games.map(game => (
+							<option key={game._id} value={game._id}>
+								{game.name}
+							</option>
+						))}
+					</select>
+				</div>
+
+				<div>
 					<label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
 						{'Strategy Title\r'}
 					</label>
@@ -133,7 +130,7 @@ export default function NewStrategy(): ReactElement<any> {
 				<div className="flex items-center gap-4">
 					<button
 						onClick={() => { void handleCreate() }}
-						disabled={isSubmitting || title.trim().length === 0}
+						disabled={isSubmitting || title.trim().length === 0 || selectedGame === null}
 						className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100"
 					>
 						{isSubmitting ? 'Creating...' : 'Create Strategy'}
@@ -147,5 +144,12 @@ export default function NewStrategy(): ReactElement<any> {
 				</div>
 			</div>
 		</main>
+	)
+}
+export default function NewStrategy (): ReactElement<any> {
+	return (
+		<Suspense fallback={<div>{'Loading...'}</div>}>
+			<NewStrategyContent />
+		</Suspense>
 	)
 }

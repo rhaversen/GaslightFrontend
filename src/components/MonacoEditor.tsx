@@ -1,92 +1,10 @@
-import React, { useState, useEffect, useRef, ReactElement } from 'react'
+/* eslint-disable n/no-unpublished-import, n/no-extraneous-import */
 import Editor, { type Monaco } from '@monaco-editor/react'
-import type * as monaco from 'monaco-editor'
 import { shikiToMonaco } from '@shikijs/monaco'
+import type * as monaco from 'monaco-editor'
+/* eslint-enable n/no-unpublished-import, n/no-extraneous-import */
+import React, { useState, useEffect, useRef, ReactElement } from 'react'
 import { createHighlighter } from 'shiki'
-
-const apiTypes = `/**
- * Possible scores in Meyer:
- *
- * Special scores
- * 1000, 999 (Meyer and Lille Meyer)
- * 
- *
- * Pairs
- * 600, 500, 400, 300, 200, 100
- * 
- * Regular scores
- * 65, 64, 63, 62, 61
- * 54, 53, 52, 51
- * 43, 42, 41
- * 32
-*/
-
-interface MeyerStrategyAPI {
-	/**
-	 * @param dice - A pair of dice
-	 * @returns The score of the dice
-	 * @description
-	 * Will always return the highest possible score for the given dice.
-	 */
-	calculateDieScore: (dice: [number, number]) => number;
-	/**
-	 * @returns Array of newest to oldest previous actions
-	 * @description
-	 * Will only reveal the announced value (possible lie) of the previous actions.
-	 * The value of the action is the calculated score of the dice.
-	 * If there are no previous actions, null will be returned.
-	 * If the player has already rolled the dice, the previous action will be the roll action.
-	 */
-	getPreviousActions: () => number[] | null;
-	/**
-	 * @returns The previous action
-	 * @description
-	 * Will only reveal the announced value (possible lie) of the previous action.
-	 * The value of the action is the calculated score of the dice.
-	 * If there are no previous actions, null will be returned.
-	 * If the player has already rolled the dice, the previous action will be the roll action.
-	 */
-	getPreviousAction: () => number | null;
-	/**
-	 * @param score - The score to round up
-	 * @returns The rounded up score
-	 * @description
-	 * Rounds up the score to the nearest valid score.
-	 */
-	roundUpToValidScore: (score: number) => number;
-	/**
-	 * @returns Whether the player is the first in the round
-	 */
-	isFirstInRound: () => boolean;
-	/**
-	 * @description
-	 * Ends the turn by rolling the dice while hiding the result from both the current player and the other players.
-	 * The announced value will be the score of the previous action (Essentially betting that the hidden score is higher than or equal to the previous action).
-	 * Can only be called once per turn and only if the player is not the first in the round. Can only be called after the player has rolled the dice.
-	 */
-	detEllerDerover: () => void;
-	/**
-	 * @description
-	 * Ends the turn by revealing the previous action and penalizes the player who lied.
-	 * If the previous player did not lie, the current player will be penalized.
-	 * Revealing a true "Meyer" score will cause double penalty to the revealing player. Revealing a false "Meyer" score will cause double penalty to the liar (Previous player).
-	 * Can only be called once per turn and only if the player is not the first in the round. Can only be called after the player has rolled the dice.
-	 */
-	reveal: () => void;
-	/**
-	 * @returns The score of the dice
-	 * @description
-	 * Rolls the dice and returns the score of the dice. Can only be called once per turn.
-	 */
-	roll: () => number;
-	/**
-	 * @description
-	 * Ends the turn by announcing a score and passing the turn to the next player.
-	 * The lie value must be equal to or higher than the previously announced value. Lying about "Meyer" score will cause double penalty if caught.
-	 * Can only be called once per turn. Can only be called after the player has rolled the dice.
-	 */
-	lie: (value: number) => void;
-}`
 
 // Commented out themes are found to be not working with Shiki 1.27.2
 // https://shiki.style/themes#bundled-themes
@@ -163,6 +81,7 @@ async function initializeShiki (monaco: Monaco): Promise<void> {
 const MonacoEditor = ({
 	defaultValue,
 	value,
+	apiTypes,
 	height = '90vh',
 	onChange,
 	onToggleMaximize,
@@ -170,6 +89,7 @@ const MonacoEditor = ({
 }: {
 	defaultValue?: string
 	value?: string
+	apiTypes: string
 	height?: string
 	onChange?: (value: string | undefined, event: any) => void
 	onToggleMaximize?: () => void
@@ -235,7 +155,7 @@ const MonacoEditor = ({
 	}, [isFullscreen])
 
 	useEffect(() => {
-		if (monacoRef.current === null) return
+		if (monacoRef.current === null) { return }
 
 		// Cleanup previous lib if it exists
 		if (extraLibDisposableRef.current !== null) {
@@ -247,7 +167,7 @@ const MonacoEditor = ({
 			// Add types when docs are hidden
 			extraLibDisposableRef.current = monacoRef.current.languages.typescript.typescriptDefaults.addExtraLib(
 				apiTypes,
-				'ts:filename/MeyerStrategyAPI.d.ts'
+				'ts:filename/apiTypes.ts'
 			)
 		}
 
@@ -257,7 +177,7 @@ const MonacoEditor = ({
 				extraLibDisposableRef.current = null
 			}
 		}
-	}, [showDocumentation])
+	}, [showDocumentation, apiTypes])
 
 	useEffect(() => {
 		if (isFullscreen) {
@@ -286,7 +206,6 @@ const MonacoEditor = ({
 		editor.updateOptions({ theme })
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function handleEditorValidation (_markers: monaco.editor.IMarker[]): void {
 		// model markers
 		// markers.forEach(marker => console.log('onValidate:', marker.message));
@@ -304,12 +223,14 @@ const MonacoEditor = ({
 		document.addEventListener('mousemove', handleMouseMove)
 		document.addEventListener('mouseup', handleMouseUp)
 		// Prevent text selection during drag
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.userSelect = 'none'
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.cursor = isVerticalLayout ? 'ns-resize' : 'ew-resize'
 	}
 
 	const handleMouseMove = (e: MouseEvent): void => {
-		if (!isDraggingRef.current || containerRef.current === null) return
+		if (!isDraggingRef.current || containerRef.current === null) { return }
 
 		const containerRect = containerRef.current.getBoundingClientRect()
 
@@ -332,7 +253,9 @@ const MonacoEditor = ({
 		document.removeEventListener('mousemove', handleMouseMove)
 		document.removeEventListener('mouseup', handleMouseUp)
 		// Restore text selection and cursor
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.userSelect = ''
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.cursor = ''
 	}
 

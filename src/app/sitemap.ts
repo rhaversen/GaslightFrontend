@@ -1,10 +1,11 @@
-import { SubmissionType, TournamentType, UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { type MetadataRoute } from 'next'
 
+import { SubmissionType, TournamentType, UserType } from '@/types/backendDataTypes'
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default async function sitemap (): Promise<MetadataRoute.Sitemap> {
 	try {
 		const [users, tournaments, strategies] = await Promise.all([
 			axios.get<UserType[]>(`${API_URL}/v1/users`),

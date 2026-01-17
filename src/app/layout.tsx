@@ -1,9 +1,9 @@
-import ErrorProvider from '@/contexts/ErrorContext/ErrorProvider'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { type ReactElement } from 'react'
-import UserProvider from '@/contexts/UserProvider'
+
+import ClientProviders from '@/components/ClientProviders'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,11 +59,9 @@ export default function RootLayout ({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<ErrorProvider>
-					<UserProvider>
-						{children}
-					</UserProvider>
-				</ErrorProvider>
+				<ClientProviders>
+					{children}
+				</ClientProviders>
 			</body>
 		</html>
 	)

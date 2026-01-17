@@ -1,49 +1,56 @@
 'use client'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import React, { createContext, type ReactNode, type ReactElement, useContext } from 'react'
+
 import { type UserType } from '@/types/backendDataTypes'
-import React, {
-	createContext,
-	type Dispatch,
-	ReactElement,
-	type ReactNode,
-	type SetStateAction,
-	useContext,
-	useEffect,
-	useState
-} from 'react'
 
 interface UserContextType {
 	currentUser: UserType | null
-	setCurrentUser: Dispatch<SetStateAction<UserType | null>>
+	isLoading: boolean
+	error: Error | null
+	refetchUser: () => Promise<void>
 }
 
 const UserContext = createContext<UserContextType>({
 	currentUser: null,
-	setCurrentUser: () => { }
+	isLoading: false,
+	error: null,
+	refetchUser: async () => { }
 })
 
 export const useUser = (): UserContextType => useContext(UserContext)
 
-export default function UserProvider ({ children }: { readonly children: ReactNode }): ReactElement<any> {
-	const [currentUser, setCurrentUser] = useState<UserType | null>(() => {
-		if (typeof window !== 'undefined') {
-			const storedUser = localStorage.getItem('currentUser')
-			return (storedUser !== null) ? JSON.parse(storedUser) : null
-		}
+// Modify fetchUser to catch errors and return null if failed.
+const fetchUser = async (): Promise<UserType | null> => {
+	try {
+		const { data } = await axios.get<UserType>(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/user`, {
+			withCredentials: true
+		})
+		return data
+	} catch (e) {
+		console.warn('Error fetching user:', e)
 		return null
+	}
+}
+
+export default function UserProvider ({ children }: { readonly children: ReactNode }): ReactElement {
+	// Update useQuery generic types to allow null result.
+	const { data: currentUser, isLoading, error, refetch } = useQuery<UserType | null, Error, UserType | null, string[]>({
+		queryKey: ['user'],
+		queryFn: fetchUser,
+		retry: false,
+		staleTime: 5 * 60 * 1000 // Consider data stale after 5 minutes
 	})
 
-	useEffect(() => {
-		if (currentUser !== null) {
-			localStorage.setItem('currentUser', JSON.stringify(currentUser))
-		} else {
-			localStorage.removeItem('currentUser')
-		}
-	}, [currentUser])
-
 	const value = React.useMemo(() => ({
-		currentUser,
-		setCurrentUser
-	}), [currentUser, setCurrentUser])
+		currentUser: currentUser ?? null,
+		isLoading,
+		error: error as Error | null,
+		refetchUser: async () => {
+			await refetch()
+		}
+	}), [currentUser, isLoading, error, refetch])
 
 	return (
 		<UserContext.Provider value={value}>

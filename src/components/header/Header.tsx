@@ -1,9 +1,11 @@
 'use client'
 
 import React, { type ReactElement, useState, useEffect } from 'react'
-import Button from './Button'
+
 import { useUser } from '@/contexts/UserProvider'
 import { useLogout } from '@/hooks/useLogout'
+
+import Button from './Button'
 
 const Header = (): ReactElement<any> => {
 	const { currentUser } = useUser()
@@ -22,7 +24,8 @@ const Header = (): ReactElement<any> => {
 	// Unauthenticated buttons
 	const authenticatedButtonsLeft: ButtonProps = {
 		Users: { path: '/users' },
-		Tournaments: { path: '/tournaments' }
+		Tournaments: { path: '/tournaments' },
+		Games: { path: '/games' }
 	}
 	const authenticatedButtonsRight: ButtonProps = {
 		Profile: { path: '/users/' + currentUser?._id },
@@ -32,7 +35,8 @@ const Header = (): ReactElement<any> => {
 	// Authenticated buttons
 	const unauthenticatedButtonsLeft: ButtonProps = {
 		Users: { path: '/users' },
-		Tournaments: { path: '/tournaments' }
+		Tournaments: { path: '/tournaments' },
+		Games: { path: '/games' }
 	}
 	const unauthenticatedButtonsRight: ButtonProps = {
 		'Log in': { path: '/login' },
@@ -40,14 +44,14 @@ const Header = (): ReactElement<any> => {
 	}
 
 	if (!mounted) {
-		return <div className='p-5 absolute'></div> // Return empty container while mounting
+		return <div className='p-10 sm:p-16 md:p-20'></div> // Return empty container while mounting
 	}
 
 	const buttonsLeft = currentUser !== null ? authenticatedButtonsLeft : unauthenticatedButtonsLeft
 	const buttonsRight = currentUser !== null ? authenticatedButtonsRight : unauthenticatedButtonsRight
 
 	return (
-		<header className="p-2 sm:p-4 md:p-6 absolute w-full z-10">
+		<header className="p-2 sm:p-4 md:p-6 w-full z-10">
 			<nav className="max-w-7xl mx-auto backdrop-blur-sm bg-white/10 rounded-lg sm:rounded-xl md:rounded-2xl p-2 sm:p-4 flex justify-between items-center shadow-lg">
 				<div className="flex gap-1 sm:gap-2 md:gap-4">
 					{Object.entries(buttonsLeft).map(([title, config]) => (

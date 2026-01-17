@@ -1,7 +1,7 @@
 import { type ReactElement, useMemo, useRef, useState, useEffect } from 'react'
 
 const createTimeBuckets = (times: number[]): Array<{ range: string, count: number }> => {
-	if (times.length === 0) return []
+	if (times.length === 0) { return [] }
 
 	// Sort times
 	const sortedTimes = times.sort((a, b) => a - b)
@@ -28,7 +28,7 @@ const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement<an
 	const [containerWidth, setContainerWidth] = useState(0)
 
 	useEffect(() => {
-		if (containerRef.current === null) return
+		if (containerRef.current === null) { return }
 		const observer = new ResizeObserver(entries => { setContainerWidth(entries[0].contentRect.width) })
 		observer.observe(containerRef.current)
 		return () => { observer.disconnect() }
@@ -41,15 +41,15 @@ const ExecutionTimeHistogram = ({ times }: { times: number[] }): ReactElement<an
 
 	// Calculate label interval based on container width
 	const labelInterval = useMemo(() => {
-		if (width < 400) return 400      // Show label every 0.4ms
-		if (width < 600) return 200      // Show label every 0.2ms
-		if (width < 800) return 100      // Show label every 0.1ms
-		return 50                         // Show label every 0.05ms
+		if (width < 400) { return 400 } // Show label every 0.4ms
+		if (width < 600) { return 200 } // Show label every 0.2ms
+		if (width < 800) { return 100 } // Show label every 0.1ms
+		return 50 // Show label every 0.05ms
 	}, [width])
 
 	const shouldShowLabel = (range: string, index: number): boolean => {
 		const value = Math.round(parseFloat(range) * 1000)
-		if (value % labelInterval !== 0) return false
+		if (value % labelInterval !== 0) { return false }
 
 		// Check if this is the first bucket in this interval
 		const prevValue = index > 0 ? Math.round(parseFloat(buckets[index - 1].range) * 1000) : -1
