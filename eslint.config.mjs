@@ -49,7 +49,7 @@ const eslintConfig = [
 		languageOptions: {
 			parser: tsParser,
 			parserOptions: {
-				project: './tsconfig.json',
+				projectService: true,
 				ecmaVersion: 'latest',
 				sourceType: 'module',
 				ecmaFeatures: { jsx: true }
