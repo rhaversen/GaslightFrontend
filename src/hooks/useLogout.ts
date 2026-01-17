@@ -1,7 +1,8 @@
-import { useError } from '@/contexts/ErrorContext/ErrorContext'
-import { useUser } from '@/contexts/UserProvider'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+
+import { useError } from '@/contexts/ErrorContext/ErrorContext'
+import { useUser } from '@/contexts/UserProvider'
 
 export const useLogout = (): { logout: () => void } => {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL

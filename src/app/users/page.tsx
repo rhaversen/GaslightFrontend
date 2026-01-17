@@ -1,12 +1,13 @@
 'use client'
 
+import axios from 'axios'
+import Link from 'next/link'
+import React, { type ReactElement, useEffect, useState } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { useUser } from '@/contexts/UserProvider'
 import { formatDate } from '@/lib/dateUtils'
 import { type UserType } from '@/types/backendDataTypes'
-import axios from 'axios'
-import Link from 'next/link'
-import React, { type ReactElement, useEffect, useState } from 'react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 

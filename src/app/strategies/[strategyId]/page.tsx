@@ -1,14 +1,15 @@
 'use client'
-import React, { useState, useEffect, ReactElement, use } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import React, { useState, useEffect, ReactElement, use } from 'react'
+
 import { useUser } from '@/contexts/UserProvider'
 import { SubmissionType, GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function StrategyPage(props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
+export default function StrategyPage (props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
 	const { strategyId } = use(props.params)
 	const { currentUser } = useUser()
 	const router = useRouter()

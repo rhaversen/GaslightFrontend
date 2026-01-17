@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
-import { GameType, TournamentType } from '@/types/backendDataTypes'
-import { TournamentCard as RegularTournamentCard } from './TournamentCard'
+import React, { useState, useEffect, useCallback } from 'react'
+
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { GameType, TournamentType } from '@/types/backendDataTypes'
+
+import { TournamentCard as RegularTournamentCard } from './TournamentCard'
 
 const CARD_HEIGHT = 160 // px
 const TOURNAMENTS_PER_PAGE = 5
@@ -18,10 +20,10 @@ const LazyTournamentCard = dynamic(
 	() => import('./TournamentCard').then(mod => ({ default: mod.TournamentCard })),
 	{
 		loading: () => (
-			<div 
+			<div
 				className="h-[160px] bg-gray-800 rounded-lg animate-pulse"
-				style={{ height: CARD_HEIGHT }} 
-				aria-hidden="true" 
+				style={{ height: CARD_HEIGHT }}
+				aria-hidden="true"
 			/>
 		),
 		ssr: false
@@ -34,7 +36,7 @@ interface SingleGameTournamentsProps {
 	currentUser: any
 }
 
-export default function SingleGameTournaments({ game, API_URL, currentUser }: SingleGameTournamentsProps) {
+export default function SingleGameTournaments ({ game, API_URL, currentUser }: SingleGameTournamentsProps) {
 	const [latestTournament, setLatestTournament] = useState<TournamentType[]>([])
 	const [otherTournaments, setOtherTournaments] = useState<TournamentType[]>([])
 	const [latestLoading, setLatestLoading] = useState(true)
@@ -119,7 +121,7 @@ export default function SingleGameTournaments({ game, API_URL, currentUser }: Si
 					</div>
 				))
 			)}
-			
+
 			<h2 className="text-2xl font-semibold text-gray-100">{'Previous Tournaments'}</h2>
 			<div className="space-y-6 relative z-0">
 				{otherTournaments.map(tournament => (

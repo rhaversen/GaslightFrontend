@@ -1,13 +1,14 @@
 'use client'
 
-import { useError } from '@/contexts/ErrorContext/ErrorContext'
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
+
 import PasswordInput from '@/components/PasswordInput'
+import { useError } from '@/contexts/ErrorContext/ErrorContext'
+import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+import { type UserType } from '@/types/backendDataTypes'
 
 export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL

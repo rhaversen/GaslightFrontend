@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 
-export async function generateMetadata({ params }: Readonly<{
+export async function generateMetadata ({ params }: Readonly<{
 	children: React.ReactNode
 	params: Promise<{ userId: string }>
 }>): Promise<Metadata> {
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Readonly<{
 	}
 }
 
-export default function StrategiesLayout({
+export default function StrategiesLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode

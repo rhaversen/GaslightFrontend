@@ -1,15 +1,17 @@
-import { TournamentStanding, TournamentType } from '@/types/backendDataTypes'
+import axios from 'axios'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { useState } from 'react'
+
 import { formatDate } from '@/lib/dateUtils'
+import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
 import { formatDuration } from '@/lib/timeUtils'
+import { TournamentStanding, TournamentType } from '@/types/backendDataTypes'
+
+import { CurrentUserDisplay } from './CurrentUserDisplay'
+import { DisqualificationsDisplay } from './DisqualificationsDisplay'
 import { PlacementDisplay } from './PlacementDisplay'
 import { StatsDisplay } from './StatsDisplay'
-import { useState } from 'react'
-import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
-import { DisqualificationsDisplay } from './DisqualificationsDisplay'
-import { motion, AnimatePresence } from 'framer-motion'
-import { CurrentUserDisplay } from './CurrentUserDisplay'
-import axios from 'axios'
-import Link from 'next/link'
 
 const TOP_PLACES = 3 // Cannot be modified, as it's matched with the design
 const FULL_DISPLAY_PLACES = 8
@@ -36,7 +38,7 @@ export const TournamentCard = ({ tournament, currentUserId, defaultExpanded = fa
 	const chunk2Count = Math.min(Math.max(0, tournament.submissionCount - SIMPLIFIED_DISPLAY_START), MAX_SIMPLIFIED_DISPLAY_PLACES)
 
 	const fetchAdditionalStandings = async () => {
-		if (hasLoadedAdditional) return
+		if (hasLoadedAdditional) { return }
 		setIsLoadingStandings(true)
 		try {
 			const response = await axios.get<TournamentStanding[]>(`${API_URL}/v1/tournaments/${tournament._id}/standings`, {
@@ -44,7 +46,7 @@ export const TournamentCard = ({ tournament, currentUserId, defaultExpanded = fa
 					limitStandings: OTHER_STANDINGS,
 					skipStandings: TOP_PLACES,
 					sortFieldStandings: 'placement',
-					sortDirectionStandings: 'asc',
+					sortDirectionStandings: 'asc'
 				}
 			})
 			setAllStandings([...tournament.standings, ...response.data])

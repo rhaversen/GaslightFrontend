@@ -1,16 +1,17 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType, type SubmissionType, type GameType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
-import { StrategyCard } from '@/components/StrategyCard'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import { StrategyCard } from '@/components/StrategyCard'
+import { useUser } from '@/contexts/UserProvider'
+import { type UserType, type SubmissionType, type GameType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export default function Page(props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement<any> {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<SubmissionType[]>([])
@@ -78,7 +79,7 @@ export default function Page(props: { params: Promise<{ userId: string }> }): Re
 	const toggleActive = async (strategyId: string, active: boolean): Promise<void> => {
 		// Find the strategy to get its game ID
 		const strat = strategies.find(s => s._id === strategyId)
-		if (!strat) return
+		if (!strat) { return }
 		const gameId = strat.game
 		const previousActiveId = activeStrategies[gameId] ?? null
 

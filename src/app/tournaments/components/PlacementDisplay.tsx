@@ -1,5 +1,6 @@
-import { TournamentStanding } from '@/types/backendDataTypes'
 import Link from 'next/link'
+
+import { TournamentStanding } from '@/types/backendDataTypes'
 
 const getPlaceStyles = (place: number) => {
 	switch (place) {

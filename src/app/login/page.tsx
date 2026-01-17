@@ -1,12 +1,13 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
+
 import PasswordInput from '@/components/PasswordInput'
+import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+import { type UserType } from '@/types/backendDataTypes'
 
 export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -35,12 +36,12 @@ export default function Page (): ReactElement<any> {
 			user: UserType
 		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
 		await refetchUser() // Refetch to update the user context
-		
+
 		const canGoBack = () => {
 			try {
-				if (!document.referrer) return false
+				if (!document.referrer) { return false }
 				const referrerUrl = new URL(document.referrer)
-				return window.location.href !== document.referrer && 
+				return window.location.href !== document.referrer &&
 					   referrerUrl.origin === window.location.origin
 			} catch {
 				return false

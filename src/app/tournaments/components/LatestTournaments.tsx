@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
-import { TournamentType, GameType } from '@/types/backendDataTypes'
-import { TournamentCard as RegularTournamentCard } from './TournamentCard'
+import React, { useState, useEffect, useCallback } from 'react'
+
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { TournamentType, GameType } from '@/types/backendDataTypes'
+
+import { TournamentCard as RegularTournamentCard } from './TournamentCard'
 
 const CARD_HEIGHT = 160
 const TOURNAMENTS_PER_PAGE = 5
@@ -15,10 +17,10 @@ const LazyTournamentCard = dynamic(
 	() => import('./TournamentCard').then(mod => ({ default: mod.TournamentCard })),
 	{
 		loading: () => (
-			<div 
+			<div
 				className="h-[160px] bg-gray-800 rounded-lg animate-pulse"
-				style={{ height: CARD_HEIGHT }} 
-				aria-hidden="true" 
+				style={{ height: CARD_HEIGHT }}
+				aria-hidden="true"
 			/>
 		),
 		ssr: false
@@ -31,7 +33,7 @@ interface LatestTournamentsProps {
 	games: GameType[]
 }
 
-export default function LatestTournaments({ API_URL, currentUser, games }: LatestTournamentsProps) {
+export default function LatestTournaments ({ API_URL, currentUser, games }: LatestTournamentsProps) {
 	const [tournaments, setTournaments] = useState<TournamentType[]>([])
 	const [loading, setLoading] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
@@ -112,10 +114,10 @@ export default function LatestTournaments({ API_URL, currentUser, games }: Lates
 					)
 				))}
 				{loading && (
-					<div 
-						className="animate-pulse bg-gray-800 rounded-lg p-6" 
-						style={{ height: CARD_HEIGHT }} 
-						aria-hidden="true" 
+					<div
+						className="animate-pulse bg-gray-800 rounded-lg p-6"
+						style={{ height: CARD_HEIGHT }}
+						aria-hidden="true"
 					/>
 				)}
 				<div ref={infiniteScrollRef} className="h-px w-full" />

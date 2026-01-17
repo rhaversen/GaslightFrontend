@@ -25,14 +25,14 @@ export const HaloCalm = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) vantaEffect.destroy()
+			if (vantaEffect !== null) { vantaEffect.destroy() }
 		}
 	}, [])
 
 	return <div ref={vantaRef} className="w-full h-full" />
 }
 
-export const HaloAgressive = (): ReactElement<any> => {
+export const HaloAggressive = (): ReactElement<any> => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -54,7 +54,7 @@ export const HaloAgressive = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) vantaEffect.destroy()
+			if (vantaEffect !== null) { vantaEffect.destroy() }
 		}
 	}, [])
 
@@ -87,7 +87,7 @@ export const Net = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) vantaEffect.destroy()
+			if (vantaEffect !== null) { vantaEffect.destroy() }
 		}
 	}, [])
 

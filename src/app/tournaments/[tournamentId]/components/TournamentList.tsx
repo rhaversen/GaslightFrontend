@@ -1,17 +1,18 @@
 'use client'
 
-import { formatDate } from '@/lib/dateUtils'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
-import { TournamentType } from '@/types/backendDataTypes'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { formatDate } from '@/lib/dateUtils'
+import { TournamentType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const ITEMS_PER_PAGE = 30
 
-export function TournamentList({ selectedId }: { selectedId: string }) {
+export function TournamentList ({ selectedId }: { selectedId: string }) {
 	const [tournaments, setTournaments] = useState<TournamentType[]>([])
 	const [loading, setLoading] = useState(true)
 	const [page, setPage] = useState(1)
@@ -27,15 +28,15 @@ export function TournamentList({ selectedId }: { selectedId: string }) {
 
 		let attempts = 0
 		const maxAttempts = 5
-        
+
 		const tryScroll = () => {
 			const selectedElement = document.getElementById(`tournament-${selectedId}`)
 			const scrollContainer = document.getElementById('tournament-list-container')
-            
+
 			if (selectedElement && scrollContainer) {
 				const containerRect = scrollContainer.getBoundingClientRect()
 				const elementRect = selectedElement.getBoundingClientRect()
-                
+
 				const isInView = (
 					elementRect.top >= containerRect.top &&
                     elementRect.bottom <= containerRect.bottom
@@ -49,7 +50,7 @@ export function TournamentList({ selectedId }: { selectedId: string }) {
 				}
 				return true
 			}
-            
+
 			attempts++
 			if (attempts < maxAttempts) {
 				setTimeout(tryScroll, 200)
@@ -131,7 +132,7 @@ export function TournamentList({ selectedId }: { selectedId: string }) {
 				{/* Expand/collapse button */}
 				<div
 					className="fixed left-0 top-0 h-screen pointer-events-none z-[60] ease-out transition-all duration-300"
-					style={{ 
+					style={{
 						width: isCollapsed ? '64px' : '150px'
 					}}
 				>
@@ -150,7 +151,7 @@ export function TournamentList({ selectedId }: { selectedId: string }) {
 					</button>
 				</div>
 
-				<div 
+				<div
 					id="tournament-list-container"
 					className="flex-1 overflow-y-auto no-scrollbar"
 				>
@@ -161,7 +162,7 @@ export function TournamentList({ selectedId }: { selectedId: string }) {
                                 text-sm font-medium text-gray-400 border-y border-gray-700 overflow-clip text-nowrap
                                 bg-gray-800
                             `}>
-								{isCollapsed 
+								{isCollapsed
 									? new Date(monthTournaments[0].createdAt).toLocaleString('en-US', { month: 'short' })
 									: monthYear
 								}

@@ -1,11 +1,12 @@
 'use client'
 
 import axios from 'axios'
-import React, { useState, useEffect, type ReactElement } from 'react'
-import type { GameType } from '@/types/backendDataTypes'
 import Link from 'next/link'
+import React, { useState, useEffect, type ReactElement } from 'react'
 
-export default function GamesSection(): ReactElement {
+import type { GameType } from '@/types/backendDataTypes'
+
+export default function GamesSection (): ReactElement {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const [games, setGames] = useState<GameType[]>([])
 	const [loading, setLoading] = useState(true)

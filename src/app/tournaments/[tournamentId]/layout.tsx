@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 
-export async function generateMetadata({ params }: Readonly<{
+export async function generateMetadata ({ params }: Readonly<{
 	children: React.ReactNode
 	params: Promise<{ tournamentId: string }>
 }>): Promise<Metadata> {
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Readonly<{
 	}
 }
 
-export default function TournamentLayout({
+export default function TournamentLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode

@@ -1,7 +1,8 @@
-import { formatDate } from '@/lib/dateUtils'
-import { type SubmissionType } from '@/types/backendDataTypes'
 import Link from 'next/link'
 import { type ReactElement, useState } from 'react'
+
+import { formatDate } from '@/lib/dateUtils'
+import { type SubmissionType } from '@/types/backendDataTypes'
 
 interface Props {
 	strategy: SubmissionType
@@ -37,7 +38,7 @@ export function StrategyCard ({
 			<div className="flex justify-between items-center">
 				<h3 className="text-lg md:text-xl font-semibold text-gray-800">{strategy.title}</h3>
 				<div className="flex gap-2 items-center">
-					<Link 
+					<Link
 						href={`/strategies/${strategy._id}`}
 						className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-sm"
 					>
