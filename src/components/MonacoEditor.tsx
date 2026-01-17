@@ -223,9 +223,9 @@ const MonacoEditor = ({
 		document.addEventListener('mousemove', handleMouseMove)
 		document.addEventListener('mouseup', handleMouseUp)
 		// Prevent text selection during drag
-	// eslint-disable-next-line react-hooks/immutability
-	document.body.style.userSelect = 'none'
-	// eslint-disable-next-line react-hooks/immutability
+		// eslint-disable-next-line react-hooks/immutability
+		document.body.style.userSelect = 'none'
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.cursor = isVerticalLayout ? 'ns-resize' : 'ew-resize'
 	}
 
@@ -253,9 +253,9 @@ const MonacoEditor = ({
 		document.removeEventListener('mousemove', handleMouseMove)
 		document.removeEventListener('mouseup', handleMouseUp)
 		// Restore text selection and cursor
-	// eslint-disable-next-line react-hooks/immutability
-	document.body.style.userSelect = ''
-	// eslint-disable-next-line react-hooks/immutability
+		// eslint-disable-next-line react-hooks/immutability
+		document.body.style.userSelect = ''
+		// eslint-disable-next-line react-hooks/immutability
 		document.body.style.cursor = ''
 	}
 
