@@ -28,6 +28,8 @@ export interface SubmissionType {
 	code: string | null
 	/** User who submitted the code */
 	user: UserType['_id']
+	/** Foreign key referencing game */
+	game: GameType['_id']
 	/** Decides if the submission is part of the tournament (Can only have one active submission per user) */
 	active: boolean
 	/** Decides if the submission has passed an evaluation and is ready for tournaments. Null if not evaluated yet */
@@ -53,7 +55,7 @@ export interface SubmissionType {
 		strategyLoadingTimings: number | undefined
 		/** Time taken to execute the strategy */
 		strategyExecutionTimings: number[] | undefined
-		/** Averate time taken to execute the strategy */
+		/** Average time taken to execute the strategy */
 		averageExecutionTime: number | undefined
 
 		// Timestamps
@@ -66,27 +68,15 @@ export interface SubmissionType {
 	updatedAt: Date
 }
 
-interface GradingStatisticsType {
-	/** Percentile rank (0-100) of this grading's score */
-	percentileRank: number
-	/** Standard score (z-score) */
-	standardScore: number
-	/** How many standard deviations from mean */
-	deviationsFromMean: number
-	/** Relative performance (-1 to 1) compared to mean */
-	normalizedScore: number
-}
-
 export interface TournamentStanding {
 	user: UserType['_id']
 	userName: string
 	submission: SubmissionType['_id']
 	submissionName: string
 	score: number
-	zValue: number
 	tokenCount: number
 	placement: number
-	statistics: GradingStatisticsType
+	percentileRank: number
 	avgExecutionTime: number
 }
 
@@ -147,9 +137,40 @@ export interface TournamentType {
 	standings: TournamentStanding[]
 	/** User standing */
 	userStanding: TournamentStanding | null
-
 	/** Tournament execution time in milliseconds */
 	tournamentExecutionTime: number
+	/** Foreign key referencing game for which the tournament is held */
+	game: GameType['_id']
+
+	// Timestamps
+	createdAt: Date
+	updatedAt: Date
+}
+
+export interface FileMap {
+	'main.ts': string;
+	[key: string]: string;
+}
+
+export interface GameType {
+	/** ID of the game */
+	_id: string
+	/** Name of the game */
+	name: string
+	/** Short summary of the game */
+	summary: string
+	/** Long description of the game */
+	description: string
+	/** Files of the game */
+	files: FileMap
+	/** API type of the game */
+	apiType: string
+	/** Example strategy for the game */
+	exampleStrategy: string
+	/** Amount of players in a game */
+	batchSize: number
+	/** Amount of submissions in latest tournament */
+	submissionCount: number
 
 	// Timestamps
 	createdAt: Date

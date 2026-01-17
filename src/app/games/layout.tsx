@@ -1,25 +1,22 @@
 import { type Metadata } from 'next'
 
-import Header from '@/components/Header'
-
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
-		default: 'Users'
+		default: 'Games'
 	},
 	alternates: {
-		canonical: 'https://www.gaslight.fun/users'
+		canonical: 'https://www.gaslight.fun/games'
 	}
 }
 
-export default function UserLayout ({
+export default function GamesLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode
 }>): React.JSX.Element {
 	return (
 		<>
-			<Header/>
 			{children}
 		</>
 	)

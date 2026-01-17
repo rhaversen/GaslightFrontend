@@ -1,14 +1,16 @@
 import { type ReactElement } from 'react'
-import ExecutionTimeHistogram from './ExecutionTimeHistogram'
-import { type SubmissionType } from '@/types/backendDataTypes'
+
 import { formatDate } from '@/lib/dateUtils'
+import { type SubmissionType } from '@/types/backendDataTypes'
+
+import ExecutionTimeHistogram from './ExecutionTimeHistogram'
 
 const EvaluationResults = ({
 	strategy
 }: {
 	strategy: SubmissionType
 }): ReactElement<any> | null => {
-	if (strategy?.evaluation === undefined) return null
+	if (strategy?.evaluation === undefined) { return null }
 
 	const LOADING_TIME_LIMIT = 100 // ms
 	const EXECUTION_TIME_LIMIT = 1 // ms

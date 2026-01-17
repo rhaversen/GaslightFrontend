@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { TournamentStatistics } from '@/types/backendDataTypes'
+import { useState, useEffect } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
+import { TournamentStatistics } from '@/types/backendDataTypes'
 
 export const StatsDisplay = ({
 	tournamentId,
@@ -56,7 +57,7 @@ export const StatsDisplay = ({
 		max: statistics.extrema.maximum,
 		// Tukey range (excluding outliers)
 		tukeyMin: statistics.tukeyCriteria.lowerBound,
-		tukeyMax: statistics.tukeyCriteria.upperBound,
+		tukeyMax: statistics.tukeyCriteria.upperBound
 	}
 
 	// Use absolute extrema between actual values and Tukey bounds

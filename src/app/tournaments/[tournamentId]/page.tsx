@@ -1,23 +1,26 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { TournamentStatistics, type TournamentType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useEffect, useState, use, useCallback } from 'react'
+
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
-import { formatDate } from '@/lib/dateUtils'
+import { useUser } from '@/contexts/UserProvider'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
-import { StatsDisplay } from '../components/StatsDisplay'
-import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
+import { formatDate } from '@/lib/dateUtils'
+import { TournamentStatistics, type TournamentType } from '@/types/backendDataTypes'
+
 import { CurrentUserDisplay } from '../components/CurrentUserDisplay'
+import { DisqualificationsDisplay } from '../components/DisqualificationsDisplay'
+import { StatsDisplay } from '../components/StatsDisplay'
+
 import { TournamentList } from './components/TournamentList'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
 
-export default function Page(props: { params: Promise<{ tournamentId: string }> }): ReactElement {
+export default function Page (props: { params: Promise<{ tournamentId: string }> }): ReactElement {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const router = useRouter()
@@ -94,7 +97,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 			})
 			.catch(error => console.error('Error fetching standings:', error))
 			.finally(() => setStandingsLoading(false))
-	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetch
+	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetchUser
 
 	const loadMore = useCallback(() => {
 		if (!standingsLoading && hasMore) {
@@ -243,7 +246,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 								{standings.sort((a, b) => { // Sort standings based on sortField and sortDirection
 									const aField = a[sortField]
 									const bField = b[sortField]
-									if (aField === bField) return 0
+									if (aField === bField) { return 0 }
 									return (aField > bField ? 1 : -1) * (sortDirection === 'asc' ? 1 : -1)
 								}).map(standing => (
 									<div
@@ -261,7 +264,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											{standing.userName}
 										</Link>
 										<Link
-											href={`/submissions/${standing.submission}`}
+											href={`/strategies/${standing.submission}`}
 											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.submissionName}
 										>
@@ -272,7 +275,7 @@ export default function Page(props: { params: Promise<{ tournamentId: string }> 
 											title="Relative standing among all participants"
 										>
 											<div className="text-xl text-gray-200">
-												{standing.statistics.percentileRank.toFixed(1)}{'%'}
+												{standing.percentileRank.toFixed(1)}{'%'}
 											</div>
 										</div>
 										<div className="text-end" title="Average scored per game">

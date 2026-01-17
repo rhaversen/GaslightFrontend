@@ -1,11 +1,12 @@
 'use client'
+import axios from 'axios'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useUser } from '@/contexts/UserProvider'
 import { useState, useEffect } from 'react'
+
+import { useUser } from '@/contexts/UserProvider'
 import { useLogout } from '@/hooks/useLogout'
-import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
 import { type UserType } from '@/types/backendDataTypes'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
@@ -63,8 +64,8 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 			style={{ display: 'flex' }}
 		>
 			<div>
-				<NavLink 
-					href={user ? `/users/${user._id}` : '/login'} 
+				<NavLink
+					href={user ? `/users/${user._id}` : '/login'}
 					isActive={isProfile}
 				>
 					{user ? (
@@ -89,8 +90,8 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 			</div>
 
 			<div>
-				<NavLink 
-					href={user ? `/users/${user._id}/strategies` : '/login'} 
+				<NavLink
+					href={user ? `/users/${user._id}/strategies` : '/login'}
 					isActive={isStrategies}
 				>
 					{user ? (
@@ -115,7 +116,7 @@ const NavigationLinks = ({ user, pathname, currentUser }: NavigationLinksProps) 
 	)
 }
 
-export default function Header(): React.JSX.Element {
+export default function Header (): React.JSX.Element {
 	const pathname = usePathname()
 	const { currentUser } = useUser()
 	const { logout } = useLogout()
@@ -184,29 +185,29 @@ export default function Header(): React.JSX.Element {
 						<div className="relative flex transition-all duration-300 ease-in-out">
 							<AnimatePresence mode="sync">
 								{!currentUser && !viewedUser && (
-									<NavigationLinks 
+									<NavigationLinks
 										user={null}
 										pathname={pathname}
 										currentUser={null}
 									/>
 								)}
 								{isLoading && currentUser && (
-									<NavigationLinks 
-										user={currentUser} 
+									<NavigationLinks
+										user={currentUser}
 										pathname={pathname}
 										currentUser={currentUser}
 									/>
 								)}
 								{!isLoading && viewedUser && (
-									<NavigationLinks 
-										user={viewedUser} 
+									<NavigationLinks
+										user={viewedUser}
 										pathname={pathname}
 										currentUser={currentUser}
 									/>
 								)}
 								{!isLoading && !viewedUser && currentUser && (
-									<NavigationLinks 
-										user={currentUser} 
+									<NavigationLinks
+										user={currentUser}
 										pathname={pathname}
 										currentUser={currentUser}
 									/>

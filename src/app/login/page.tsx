@@ -1,17 +1,18 @@
 'use client'
 
-import { useUser } from '@/contexts/UserProvider'
-import { type UserType } from '@/types/backendDataTypes'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
+
 import PasswordInput from '@/components/PasswordInput'
+import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+import { type UserType } from '@/types/backendDataTypes'
 
 export default function Page (): ReactElement<any> {
 	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const router = useRouter()
-	const { setCurrentUser } = useUser()
+	const { refetchUser } = useUser()
 	const [formError, setFormError] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showPassword, setShowPassword] = useState(false)
@@ -30,13 +31,29 @@ export default function Page (): ReactElement<any> {
 	const isFormValid = formData.email.length > 0 && formData.password.length >= 4
 
 	const login = useCallback(async (credentials: any) => {
-		const response = await axios.post<{
+		await axios.post<{
 			auth: boolean
 			user: UserType
 		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
-		setCurrentUser(response.data.user)
-		router.push(`/users/${response.data.user._id}`)
-	}, [API_URL, router, setCurrentUser])
+		await refetchUser() // Refetch to update the user context
+
+		const canGoBack = () => {
+			try {
+				if (!document.referrer) { return false }
+				const referrerUrl = new URL(document.referrer)
+				return window.location.href !== document.referrer &&
+					   referrerUrl.origin === window.location.origin
+			} catch {
+				return false
+			}
+		}
+
+		if (canGoBack()) {
+			router.back()
+		} else {
+			router.push('/')
+		}
+	}, [API_URL, router, refetchUser])
 
 	useEffect(() => {
 		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })
@@ -60,9 +77,8 @@ export default function Page (): ReactElement<any> {
 				console.error(error)
 				setFormError('Invalid email or password')
 				setIsSubmitting(false)
-				setCurrentUser(null)
 			})
-	}, [login, setCurrentUser])
+	}, [login])
 
 	return (
 		<main className="container mx-auto max-w-md p-4">
