@@ -1,6 +1,8 @@
+/* eslint-disable n/no-unpublished-import, n/no-extraneous-import */
 import Editor, { type Monaco } from '@monaco-editor/react'
 import { shikiToMonaco } from '@shikijs/monaco'
 import type * as monaco from 'monaco-editor'
+/* eslint-enable n/no-unpublished-import, n/no-extraneous-import */
 import React, { useState, useEffect, useRef, ReactElement } from 'react'
 import { createHighlighter } from 'shiki'
 
