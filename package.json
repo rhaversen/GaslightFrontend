@@ -12,7 +12,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0-rc.0",
     "@tanstack/react-query": "^5.66.0",
-    "axios": "^1.9.0",
+    "axios": "^1.13.5",
     "framer-motion": "^12.0.6",
     "lodash": "^4.17.21",
     "next": "16.1.1",
@@ -40,7 +40,7 @@
     "@types/three": "^0.172.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "cspell": "^9.0.2",
-    "eslint": "^9.27.0",
+    "eslint": "^10.0.0",
     "eslint-config-next": "16.1.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
