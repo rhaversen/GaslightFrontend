@@ -58,7 +58,7 @@ export default function RootLayout ({
 }>): ReactElement<any> {
 	return (
 		<html lang="en">
-			<body className={inter.className}>
+			<body className={inter.className} suppressHydrationWarning>
 				<ClientProviders>
 					{children}
 				</ClientProviders>
