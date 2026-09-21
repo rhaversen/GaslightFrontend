@@ -1,24 +1,21 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import React, { useState, useEffect, type ReactElement } from 'react'
 
+import { gamesApi } from '@/api'
 import type { GameType } from '@/types/backendDataTypes'
 
 export default function GamesSection (): ReactElement {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const [games, setGames] = useState<GameType[]>([])
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		axios.get<GameType[]>(`${API_URL}/v1/games`)
-			.then(response => {
-				setGames(response.data)
-			})
+		gamesApi.list()
+			.then(setGames)
 			.catch(error => console.error('Error fetching games:', error))
-			.finally(() => setLoading(false))
-	}, [API_URL])
+			.finally(() => { setLoading(false) })
+	}, [])
 
 	return (
 		<div className="p-5 m-5 backdrop-blur-sm bg-white/10 rounded-lg sm:rounded-xl md:rounded-2xl sm:p-4 flex justify-between items-center shadow-lg">

@@ -1,13 +1,11 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
+import { gamesApi, submissionsApi, tournamentsApi } from '@/api'
 import { useUser } from '@/contexts/UserProvider'
 import { GameType } from '@/types/backendDataTypes'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export default function GamesPage () {
 	const [games, setGames] = useState<GameType[]>([])
@@ -25,8 +23,8 @@ export default function GamesPage () {
 	useEffect(() => {
 		const fetchGames = async () => {
 			try {
-				const response = await axios.get<GameType[]>(`${API_URL}/v1/games`)
-				setGames(response.data)
+				const games = await gamesApi.list()
+				setGames(games)
 			} catch (error) {
 				console.error('Error fetching games:', error)
 				setGames([])
@@ -41,26 +39,31 @@ export default function GamesPage () {
 	useEffect(() => {
 		if (!currentUser || games.length === 0) { return }
 		const fetchUserStats = async () => {
-			const stats: { [key: string]: any } = {}
+			const stats: {
+				[key: string]: {
+					submissionCount: number
+					activeStrategy?: string
+					activeStrategyId?: string
+					latestStanding?: { score: number; percentileRank: number }
+				}
+			} = {}
 			await Promise.all(games.map(async (game) => {
 				try {
-					const submissionsRes = await axios.get(`${API_URL}/v1/submissions`, {
-						params: { game: game._id, user: currentUser._id }
+					const subs = await submissionsApi.list({
+						game: game._id,
+						user: currentUser._id
 					})
-					const subs = submissionsRes.data
-					const latestTournRes = await axios.get(`${API_URL}/v1/tournaments`, {
-						params: {
-							game: game._id,
-							limit: 1,
-							getStandings: true,
-							userIdStanding: currentUser._id
-						}
+					const latestTournaments = await tournamentsApi.list({
+						game: game._id,
+						limit: 1,
+						getStandings: true,
+						userIdStanding: currentUser._id
 					})
-					const lastTourn = latestTournRes.data[0]
+					const lastTourn = latestTournaments[0]
 					stats[game._id] = {
 						submissionCount: subs.length,
-						activeStrategy: subs.find((s: any) => s.active)?.title,
-						activeStrategyId: subs.find((s: any) => s.active)?._id,
+						activeStrategy: subs.find(s => s.active)?.title,
+						activeStrategyId: subs.find(s => s.active)?._id,
 						latestStanding: lastTourn?.userStanding
 							? {
 								score: lastTourn.userStanding.score,
@@ -84,7 +87,7 @@ export default function GamesPage () {
 	return (
 		<main className="container mx-auto p-6">
 			<h1 className="text-4xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-				{'Available Games\r'}
+				{'Available Games'}
 			</h1>
 
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -146,7 +149,7 @@ export default function GamesPage () {
 
 			{games.length === 0 && (
 				<div className="text-center text-gray-600 mt-8">
-					{'No games available at the moment.\r'}
+					{'No games available at the moment.'}
 				</div>
 			)}
 		</main>

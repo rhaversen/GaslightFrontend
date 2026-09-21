@@ -1,11 +1,11 @@
 'use client'
 
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useCallback } from 'react'
 
+import { tournamentsApi } from '@/api'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
-import { TournamentType, GameType } from '@/types/backendDataTypes'
+import { type TournamentType, type GameType, type UserType } from '@/types/backendDataTypes'
 
 import { TournamentCard as RegularTournamentCard } from './TournamentCard'
 
@@ -28,12 +28,11 @@ const LazyTournamentCard = dynamic(
 )
 
 interface LatestTournamentsProps {
-	API_URL: string | undefined
-	currentUser: any
+	currentUser: UserType | null
 	games: GameType[]
 }
 
-export default function LatestTournaments ({ API_URL, currentUser, games }: LatestTournamentsProps) {
+export default function LatestTournaments ({ currentUser, games }: LatestTournamentsProps) {
 	const [tournaments, setTournaments] = useState<TournamentType[]>([])
 	const [loading, setLoading] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
@@ -47,22 +46,20 @@ export default function LatestTournaments ({ API_URL, currentUser, games }: Late
 				const gamesToFetch = games.slice(0, page * TOURNAMENTS_PER_PAGE)
 				const tournamentsResponses = await Promise.all(
 					gamesToFetch.map(game =>
-						axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-							params: {
-								game: game._id,
-								limit: 1, // Only one tournament per game
-								limitStandings: LATEST_STANDINGS,
-								sortFieldStandings: 'placement',
-								sortDirectionStandings: 'asc',
-								userIdStanding: currentUser?._id ?? null,
-								getStandings: true
-							}
+						tournamentsApi.list({
+							game: game._id,
+							limit: 1, // Only one tournament per game
+							limitStandings: LATEST_STANDINGS,
+							sortFieldStandings: 'placement',
+							sortDirectionStandings: 'asc',
+							userIdStanding: currentUser?._id,
+							getStandings: true
 						})
 					)
 				)
 				// Extract the first tournament from each response if available
 				const newTournaments = tournamentsResponses
-					.map(response => response.data[0])
+					.map(response => response[0])
 					.filter((t): t is TournamentType => t !== null && t !== undefined)
 				// Avoid duplicates: only append tournaments that haven't been loaded yet
 				setTournaments(prev => {
@@ -80,9 +77,9 @@ export default function LatestTournaments ({ API_URL, currentUser, games }: Late
 		}
 
 		if (games.length > 0) {
-			fetchTournaments()
+			void fetchTournaments()
 		}
-	}, [API_URL, currentUser?._id, games, page])
+	}, [currentUser?._id, games, page])
 
 	const loadMore = useCallback(() => {
 		setPage(prev => prev + 1)

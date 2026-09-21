@@ -1,9 +1,9 @@
 'use client'
 
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
 
+import { usersApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import PasswordInput from '@/components/PasswordInput'
 import { useUser } from '@/contexts/UserProvider'
@@ -11,9 +11,7 @@ import { formatDate } from '@/lib/dateUtils'
 import { SettingsIcon, VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
 import { type UserType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [userData, setUserData] = useState<UserType | null>(null)
@@ -37,12 +35,9 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 		setIsLoading(true)
 		const fetchUser = async (): Promise<void> => {
 			try {
-				const response = await axios.get<UserType>(
-					`${API_URL}/v1/users/${params.userId}`,
-					{ withCredentials: true }
-				)
-				setUserData(response.data)
-				setUsername(response.data.username ?? 'Unknown User')
+				const user = await usersApi.get(params.userId)
+				setUserData(user)
+				setUsername(user.username ?? 'Unknown User')
 			} catch (error) {
 				console.error('Error fetching user:', error)
 			} finally {
@@ -76,7 +71,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 		setSuccess('')
 
 		try {
-			const updateData: Record<string, string> = {}
+			const updateData: { username?: string, password?: string, confirmPassword?: string } = {}
 
 			if (field === 'username' && (formData.username.length > 0)) {
 				updateData.username = formData.username
@@ -89,13 +84,9 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 				updateData.confirmPassword = formData.confirmPassword
 			}
 
-			const response = await axios.patch<UserType>(
-				`${API_URL}/v1/users/${params.userId}`,
-				updateData,
-				{ withCredentials: true }
-			)
+			const updated = await usersApi.update(params.userId, updateData)
 
-			setUserData(response.data)
+			setUserData(updated)
 			setSuccess(`${field === 'username' ? 'Username' : 'Password'} updated successfully!`)
 			if (field === 'username') {
 				setIsEditingUsername(false)
@@ -246,7 +237,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 														className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors
 																${(passwordsMatch ?? false) ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-300 cursor-not-allowed'}`}
 													>
-														{'Update Password\r'}
+														{'Update Password'}
 													</button>
 													<button
 														onClick={() => {
@@ -256,7 +247,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 														}}
 														className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
 													>
-														{'Cancel\r'}
+														{'Cancel'}
 													</button>
 												</div>
 											</div>
@@ -267,7 +258,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 												className="flex items-center gap-2 text-blue-500 hover:text-blue-600 font-medium"
 											>
 												<SettingsIcon />
-												{'Change Password\r'}
+												{'Change Password'}
 											</button>
 										)}
 								</div>

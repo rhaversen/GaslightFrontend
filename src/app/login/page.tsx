@@ -1,16 +1,14 @@
 'use client'
 
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
 
+import { authApi } from '@/api'
 import PasswordInput from '@/components/PasswordInput'
 import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
-import { type UserType } from '@/types/backendDataTypes'
 
-export default function Page (): ReactElement<any> {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
+export default function Page (): ReactElement {
 	const router = useRouter()
 	const { refetchUser } = useUser()
 	const [formError, setFormError] = useState('')
@@ -30,11 +28,12 @@ export default function Page (): ReactElement<any> {
 
 	const isFormValid = formData.email.length > 0 && formData.password.length >= 4
 
-	const login = useCallback(async (credentials: any) => {
-		await axios.post<{
-			auth: boolean
-			user: UserType
-		}>(`${API_URL}/v1/auth/login-user-local`, credentials, { withCredentials: true })
+	const login = useCallback(async (credentials: {
+		email: string
+		password: string
+		stayLoggedIn: boolean
+	}) => {
+		await authApi.login(credentials)
 		await refetchUser() // Refetch to update the user context
 
 		const canGoBack = () => {
@@ -53,13 +52,13 @@ export default function Page (): ReactElement<any> {
 		} else {
 			router.push('/')
 		}
-	}, [API_URL, router, refetchUser])
+	}, [router, refetchUser])
 
 	useEffect(() => {
-		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })
+		authApi.me()
 			.then(() => { router.push('/') })
 			.catch(() => { /* Do nothing */ })
-	}, [API_URL, router])
+	}, [router])
 
 	const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault() // Prevent default form submission
@@ -68,8 +67,8 @@ export default function Page (): ReactElement<any> {
 
 		const formData = new FormData(event.currentTarget)
 		const credentials = {
-			email: formData.get('email'),
-			password: formData.get('password'),
+			email: String(formData.get('email') ?? ''),
+			password: String(formData.get('password') ?? ''),
 			stayLoggedIn: formData.get('stayLoggedIn') === 'on' // Convert on to boolean
 		}
 		login(credentials)
@@ -155,7 +154,7 @@ export default function Page (): ReactElement<any> {
 					{'Don\'t have an account?'}{' '}
 					<button type="button" onClick={() => { router.push('/signup') }}
 						className="font-medium text-indigo-600 hover:text-indigo-900">
-						{'Sign up\r'}
+						{'Sign up'}
 					</button>
 				</p>
 				<button type="button" onClick={() => { router.push('/') }}

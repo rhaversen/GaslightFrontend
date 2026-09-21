@@ -9,7 +9,7 @@ const EvaluationResults = ({
 	strategy
 }: {
 	strategy: SubmissionType
-}): ReactElement<any> | null => {
+}): ReactElement | null => {
 	if (strategy?.evaluation === undefined) { return null }
 
 	const LOADING_TIME_LIMIT = 100 // ms
@@ -64,7 +64,7 @@ const EvaluationResults = ({
 								<div className="flex items-center justify-between">
 									<span className="text-sm text-gray-600">{'Loading Time Limit ('}{LOADING_TIME_LIMIT}{'ms)'}</span>
 									<span className={`text-sm font-medium ${strategy.evaluation.loadingTimeExceeded ? 'text-red-600' : 'text-green-600'}`}>
-										{strategy.evaluation.strategyLoadingTimings.toFixed(2)}{'ms\r'}
+										{strategy.evaluation.strategyLoadingTimings.toFixed(2)}{'ms'}
 									</span>
 								</div>
 								<div className="h-2 bg-gray-200 rounded-full mt-1">
@@ -79,7 +79,7 @@ const EvaluationResults = ({
 								<div className="flex items-center justify-between">
 									<span className="text-sm text-gray-600">{'Execution Time Limit ('}{EXECUTION_TIME_LIMIT}{'ms)'}</span>
 									<span className={`text-sm font-medium ${strategy.evaluation.executionTimeExceeded ? 'text-red-600' : 'text-green-600'}`}>
-										{strategy.evaluation.averageExecutionTime.toFixed(3)}{'ms avg\r'}
+										{strategy.evaluation.averageExecutionTime.toFixed(3)}{'ms avg'}
 									</span>
 								</div>
 								<div className="h-2 bg-gray-200 rounded-full mt-1">

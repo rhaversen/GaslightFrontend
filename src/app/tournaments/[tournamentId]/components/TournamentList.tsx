@@ -1,15 +1,14 @@
 'use client'
 
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 
+import { tournamentsApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 import { formatDate } from '@/lib/dateUtils'
 import { TournamentType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
 const ITEMS_PER_PAGE = 30
 
 export function TournamentList ({ selectedId }: { selectedId: string }) {
@@ -71,20 +70,18 @@ export function TournamentList ({ selectedId }: { selectedId: string }) {
 
 	useEffect(() => {
 		setLoading(true)
-		axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-			params: {
-				limit: ITEMS_PER_PAGE,
-				skip: (page - 1) * ITEMS_PER_PAGE,
-				getStandings: false
-			}
+		tournamentsApi.list({
+			limit: ITEMS_PER_PAGE,
+			skip: (page - 1) * ITEMS_PER_PAGE,
+			getStandings: false
 		})
-			.then(response => {
+			.then(tournamentsData => {
 				setTournaments(prev =>
-					page === 1 ? response.data : [...prev, ...response.data]
+					page === 1 ? tournamentsData : [...prev, ...tournamentsData]
 				)
-				setHasMore(response.data.length === ITEMS_PER_PAGE)
+				setHasMore(tournamentsData.length === ITEMS_PER_PAGE)
 			})
-			.catch(error => console.error('Error fetching tournaments:', error))
+			.catch((error: unknown) => console.error('Error fetching tournaments:', error))
 			.finally(() => setLoading(false))
 	}, [page])
 
@@ -193,7 +190,7 @@ export function TournamentList ({ selectedId }: { selectedId: string }) {
 												{formatDate(new Date(tournament.createdAt))}
 											</div>
 											<div className="text-gray-400 text-sm">
-												{tournament.submissionCount} {'participants\r'}
+												{tournament.submissionCount} {'participants'}
 											</div>
 										</>
 									)}

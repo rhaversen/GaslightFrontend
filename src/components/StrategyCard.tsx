@@ -20,7 +20,7 @@ export function StrategyCard ({
 	onDelete,
 	activeStrategyId,
 	onEvaluate
-}: Props): ReactElement<any> {
+}: Props): ReactElement {
 	const [isEvaluating, setIsEvaluating] = useState(false)
 	const evaluationTime = strategy.evaluation?.updatedAt ?? strategy.evaluation?.createdAt
 
@@ -33,7 +33,7 @@ export function StrategyCard ({
 		}
 	}
 
-	const StrategyContent = (): ReactElement<any> => (
+	const strategyContent = (
 		<>
 			<div className="flex justify-between items-center">
 				<h3 className="text-lg md:text-xl font-semibold text-gray-800">{strategy.title}</h3>
@@ -42,7 +42,7 @@ export function StrategyCard ({
 						href={`/strategies/${strategy._id}`}
 						className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-sm"
 					>
-						{'View Details\r'}
+						{'View Details'}
 					</Link>
 					{isOwnProfile && (
 						<>
@@ -50,7 +50,7 @@ export function StrategyCard ({
 								href={`/strategies/${strategy._id}/edit`}
 								className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-sm"
 							>
-								{'Modify\r'}
+								{'Modify'}
 							</Link>
 							<button
 								type='button'
@@ -107,7 +107,7 @@ export function StrategyCard ({
 					</span>
 					{!isOwnProfile && strategy.active && (
 						<div className="px-3 py-1 rounded-full text-xs sm:text-sm bg-blue-100 text-blue-800">
-							{'Active\r'}
+							{'Active'}
 						</div>
 					)}
 					{strategy.evaluation?.results != null && (
@@ -158,7 +158,7 @@ export function StrategyCard ({
 		<div className="flex flex-col border border-gray-200 rounded-xl bg-white">
 			<div className="flex flex-col lg:flex-row">
 				<div className="flex-1 p-6">
-					<StrategyContent />
+					{strategyContent}
 				</div>
 				{isOwnProfile && (
 					<div className="flex gap-4 px-4 py-3 lg:w-1/5 border-t lg:border-t-0 lg:border-l border-gray-200 rounded-b-xl lg:rounded-bl-none lg:rounded-r-xl">

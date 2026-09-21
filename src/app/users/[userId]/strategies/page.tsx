@@ -1,17 +1,15 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
 
+import { submissionsApi, usersApi, gamesApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { StrategyCard } from '@/components/StrategyCard'
 import { useUser } from '@/contexts/UserProvider'
-import { type UserType, type SubmissionType, type GameType } from '@/types/backendDataTypes'
+import { type SubmissionType, type GameType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ userId: string }> }): ReactElement {
 	const params = use(props.params)
 	const { currentUser } = useUser()
 	const [strategies, setStrategies] = useState<SubmissionType[]>([])
@@ -27,29 +25,22 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
 			try {
-				const [strategiesResponse, userResponse, gamesResponse] = await Promise.all([
-					axios.get<SubmissionType[]>(`${API_URL}/v1/submissions`, {
-						params: { user: params.userId },
-						withCredentials: true
-					}),
-					axios.get<UserType>(`${API_URL}/v1/users/${params.userId}`, {
-						withCredentials: true
-					}),
-					axios.get<GameType[]>(`${API_URL}/v1/games`, {
-						withCredentials: true
-					})
+				const [strategiesData, userData, gamesData] = await Promise.all([
+					submissionsApi.list({ user: params.userId }),
+					usersApi.get(params.userId),
+					gamesApi.list()
 				])
 
-				setStrategies(strategiesResponse.data)
-				setUsername(userResponse.data.username ?? 'Unknown User')
-				setGames(gamesResponse.data)
-				if (gamesResponse.data.length > 0) {
-					setSelectedGame(gamesResponse.data[0])
+				setStrategies(strategiesData)
+				setUsername(userData.username ?? 'Unknown User')
+				setGames(gamesData)
+				if (gamesData.length > 0) {
+					setSelectedGame(gamesData[0])
 				}
 
 				// Compute active strategies per game
 				const activeMap: { [gameId: string]: string | null } = {}
-				for (const strat of strategiesResponse.data) {
+				for (const strat of strategiesData) {
 					if (strat.active && !activeMap.hasOwnProperty(strat.game)) {
 						activeMap[strat.game] = strat._id
 					}
@@ -98,11 +89,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 		}))
 
 		try {
-			await axios.patch<SubmissionType>(
-				`${API_URL}/v1/submissions/${strategyId}`,
-				{ active },
-				{ withCredentials: true }
-			)
+			await submissionsApi.update(strategyId, { active })
 		} catch (error) {
 			console.error('Error toggling active status:', error)
 			// Revert to previous state on error
@@ -127,9 +114,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 		}
 
 		try {
-			await axios.delete(`${API_URL}/v1/submissions/${strategy._id}`, {
-				withCredentials: true
-			})
+			await submissionsApi.delete(strategy._id)
 			setStrategies(prev => prev.filter(s => s._id !== strategy._id))
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
@@ -138,11 +123,7 @@ export default function Page (props: { params: Promise<{ userId: string }> }): R
 
 	const handleEvaluate = async (strategyId: string): Promise<void> => {
 		try {
-			const { data: updatedStrategy } = await axios.post<SubmissionType>(
-				`${API_URL}/v1/submissions/${strategyId}/evaluate`,
-				{},
-				{ withCredentials: true }
-			)
+			const updatedStrategy = await submissionsApi.evaluate(strategyId)
 			setStrategies(prev => prev.map(strategy =>
 				strategy._id === strategyId ? updatedStrategy : strategy
 			))

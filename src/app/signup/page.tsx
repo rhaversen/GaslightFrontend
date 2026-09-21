@@ -1,17 +1,15 @@
 'use client'
 
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
 
+import { ApiError, authApi } from '@/api'
 import PasswordInput from '@/components/PasswordInput'
 import { useError } from '@/contexts/ErrorContext/ErrorContext'
 import { useUser } from '@/contexts/UserProvider'
 import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
-import { type UserType } from '@/types/backendDataTypes'
 
-export default function Page (): ReactElement<any> {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
+export default function Page (): ReactElement {
 	const router = useRouter()
 	const { addError } = useError()
 	const { refetchUser } = useUser()
@@ -26,32 +24,33 @@ export default function Page (): ReactElement<any> {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean | null>(null)
 	const isFormValid = formData.email.length > 0 && formData.password.length >= 4 && (passwordsMatch ?? false)
 
-	const signup = useCallback(async (userData: any) => {
+const signup = useCallback(async (userData: {
+		email: string
+		password: string
+		confirmPassword: string
+	}) => {
 		try {
-			const response = await axios.post<{
-				auth: boolean
-				user: UserType
-			}>(`${API_URL}/v1/users`, {
+			const { user } = await authApi.signup({
 				email: userData.email,
 				password: userData.password,
 				confirmPassword: userData.confirmPassword
-			}, { withCredentials: true })
+			})
 			await refetchUser()
-			router.push(`/users/${response.data.user._id}`)
-		} catch (error: any) {
-			if (error.response?.status === 401) {
+			router.push(`/users/${user._id}`)
+		} catch (error: unknown) {
+			if (error instanceof ApiError && error.status === 401) {
 				setFormError('User already exists but the password is incorrect')
 				return
 			}
 			addError(error)
 		}
-	}, [API_URL, addError, router, refetchUser])
+	}, [addError, router, refetchUser])
 
 	useEffect(() => {
-		axios.get(`${API_URL}/v1/auth/is-authenticated`, { withCredentials: true })
+		authApi.me()
 			.then(() => { router.push('/') })
 			.catch(() => { /* Do nothing */ })
-	}, [API_URL, router])
+	}, [router])
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const newFormData = {
@@ -186,7 +185,7 @@ export default function Page (): ReactElement<any> {
 					{'Already have an account?'}{' '}
 					<button type="button" onClick={() => { router.push('/login') }}
 						className="font-medium text-indigo-600 hover:text-indigo-900">
-						{'Log in\r'}
+						{'Log in'}
 					</button>
 				</p>
 				<button type="button" onClick={() => { router.push('/') }}

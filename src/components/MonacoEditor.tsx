@@ -89,10 +89,10 @@ const MonacoEditor = ({
 	value?: string
 	apiTypes: string
 	height?: string
-	onChange?: (value: string | undefined, event: any) => void
+	onChange?: (value: string | undefined, event: unknown) => void
 	onToggleMaximize?: () => void
 	isMaximized?: boolean
-}): ReactElement<any> => {
+}): ReactElement => {
 	const monacoRef = useRef<Monaco | null>(null)
 	const extraLibDisposableRef = useRef<monaco.IDisposable | null>(null)
 	const [theme, setTheme] = useState<typeof MONACO_THEMES[number]['value']>('github-dark')
@@ -322,7 +322,7 @@ const MonacoEditor = ({
 				}}>
 					<div className="text-sm font-semibold flex justify-center py-1"
 						style={{ color: highContrast }}>
-						{'Your Strategy Code\r'}
+						{'Your Strategy Code'}
 					</div>
 					<div style={{ height: 'calc(100% - 28px)' }}>
 						<Editor
@@ -375,7 +375,7 @@ const MonacoEditor = ({
 							<div className="text-sm font-semibold flex justify-between px-4 py-1"
 								style={{ color: highContrast }}>
 								<div className="w-4" /> {/* Spacer to help center the text */}
-								<span className="flex-grow text-center">{'API Documentation\r'}</span>
+								<span className="flex-grow text-center">{'API Documentation'}</span>
 								{!isSmallScreen && (
 									<button
 										type="button"

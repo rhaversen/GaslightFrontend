@@ -1,15 +1,13 @@
 'use client'
-import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect, ReactElement, use } from 'react'
 
+import { gamesApi, submissionsApi } from '@/api'
 import { useUser } from '@/contexts/UserProvider'
 import { SubmissionType, GameType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-export default function StrategyPage (props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
+export default function StrategyPage (props: { params: Promise<{ strategyId: string }> }): ReactElement {
 	const { strategyId } = use(props.params)
 	const { currentUser } = useUser()
 	const router = useRouter()
@@ -22,14 +20,10 @@ export default function StrategyPage (props: { params: Promise<{ strategyId: str
 		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
 			try {
-				const { data: submissionData } = await axios.get<SubmissionType>(`${API_URL}/v1/submissions/${strategyId}`, {
-					withCredentials: true
-				})
+				const submissionData = await submissionsApi.get(strategyId)
 				setSubmission(submissionData)
 
-				const { data: gameData } = await axios.get<GameType>(`${API_URL}/v1/games/${submissionData.game}`, {
-					withCredentials: true
-				})
+				const gameData = await gamesApi.get(submissionData.game)
 				setGame(gameData)
 			} catch (err) {
 				console.error('Error fetching strategy details:', err)
@@ -64,7 +58,7 @@ export default function StrategyPage (props: { params: Promise<{ strategyId: str
 						href={`/strategies/${strategyId}/edit`}
 						className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
 					>
-						{'Modify\r'}
+						{'Modify'}
 					</Link>
 				)}
 			</div>
@@ -78,7 +72,7 @@ export default function StrategyPage (props: { params: Promise<{ strategyId: str
 			{/* Navigation button */}
 			<div>
 				<button onClick={() => router.back()} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-					{'Back\r'}
+					{'Back'}
 				</button>
 			</div>
 		</main>

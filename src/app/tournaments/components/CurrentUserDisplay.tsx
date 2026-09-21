@@ -50,14 +50,14 @@ export function CurrentUserDisplay ({
 			) : (
 				isLoggedIn ? (
 					<div className="text-gray-400 text-sm">
-						{'You have not submitted to this tournament.\r'}
+						{'You have not submitted to this tournament.'}
 					</div>
 				) : (
 					<div className="text-gray-400 text-sm">
 						<Link href="/login" className="text-sky-400 hover:text-sky-300 transition-colors">
 							{'Login'}
 						</Link>
-						{' to view your position.\r'}
+						{' to view your position.'}
 					</div>
 				)
 			)}

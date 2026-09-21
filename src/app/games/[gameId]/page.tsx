@@ -1,19 +1,17 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
+import { gamesApi, submissionsApi, tournamentsApi } from '@/api'
 import SubmissionsGraph from '@/components/SubmissionsGraph'
 import { useUser } from '@/contexts/UserProvider'
 import { GameType, TournamentType, SubmissionType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
 export default function GamePage () {
 	const params = useParams()
-	const gameId = params.gameId
+	const gameId = typeof params.gameId === 'string' ? params.gameId : ''
 	const { currentUser } = useUser()
 	const [game, setGame] = useState<GameType | null>(null)
 	const [latestTournament, setLatestTournament] = useState<TournamentType | null>(null)
@@ -39,63 +37,47 @@ export default function GamePage () {
 					tournamentsCountResponse,
 					tournamentsGraphResponse
 				] = await Promise.all([
-					axios.get<GameType>(`${API_URL}/v1/games/${gameId}`),
-					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-						params: {
-							game: gameId,
-							limit: 1,
-							skip: 0,
-							getStandings: true,
-							limitStandings: 10,
-							sortFieldStandings: 'score',
-							sortDirectionStandings: 'desc',
-							userIdStanding: currentUser?._id
-						}
+					gamesApi.get(gameId),
+					tournamentsApi.list({
+						game: gameId,
+						limit: 1,
+						skip: 0,
+						getStandings: true,
+						limitStandings: 10,
+						sortFieldStandings: 'score',
+						sortDirectionStandings: 'desc',
+						userIdStanding: currentUser?._id
 					}),
-					axios.get<SubmissionType[]>(`${API_URL}/v1/submissions`, {
-						params: {
-							active: true,
-							game: gameId
-						}
+					submissionsApi.list({
+						active: true,
+						game: gameId
 					}),
-					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-						params: {
-							game: gameId
-						}
-					}),
-					axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-						params: {
-							game: gameId,
-							getStandings: Boolean(currentUser),
-							userIdStanding: currentUser?._id
-						}
+					tournamentsApi.list({ game: gameId }),
+					tournamentsApi.list({
+						game: gameId,
+						getStandings: Boolean(currentUser),
+						userIdStanding: currentUser?._id
 					})
 				])
 
-				setGame(gameResponse.data)
-				setLatestTournament(tournamentResponse.data.length > 0 ? tournamentResponse.data[0] : null)
+				setGame(gameResponse)
+				setLatestTournament(tournamentResponse.length > 0 ? tournamentResponse[0] : null)
 				setGameStats({
-					totalSubmissions: submissionsCountResponse.data.length,
-					totalTournaments: tournamentsCountResponse.data.length
+					totalSubmissions: submissionsCountResponse.length,
+					totalTournaments: tournamentsCountResponse.length
 				})
-				setTournamentsGraph(tournamentsGraphResponse.data)
+				setTournamentsGraph(tournamentsGraphResponse)
 
 				if (currentUser) {
-					const userSubmissionsResponse = await axios.get<SubmissionType[]>(
-						`${API_URL}/v1/submissions`,
-						{
-							params: {
-								game: gameId,
-								user: currentUser._id,
-								maxAmount: 100
-							},
-							withCredentials: true
-						}
-					)
+					const userSubmissions = await submissionsApi.list({
+						game: gameId,
+						user: currentUser._id,
+						maxAmount: 100
+					})
 
 					setUserStats({
-						submissionCount: userSubmissionsResponse.data.length,
-						activeStrategy: userSubmissionsResponse.data.find(sub => sub.active) || null
+						submissionCount: userSubmissions.length,
+						activeStrategy: userSubmissions.find(sub => sub.active) || null
 					})
 				}
 			} catch (err) {

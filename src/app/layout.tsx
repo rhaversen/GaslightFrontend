@@ -55,7 +55,7 @@ export default function RootLayout ({
 	children
 }: Readonly<{
 	children: React.ReactNode
-}>): ReactElement<any> {
+}>): ReactElement {
 	return (
 		<html lang="en">
 			<body className={inter.className} suppressHydrationWarning>

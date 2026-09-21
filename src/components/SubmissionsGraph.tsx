@@ -244,13 +244,13 @@ const SubmissionsGraph: React.FC<Props> = ({ tournaments, showUserStanding }) =>
 							<g transform={`translate(${padding + 10}, 20)`}>
 								<line x1="0" y1="0" x2="20" y2="0" className="stroke-blue-500 stroke-2" />
 								<text x="25" y="0" alignmentBaseline="middle" className="text-xs fill-gray-600">
-									{'Submissions\r'}
+									{'Submissions'}
 								</text>
 								{showUserStanding === true && (
 									<g transform="translate(100, 0)">
 										<line x1="0" y1="0" x2="20" y2="0" className="stroke-emerald-500 stroke-2" />
 										<text x="25" y="0" alignmentBaseline="middle" className="text-xs fill-gray-600">
-											{'Your Standing\r'}
+											{'Your Standing'}
 										</text>
 									</g>
 								)}

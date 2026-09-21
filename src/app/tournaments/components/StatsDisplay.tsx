@@ -1,6 +1,6 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 
+import { tournamentsApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { TournamentStatistics } from '@/types/backendDataTypes'
 
@@ -15,7 +15,6 @@ export const StatsDisplay = ({
 }) => {
 	const [statistics, setStatistics] = useState<TournamentStatistics | null>(passedStatistics || null)
 	const [loading, setLoading] = useState(passedStatistics ?? false)
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 	useEffect(() => {
 		if (passedStatistics) {
@@ -26,8 +25,8 @@ export const StatsDisplay = ({
 
 		const fetchStatistics = async () => {
 			try {
-				const response = await axios.get<TournamentStatistics>(`${API_URL}/v1/tournaments/${tournamentId}/statistics`)
-				setStatistics(response.data)
+				const stats = await tournamentsApi.statistics(tournamentId)
+				setStatistics(stats)
 			} catch (error) {
 				console.error('Error fetching tournament statistics:', error)
 			} finally {
@@ -36,7 +35,7 @@ export const StatsDisplay = ({
 		}
 
 		fetchStatistics()
-	}, [tournamentId, API_URL, passedStatistics])
+	}, [tournamentId, passedStatistics])
 
 	if (loading === true || statistics === null) {
 		return (

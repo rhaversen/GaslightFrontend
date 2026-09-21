@@ -1,7 +1,5 @@
 import { type Metadata } from 'next'
 
-import Header from '@/components/Header'
-
 export const metadata: Metadata = {
 	title: {
 		template: '%s | Gaslight',
@@ -19,7 +17,6 @@ export default function UserLayout ({
 }>): React.JSX.Element {
 	return (
 		<>
-			<Header/>
 			{children}
 		</>
 	)

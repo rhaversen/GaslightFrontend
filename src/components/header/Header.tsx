@@ -7,7 +7,7 @@ import { useLogout } from '@/hooks/useLogout'
 
 import Button from './Button'
 
-const Header = (): ReactElement<any> => {
+const Header = (): ReactElement => {
 	const { currentUser } = useUser()
 	const [mounted, setMounted] = useState(false)
 	const { logout } = useLogout()

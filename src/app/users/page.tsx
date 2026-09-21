@@ -1,36 +1,24 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import React, { type ReactElement, useEffect, useState } from 'react'
 
+import { usersApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { useUser } from '@/contexts/UserProvider'
 import { formatDate } from '@/lib/dateUtils'
 import { type UserType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-export default function Page (): ReactElement<any> {
+export default function Page (): ReactElement {
 	const { currentUser } = useUser()
 	const [users, setUsers] = useState<UserType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		const fetchUsers = async (): Promise<void> => {
-			try {
-				const response = await axios.get<UserType[]>(
-					`${API_URL}/v1/users`,
-					{ withCredentials: true }
-				)
-				setUsers(response.data)
-			} catch (error) {
-				console.error('Error fetching users:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-		void fetchUsers()
+		usersApi.list()
+			.then(setUsers)
+			.catch(error => { console.error('Error fetching users:', error) })
+			.finally(() => { setIsLoading(false) })
 	}, [])
 
 	if (isLoading) {
@@ -46,7 +34,7 @@ export default function Page (): ReactElement<any> {
 	return (
 		<main className="container mx-auto max-w-4xl p-2">
 			<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center m-8 pb-2">
-				{'Users\r'}
+				{'Users'}
 			</h1>
 			<div className="grid gap-4">
 				{users.map((user) => (

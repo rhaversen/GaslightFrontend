@@ -1,10 +1,10 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState, useRef, type ReactElement } from 'react'
 
+import { usersApi } from '@/api'
 import GamesSection from '@/components/GamesSection'
 import Header from '@/components/header/Header'
 import { useUser } from '@/contexts/UserProvider'
@@ -91,24 +91,23 @@ const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean 
 	)
 }
 
-export default function Page (): ReactElement<any> {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
+export default function Page (): ReactElement {
 	const router = useRouter()
 	const { currentUser } = useUser()
-	const userDataPromiseRef = useRef<Promise<any> | null>(null)
+	const userDataPromiseRef = useRef<Promise<UserType | null> | null>(null)
 	const gamesSectionRef = useRef<HTMLDivElement>(null)
 	const tournamentInProgress = false // TODO: fetch from backend
 
 	// Start loading data on mount if user exists
 	useEffect(() => {
 		if ((currentUser?._id) != null) {
-			userDataPromiseRef.current = axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
-				.catch(err => {
+			userDataPromiseRef.current = usersApi.get(currentUser._id)
+				.catch((err: unknown) => {
 					console.error('Failed to fetch user data:', err)
 					return null
 				})
 		}
-	}, [currentUser, API_URL])
+	}, [currentUser])
 
 	const handleAmbiguousClick = async (): Promise<void> => {
 		// If user is not logged in, redirect to signup page
@@ -118,18 +117,18 @@ export default function Page (): ReactElement<any> {
 		}
 
 		try {
-			let userData
+			let userData: UserType | null = null
 			if (userDataPromiseRef.current != null) {
 				userData = await userDataPromiseRef.current
 			} else if (currentUser._id !== '') {
-				userData = await axios.get<UserType>(`${API_URL}/v1/users/${currentUser._id}`)
+				userData = await usersApi.get(currentUser._id)
 			}
 
-			if (userData?.data == null) {
+			if (userData == null) {
 				throw new Error('No user data available')
 			}
 
-			if (userData.data.submissionCount > 0) {
+			if (userData.submissionCount > 0) {
 				router.push(`/users/${currentUser._id}/strategies`)
 			} else {
 				router.push('/strategies/new')
@@ -143,7 +142,7 @@ export default function Page (): ReactElement<any> {
 		gamesSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
 	}
 
-	const TournamentButton = (): ReactElement => (
+	const tournamentButton = (
 		<button
 			className="bg-gradient-to-r from-blue-500/80 to-purple-500/80 px-10 py-4 rounded-xl
                 text-white text-xl font-medium tracking-wide transform transition-all duration-300
@@ -152,23 +151,23 @@ export default function Page (): ReactElement<any> {
 			onClick={() => { void handleAmbiguousClick() }}
 			type='button'
 		>
-			{'JOIN TOURNAMENT\r'}
+			{'JOIN TOURNAMENT'}
 		</button>
 	)
 
-	const ResultsLink = (): ReactElement => (
+	const resultsLink = (
 		<Link
 			href="/tournaments"
 			className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300
                 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
 		>
 			<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
-				{'SHOW LAST TOURNAMENT RESULTS\r'}
+				{'SHOW LAST TOURNAMENT RESULTS'}
 			</div>
 		</Link>
 	)
 
-	const GamesScrollButton = (): ReactElement => (
+	const gamesScrollButton = (
 		<button
 			className="backdrop-blur-md bg-black/60 m-1 sm:m-2 rounded-full transition duration-300
             hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black px-4 py-3 flex items-center"
@@ -190,10 +189,10 @@ export default function Page (): ReactElement<any> {
 					<Header />
 					<div className="text-center flex flex-col items-center gap-8 flex-grow justify-center">
 						<TimerSection tournamentInProgress={tournamentInProgress} />
-						<TournamentButton />
-						<ResultsLink />
+						{tournamentButton}
+						{resultsLink}
 					</div>
-					<GamesScrollButton />
+					{gamesScrollButton}
 				</main>
 				<div ref={gamesSectionRef} className="relative">
 					<GamesSection />
