@@ -252,14 +252,14 @@ export default function Page (props: { params: Promise<{ tournamentId: string }>
 											<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
 										</div>
 										<Link
-											href={`/users/${standing.user}`}
+											href={`/explore?focus=user/${standing.user}`}
 											className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.userName}
 										>
 											{standing.userName}
 										</Link>
 										<Link
-											href={`/strategies/${standing.submission}`}
+											href={`/explore?focus=strategy/${standing.submission}`}
 											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.submissionName}
 										>

@@ -11,12 +11,12 @@ export default async function sitemap (): Promise<MetadataRoute.Sitemap> {
 		])
 
 		const userUrls = users.map(user => ({
-			url: `https://www.gaslight.fun/users/${user._id}`,
+			url: `https://www.gaslight.fun/explore?focus=user/${user._id}`,
 			lastModified: new Date(user.updatedAt)
 		}))
 
 		const userStrategyUrls = users.map(user => ({
-			url: `https://www.gaslight.fun/users/${user._id}/strategies`,
+			url: `https://www.gaslight.fun/explore?focus=user/${user._id}`,
 			lastModified: new Date(user.updatedAt)
 		}))
 
@@ -26,7 +26,7 @@ export default async function sitemap (): Promise<MetadataRoute.Sitemap> {
 		}))
 
 		const strategyUrls = strategies.map(strategy => ({
-			url: `https://www.gaslight.fun/strategies/${strategy._id}`,
+			url: `https://www.gaslight.fun/explore?focus=strategy/${strategy._id}`,
 			lastModified: new Date(strategy.updatedAt)
 		}))
 
@@ -52,7 +52,7 @@ export default async function sitemap (): Promise<MetadataRoute.Sitemap> {
 				lastModified: new Date()
 			},
 			{
-				url: 'https://www.gaslight.fun/users',
+				url: 'https://www.gaslight.fun/explore',
 				lastModified: new Date()
 			}
 		]

@@ -27,7 +27,7 @@ export default function GamesSection (): ReactElement {
 						<Link
 							key={game._id}
 							className="w-72 h-72 flex flex-row border-2 m-2 rounded-3xl border-white transition duration-300 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-105"
-							href={`/games/${game._id}`}
+							href={`/explore?focus=game/${game._id}`}
 						>
 							<div className="flex flex-col gap-4 p-5">
 								<h3 className="text-2xl font-bold text-center">{game.name}</h3>

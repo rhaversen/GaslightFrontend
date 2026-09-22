@@ -1,167 +1,149 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, type ReactElement, useEffect, useState } from 'react'
 
 import { authApi } from '@/api'
-import PasswordInput from '@/components/PasswordInput'
 import { useUser } from '@/contexts/UserProvider'
-import { VisibilityOffIcon, VisibilityIcon } from '@/lib/icons'
+
+// Unified auth page in the Facture AuthForm style: centered single card,
+// login/register tabs, token-scale styling. Already-authenticated visitors
+// are bounced to the app.
+
+const inputClass = 'w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent'
+const labelClass = 'block text-xs font-medium text-muted'
+
+function tabClass (active: boolean): string {
+	return `px-3 py-1 rounded-lg ${active ? 'bg-surface-2 text-foreground' : 'text-muted hover:text-foreground'}`
+}
 
 export default function Page (): ReactElement {
+	return (
+		<Suspense fallback={<div className="min-h-screen" />}>
+			<AuthPage />
+		</Suspense>
+	)
+}
+
+function AuthPage (): ReactElement {
 	const router = useRouter()
+	const searchParams = useSearchParams()
 	const { refetchUser } = useUser()
-	const [formError, setFormError] = useState('')
-	const [isSubmitting, setIsSubmitting] = useState(false)
-	const [showPassword, setShowPassword] = useState(false)
-	const [formData, setFormData] = useState({
-		email: '',
-		password: ''
-	})
+	const [mode, setMode] = useState<'login' | 'register'>(searchParams.get('mode') === 'register' ? 'register' : 'login')
+	const [email, setEmail] = useState('')
+	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
+	const [error, setError] = useState<string | null>(null)
+	const [busy, setBusy] = useState(false)
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-		setFormData({
-			...formData,
-			[e.target.name]: e.target.value
-		})
-	}
-
-	const isFormValid = formData.email.length > 0 && formData.password.length >= 4
-
-	const login = useCallback(async (credentials: {
-		email: string
-		password: string
-		stayLoggedIn: boolean
-	}) => {
-		await authApi.login(credentials)
-		await refetchUser() // Refetch to update the user context
-
-		const canGoBack = () => {
-			try {
-				if (!document.referrer) { return false }
-				const referrerUrl = new URL(document.referrer)
-				return window.location.href !== document.referrer &&
-					   referrerUrl.origin === window.location.origin
-			} catch {
-				return false
-			}
-		}
-
-		if (canGoBack()) {
-			router.back()
-		} else {
-			router.push('/')
-		}
-	}, [router, refetchUser])
-
+	// Already signed in — nothing to do here.
 	useEffect(() => {
 		authApi.me()
-			.then(() => { router.push('/') })
-			.catch(() => { /* Do nothing */ })
+			.then(() => { router.replace('/') })
+			.catch(() => { /* guest is fine */ })
 	}, [router])
 
-	const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault() // Prevent default form submission
-		setFormError('')
-		setIsSubmitting(true)
-
-		const formData = new FormData(event.currentTarget)
-		const credentials = {
-			email: String(formData.get('email') ?? ''),
-			password: String(formData.get('password') ?? ''),
-			stayLoggedIn: formData.get('stayLoggedIn') === 'on' // Convert on to boolean
+	const submit = async (e: React.FormEvent): Promise<void> => {
+		e.preventDefault()
+		setError(null)
+		if (mode === 'register' && password !== confirmPassword) {
+			setError('Passwords do not match')
+			return
 		}
-		login(credentials)
-			.catch((error) => {
-				console.error(error)
-				setFormError('Invalid email or password')
-				setIsSubmitting(false)
-			})
-	}, [login])
+		setBusy(true)
+		try {
+			if (mode === 'login') {
+				await authApi.login({ email, password })
+			} else {
+				await authApi.signup({ email, password, confirmPassword })
+			}
+			await refetchUser()
+			router.replace('/')
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Authentication failed')
+			setBusy(false)
+		}
+	}
 
 	return (
-		<main className="container mx-auto max-w-md p-4">
-			<h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-center pb-2 mb-8">
-				{'Log In'}
-			</h1>
-			<div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-				<form className="p-6 space-y-6" onSubmit={handleSubmit}>
-					<div className="space-y-2">
-						<label htmlFor="email" className="block text-sm font-medium text-gray-700">
-							{'Email address'}
-						</label>
-						<input type="email"
-							id="email"
-							name="email"
-							value={formData.email}
-							onChange={handleInputChange}
-							autoComplete="username"
-							className="block text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-							required
-						/>
-					</div>
-					<div className="space-y-2">
-						<div className="flex items-center justify-between">
-							<label htmlFor="password" className="block text-sm font-medium text-gray-700">
-								{'Password'}
-							</label>
-							<button
-								type="button"
-								onClick={() => { setShowPassword(!showPassword) }}
-								className="text-sm text-blue-500 hover:text-blue-600"
-							>
-								{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-							</button>
-						</div>
-						<PasswordInput
-							name="password"
-							value={formData.password}
-							placeholder="Password"
-							onChange={handleInputChange}
-							inputType={showPassword ? 'text' : 'password'}
-						/>
-					</div>
-					<div className="space-y-2">
-						<label htmlFor="stayLoggedIn" className="flex items-center">
-							<input type="checkbox" id="stayLoggedIn" name="stayLoggedIn"
-								className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
-							<span className="ml-2 block text-sm text-gray-900">
-								{'Stay logged in'}
-							</span>
-						</label>
-					</div>
-					<div>
-						<button
-							type="submit"
-							disabled={isSubmitting || !isFormValid}
-							className={`w-full px-4 py-2 text-white rounded-lg transition-colors
-									${(isSubmitting || !isFormValid) ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-						>
-							{isSubmitting ? 'Logging in...' : 'Log in'}
-						</button>
-					</div>
-				</form>
+		<main className="min-h-screen flex items-center justify-center p-6">
+			<form onSubmit={(e) => { void submit(e) }} className="w-full max-w-sm bg-surface border border-border rounded-xl p-6 space-y-4">
+				<div className="space-y-1">
+					<h1 className="text-lg font-medium text-foreground">{'Gaslight'}</h1>
+					<p className="text-sm text-muted">
+						{mode === 'login' ? 'Log in to your account' : 'Create your account'}
+					</p>
+				</div>
 
-				{/* Messages */}
-				{(formError.length > 0) && (
-					<div className="border-t border-gray-100 px-6 py-4">
-						{(formError.length > 0) && <p className="text-red-500 text-sm text-center">{formError}</p>}
+				<div className="flex gap-1 text-sm">
+					<button type="button" onClick={() => { setMode('login'); setError(null) }} className={tabClass(mode === 'login')}>{'Log in'}</button>
+					<button type="button" onClick={() => { setMode('register'); setError(null) }} className={tabClass(mode === 'register')}>{'Register'}</button>
+				</div>
+
+				<div className="space-y-1">
+					<label htmlFor="auth-email" className={labelClass}>{'Email'}</label>
+					<input
+						id="auth-email"
+						type="email"
+						value={email}
+						onChange={(e) => { setEmail(e.target.value) }}
+						autoComplete="username"
+						required
+						className={inputClass}
+					/>
+				</div>
+
+				<div className="space-y-1">
+					<label htmlFor="auth-password" className={labelClass}>{'Password'}</label>
+					<input
+						id="auth-password"
+						type="password"
+						value={password}
+						onChange={(e) => { setPassword(e.target.value) }}
+						autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+						minLength={4}
+						required
+						className={inputClass}
+					/>
+				</div>
+
+				{mode === 'register' && (
+					<div className="space-y-1">
+						<label htmlFor="auth-confirm" className={labelClass}>{'Confirm password'}</label>
+						<input
+							id="auth-confirm"
+							type="password"
+							value={confirmPassword}
+							onChange={(e) => { setConfirmPassword(e.target.value) }}
+							autoComplete="new-password"
+							minLength={4}
+							required
+							className={inputClass}
+						/>
 					</div>
 				)}
-			</div>
-			<div className="flex justify-center flex-col items-center mt-5 space-y-2">
-				<p className="text-sm text-gray-600">
-					{'Don\'t have an account?'}{' '}
-					<button type="button" onClick={() => { router.push('/signup') }}
-						className="font-medium text-indigo-600 hover:text-indigo-900">
-						{'Sign up'}
+
+				{error !== null && <p className="text-sm text-danger">{error}</p>}
+
+				<button
+					type="submit"
+					disabled={busy}
+					className="w-full bg-accent text-accent-contrast rounded-lg px-3.5 py-2 text-sm font-medium hover:bg-accent-hover disabled:opacity-50"
+				>
+					{busy ? '…' : mode === 'login' ? 'Log in' : 'Register'}
+				</button>
+
+				<p className="text-center text-xs text-subtle">
+					{mode === 'login' ? 'New to Gaslight? ' : 'Already have an account? '}
+					<button
+						type="button"
+						className="text-muted hover:text-foreground underline underline-offset-2"
+						onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(null) }}
+					>
+						{mode === 'login' ? 'Register' : 'Log in'}
 					</button>
 				</p>
-				<button type="button" onClick={() => { router.push('/') }}
-					className="text-sm text-indigo-600 hover:text-indigo-900">
-					{'Back to home'}
-				</button>
-			</div>
+			</form>
 		</main>
 	)
 }

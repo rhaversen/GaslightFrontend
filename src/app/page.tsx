@@ -129,7 +129,7 @@ export default function Page (): ReactElement {
 			}
 
 			if (userData.submissionCount > 0) {
-				router.push(`/users/${currentUser._id}/strategies`)
+				router.push(`/explore?focus=user/${currentUser._id}`)
 			} else {
 				router.push('/strategies/new')
 			}

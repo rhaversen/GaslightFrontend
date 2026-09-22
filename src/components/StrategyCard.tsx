@@ -38,12 +38,6 @@ export function StrategyCard ({
 			<div className="flex justify-between items-center">
 				<h3 className="text-lg md:text-xl font-semibold text-gray-800">{strategy.title}</h3>
 				<div className="flex gap-2 items-center">
-					<Link
-						href={`/strategies/${strategy._id}`}
-						className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-sm"
-					>
-						{'View Details'}
-					</Link>
 					{isOwnProfile && (
 						<>
 							<Link

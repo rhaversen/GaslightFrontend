@@ -23,20 +23,19 @@ const Header = (): ReactElement => {
 
 	// Unauthenticated buttons
 	const authenticatedButtonsLeft: ButtonProps = {
-		Users: { path: '/users' },
-		Tournaments: { path: '/tournaments' },
-		Games: { path: '/games' }
+		Explore: { path: '/explore' },
+		Tournaments: { path: '/tournaments' }
 	}
 	const authenticatedButtonsRight: ButtonProps = {
-		Profile: { path: '/users/' + currentUser?._id },
+		'New Strategy': { path: '/strategies/new' },
+		Profile: { path: '/explore?focus=user/' + (currentUser?._id ?? '') },
 		Logout: { onClick: logout }
 	}
 
 	// Authenticated buttons
 	const unauthenticatedButtonsLeft: ButtonProps = {
-		Users: { path: '/users' },
-		Tournaments: { path: '/tournaments' },
-		Games: { path: '/games' }
+		Explore: { path: '/explore' },
+		Tournaments: { path: '/tournaments' }
 	}
 	const unauthenticatedButtonsRight: ButtonProps = {
 		'Log in': { path: '/login' },
@@ -51,9 +50,9 @@ const Header = (): ReactElement => {
 	const buttonsRight = currentUser !== null ? authenticatedButtonsRight : unauthenticatedButtonsRight
 
 	return (
-		<header className="p-2 sm:p-4 md:p-6 w-full z-10">
-			<nav className="max-w-7xl mx-auto backdrop-blur-sm bg-white/10 rounded-lg sm:rounded-xl md:rounded-2xl p-2 sm:p-4 flex justify-between items-center shadow-lg">
-				<div className="flex gap-1 sm:gap-2 md:gap-4">
+		<header className="p-2 sm:p-4 w-full z-10">
+			<nav className="max-w-7xl mx-auto bg-surface/80 backdrop-blur border border-border rounded-xl px-3 py-2 flex justify-between items-center">
+				<div className="flex gap-1 sm:gap-2">
 					{Object.entries(buttonsLeft).map(([title, config]) => (
 						<Button
 							key={title}
@@ -63,7 +62,7 @@ const Header = (): ReactElement => {
 						/>
 					))}
 				</div>
-				<div className="flex gap-1 sm:gap-2 md:gap-4">
+				<div className="flex gap-1 sm:gap-2">
 					{Object.entries(buttonsRight).map(([title, config]) => (
 						<Button
 							key={title}

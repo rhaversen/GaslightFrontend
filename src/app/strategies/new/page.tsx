@@ -71,7 +71,7 @@ function NewStrategyContent (): ReactElement {
 		<main className="container mx-auto max-w-4xl p-6">
 			<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 				<button
-					onClick={() => router.push(`/users/${currentUser?._id}/strategies`)}
+					onClick={() => router.push(`/explore?focus=user/${currentUser?._id ?? ''}`)}
 					className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 				>
 					<span className="inline-flex items-center">
@@ -136,7 +136,7 @@ function NewStrategyContent (): ReactElement {
 						{isSubmitting ? 'Creating...' : 'Create Strategy'}
 					</button>
 					<button
-						onClick={() => router.push(`/users/${currentUser?._id}/strategies`)}
+						onClick={() => router.push(`/explore?focus=user/${currentUser?._id ?? ''}`)}
 						className="text-gray-600 hover:text-gray-900 transition-colors"
 					>
 						{'Cancel'}

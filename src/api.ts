@@ -163,3 +163,76 @@ export const submissionsApi = {
 	evaluate: (id: string) =>
 		request<SubmissionType>(`/v1/submissions/${id}/evaluate`, { method: 'POST' })
 }
+
+/* ---- Lens view system ---- */
+
+export type CollectionName = 'user' | 'game' | 'tournament' | 'strategy'
+export type ViewRenderer = 'list' | 'table' | 'timeline' | 'timeline-multi' | 'compare'
+
+export interface ViewRow {
+	date?: string
+	id?: string
+	label?: string
+	summary?: string
+	[key: string]: unknown
+}
+
+export interface ViewFocus {
+	label: string
+	subtitle?: string
+}
+
+export interface LensPivot {
+	field: string
+	labelField: string
+	collection: CollectionName
+	text: string
+}
+
+export interface ViewResponse {
+	rows: ViewRow[]
+	total: number
+	focus?: ViewFocus
+	lens: {
+		id: string
+		from: CollectionName
+		onto: CollectionName | 'row'
+		cardinality: 'one' | 'many'
+		dateField: string
+		renderer: ViewRenderer
+		description: string
+		display: string[]
+		pivots: LensPivot[]
+	}
+	window: { from?: string, to?: string }
+	availableLenses: Array<{ id: string, description: string, renderer: ViewRenderer }>
+}
+
+export interface ViewQuery extends Record<string, string | number | boolean | undefined> {
+	lens?: string
+	q?: string
+	from?: string
+	to?: string
+	me?: string
+	limit?: number
+	skip?: number
+}
+
+export interface LensMeta {
+	id: string
+	description: string
+	renderer: ViewRenderer
+	scopes: 'document' | 'collection' | 'both'
+}
+
+export const viewApi = {
+	collection: (collection: CollectionName, params: ViewQuery = {}) =>
+		request<ViewResponse>(`/v1/view/${collection}`, { params: query(params) }),
+
+	document: (collection: CollectionName, id: string, params: ViewQuery = {}) =>
+		request<ViewResponse>(`/v1/view/${collection}/${id}`, { params: query(params) }),
+
+	/** Lens metadata for a collection — no pipeline execution. */
+	meta: (collection: CollectionName) =>
+		request<{ lenses: LensMeta[] }>(`/v1/view/${collection}/meta`)
+}

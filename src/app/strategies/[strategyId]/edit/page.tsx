@@ -135,7 +135,7 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 
 		try {
 			await submissionsApi.delete(params.strategyId)
-			router.push(`/users/${currentUser?._id}/strategies`)
+			router.push(`/explore?focus=user/${currentUser?._id ?? ''}`)
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
 		}
@@ -175,7 +175,7 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 		<main className="container mx-auto max-w-4xl p-2">
 			<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 				<Link
-					href={`/users/${currentUser?._id}/strategies`}
+					href={`/explore?focus=user/${currentUser?._id ?? ''}`}
 					onClick={handleNavigateAway}
 					className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 				>

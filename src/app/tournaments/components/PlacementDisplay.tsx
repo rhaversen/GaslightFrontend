@@ -80,7 +80,7 @@ export const PlacementDisplay = ({
 			<div className="text-sm flex items-center min-w-0">
 				<span className="font-medium text-gray-400 flex-none mr-2">{`${place}. `}</span>
 				<div className="flex min-w-0 flex-1 items-center">
-					<Link href={`/users/${standing.user}`} className="min-w-0 flex-shrink">
+					<Link href={`/explore?focus=user/${standing.user}`} className="min-w-0 flex-shrink">
 						<span className={`text-gray-400 truncate block hover:text-sky-300/90 transition-colors ${isCurrentUser ? 'text-blue-300 font-medium' : ''}`}>
 							{standing.userName}
 						</span>
@@ -124,13 +124,13 @@ export const PlacementDisplay = ({
 			<div className={place === 1 ? 'space-y-6' : 'grid grid-cols-1 sm:grid-cols-[60%_40%] gap-2'}>
 				<div className="space-y-1.5">
 					<div className={`${place === 1 ? 'text-xl' : ''}`}>
-						<Link href={`/users/${standing.user}`}>
+						<Link href={`/explore?focus=user/${standing.user}`}>
 							<span className="text-gray-100 hover:text-yellow-200 transition-colors" title={standing.userName}>
 								{standing.userName}
 							</span>
 						</Link>
 						<span className="text-gray-500">{' with '}</span>
-						<Link href={`/strategies/${standing.submission}`}>
+						<Link href={`/explore?focus=strategy/${standing.submission}`}>
 							<span className={`${place === 1 ? 'text-lg' : 'text-sm'} text-gray-300 hover:text-yellow-200 transition-colors`} title={standing.submissionName}>
 								{standing.submissionName}
 							</span>
