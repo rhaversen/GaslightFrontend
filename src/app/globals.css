@@ -1,27 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-	--foreground-rgb: 0, 0, 0;
-	--background-start-rgb: 214, 219, 220;
-	--background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--foreground-rgb: 255, 255, 255;
-		--background-start-rgb: 255, 255, 255;
-		--background-end-rgb: 255, 255, 255;
-	}
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		--foreground-rgb: 255, 255, 255;
-		--background-start-rgb: 255, 255, 255;
-		--background-end-rgb: 255, 255, 255;
-	}
+	--foreground-rgb: 255, 255, 255;
+	--background-start-rgb: 17, 24, 39;
+	--background-end-rgb: 31, 41, 55;
 }
 
 body {
@@ -51,6 +33,12 @@ body {
 	}
 }
 
+@utility hover-bounce-orig {
+	&:hover {
+		animation: bounceOrig 1s infinite;
+	}
+}
+
 @keyframes bounceOrig {
 	0%,
 	100% {
@@ -61,10 +49,6 @@ body {
 		transform: translateY(25%);
 		animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
 	}
-}
-
-.hover\:bounceOrig:hover {
-	animation: bounceOrig 1s infinite;
 }
 
 @keyframes animateGlow {
