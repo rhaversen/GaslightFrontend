@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
 
-import type { GameType, SubmissionType, TournamentStatistics, TournamentType, UserType } from './types/backendDataTypes'
+import type { GameType, SubmissionType, TournamentCycleStatus, TournamentStatistics, TournamentType, UserType } from './types/backendDataTypes'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api'
 
@@ -119,8 +119,18 @@ export const tournamentsApi = {
 		sortDirectionStandings?: string
 		userIdStanding?: string
 		includesUser?: string
+		fromDate?: string
+		toDate?: string
 	} = {}) =>
 		request<TournamentType[]>('/v1/tournaments', { params: query(params) }),
+
+	/**
+	 * Status of the daily tournament cycle (fires at UTC midnight). The
+	 * tournamentInProgress flag is derived server-side from whether a
+	 * tournament already exists for the current UTC day.
+	 */
+	status: () =>
+		request<TournamentCycleStatus>('/v1/tournaments/status'),
 
 	get: (id: string, params: { getStandings?: boolean, userIdStanding?: string } = {}) =>
 		request<TournamentType>(`/v1/tournaments/${id}`, { params: query(params) }),

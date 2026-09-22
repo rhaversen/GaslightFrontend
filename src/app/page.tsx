@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState, useRef, type ReactElement } from 'react'
 
-import { usersApi } from '@/api'
+import { tournamentsApi, usersApi } from '@/api'
 import GamesSection from '@/components/GamesSection'
 import Header from '@/components/header/Header'
 import { useUser } from '@/contexts/UserProvider'
-import type { UserType } from '@/types/backendDataTypes'
+import type { TournamentCycleStatus, UserType } from '@/types/backendDataTypes'
 
 import { HaloCalm, HaloAggressive } from '../components/VantaBackground'
 
@@ -40,54 +40,59 @@ const TimerDisplay = ({ time, label }: { time: TimeObject, label: string }): Rea
 )
 
 const TimerSection = ({ tournamentInProgress }: { tournamentInProgress: boolean }): ReactElement => {
-	const [timeToTournament, setTimeToTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
-	const [timeSinceTournament, setTimeSinceTournament] = useState<TimeObject>({ hours: '--', minutes: '--', seconds: '--' })
+	const [now, setNow] = useState<Date | null>(null)
 
-	const timeToNextMidnight = (): TimeObject => {
-		const now = new Date()
-		const nextMidnight = new Date(now)
-		nextMidnight.setHours(24, 0, 0, 0)
-		const diff = nextMidnight.getTime() - now.getTime()
-		return {
-			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
-			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
-			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		}
-	}
-
-	const timeSinceMidnight = (): TimeObject => {
-		const now = new Date()
-		const midnight = new Date(now)
-		midnight.setHours(0, 0, 0, 0) // Set to previous midnight
-		const diff = now.getTime() - midnight.getTime()
-		return {
-			hours: String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0'),
-			minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
-			seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0')
-		}
-	}
-
+	// Ticking clock: single interval, both displays derive from `now`. Starts
+	// null so the server and client render the same placeholder (no hydration
+	// mismatch from time-dependent output).
 	useEffect(() => {
-		setTimeToTournament(timeToNextMidnight())
+		setNow(new Date())
 		const interval = setInterval(() => {
-			setTimeToTournament(timeToNextMidnight())
+			setNow(new Date())
 		}, 1000)
 		return () => { clearInterval(interval) }
 	}, [])
 
-	useEffect(() => {
-		setTimeSinceTournament(timeSinceMidnight())
-		const interval = setInterval(() => {
-			setTimeSinceTournament(timeSinceMidnight())
-		}, 1000)
-		return () => { clearInterval(interval) }
-	}, [])
+	// Daily tournaments fire at UTC midnight, regardless of the viewer's
+	// timezone — so both the countdown target and the elapsed display are
+	// derived from the UTC day boundary, not the local one.
+	const nextUtcMidnight = (date: Date): Date => {
+		const next = new Date(date)
+		next.setUTCHours(24, 0, 0, 0)
+		return next
+	}
+
+	const currentUtcMidnight = (date: Date): Date => {
+		const current = new Date(date)
+		current.setUTCHours(0, 0, 0, 0)
+		return current
+	}
+
+	const splitDuration = (milliseconds: number): TimeObject => {
+		const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000))
+		return {
+			hours: String(Math.floor(totalSeconds / 3600)).padStart(2, '0'),
+			minutes: String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'),
+			seconds: String(totalSeconds % 60).padStart(2, '0')
+		}
+	}
+
+	const time = now === null
+		? { hours: '--', minutes: '--', seconds: '--' }
+		: tournamentInProgress
+			? splitDuration(now.getTime() - currentUtcMidnight(now).getTime())
+			: splitDuration(nextUtcMidnight(now).getTime() - now.getTime())
 
 	return (
-		<TimerDisplay
-			time={tournamentInProgress ? timeSinceTournament : timeToTournament}
-			label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT TOURNAMENT'}
-		/>
+		<>
+			<TimerDisplay
+				time={time}
+				label={tournamentInProgress ? 'TOURNAMENT IN PROGRESS' : 'NEXT TOURNAMENT'}
+			/>
+			<div className='text-white/60 text-sm font-light tracking-wide'>
+				{tournamentInProgress ? 'since 00:00 UTC' : 'until 00:00 UTC'}
+			</div>
+		</>
 	)
 }
 
@@ -96,18 +101,31 @@ export default function Page (): ReactElement {
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<UserType | null> | null>(null)
 	const gamesSectionRef = useRef<HTMLDivElement>(null)
-	const tournamentInProgress = false // TODO: fetch from backend
+	const [cycleStatus, setCycleStatus] = useState<TournamentCycleStatus | null>(null)
+	const tournamentInProgress = cycleStatus?.tournamentInProgress ?? false
 
-	// Start loading data on mount if user exists
+	// The daily cycle fires at UTC midnight; the backend derives the running
+	// flag from whether a tournament exists for the current UTC day. Poll
+	// lightly so the flag flips shortly after midnight (and after the batch
+	// completes) without any manual refresh.
 	useEffect(() => {
-		if ((currentUser?._id) != null) {
-			userDataPromiseRef.current = usersApi.get(currentUser._id)
+		let cancelled = false
+		const fetchStatus = (): void => {
+			tournamentsApi.status()
+				.then(status => {
+					if (!cancelled) { setCycleStatus(status) }
+				})
 				.catch((err: unknown) => {
-					console.error('Failed to fetch user data:', err)
-					return null
+					console.error('Failed to fetch tournament status:', err)
 				})
 		}
-	}, [currentUser])
+		fetchStatus()
+		const interval = setInterval(fetchStatus, 30_000)
+		return () => {
+			cancelled = true
+			clearInterval(interval)
+		}
+	}, [])
 
 	const handleAmbiguousClick = async (): Promise<void> => {
 		// If user is not logged in, redirect to signup page
@@ -157,12 +175,14 @@ export default function Page (): ReactElement {
 
 	const resultsLink = (
 		<Link
-			href="/tournaments"
+			href={cycleStatus?.latestTournamentId != null
+				? `/tournaments/${cycleStatus.latestTournamentId}`
+				: '/tournaments'}
 			className="border-2 m-1 sm:m-2 rounded-2xl md:rounded-full border-white transition duration-300
                 hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black hover:scale-110"
 		>
 			<div className='font-semibold p-2 sm:p-3 md:p-4 text-xs sm:text-sm md:text-base whitespace-nowrap'>
-				{'SHOW LAST TOURNAMENT RESULTS'}
+				{tournamentInProgress ? 'WATCH CURRENT TOURNAMENT' : 'SHOW LAST TOURNAMENT RESULTS'}
 			</div>
 		</Link>
 	)
