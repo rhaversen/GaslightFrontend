@@ -262,6 +262,13 @@ function RailCollection ({ collection, active, focus, query, onNavigate }: {
 						</ul>
 					)
 			)}
+		</div>
+	)
+}
+
+/* ------------------------------ collection ------------------------------- */
+
+function CollectionView ({ collection, sort, windowRange, onNavigate }: {
 	collection: CollectionName
 	sort: string | null
 	windowRange: { from?: Date, to?: Date }
