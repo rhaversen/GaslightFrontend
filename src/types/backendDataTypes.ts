@@ -182,10 +182,10 @@ export interface GameType {
 	apiType: string
 	/** Example strategy for the game */
 	exampleStrategy: string
-	/** Amount of players in a game */
-	batchSize: number
-	/** Amount of submissions in latest tournament */
-	submissionCount: number
+	/** Smallest table the game can run with */
+	minPlayers: number
+	/** Largest table the game supports */
+	maxPlayers: number
 
 	// Timestamps
 	createdAt: Date

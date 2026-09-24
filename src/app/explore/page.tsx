@@ -46,7 +46,7 @@ function formatDate (date: string | undefined): string {
 
 function fieldLabel (field: string): string {
 	const labels: Record<string, string> = {
-		batchSize: 'players',
+		players: 'players',
 		strategyCount: 'strategies',
 		tournaments: 'tournaments',
 		bestPlacement: 'best',
