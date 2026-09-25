@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useState, useRef, type ReactElement } from 'react'
 
 import { tournamentsApi, usersApi } from '@/api'
-import GamesSection from '@/components/GamesSection'
 import Header from '@/components/header/Header'
 import { useUser } from '@/contexts/UserProvider'
 import type { TournamentCycleStatus, UserType } from '@/types/backendDataTypes'
@@ -100,7 +99,6 @@ export default function Page (): ReactElement {
 	const router = useRouter()
 	const { currentUser } = useUser()
 	const userDataPromiseRef = useRef<Promise<UserType | null> | null>(null)
-	const gamesSectionRef = useRef<HTMLDivElement>(null)
 	const [cycleStatus, setCycleStatus] = useState<TournamentCycleStatus | null>(null)
 	const tournamentInProgress = cycleStatus?.tournamentInProgress ?? false
 
@@ -156,10 +154,6 @@ export default function Page (): ReactElement {
 		}
 	}
 
-	const scrollToGames = (): void => {
-		gamesSectionRef.current?.scrollIntoView({ behavior: 'smooth' })
-	}
-
 	const tournamentButton = (
 		<button
 			className="bg-gradient-to-r from-blue-500/80 to-purple-500/80 px-10 py-4 rounded-xl
@@ -187,36 +181,20 @@ export default function Page (): ReactElement {
 		</Link>
 	)
 
-	const gamesScrollButton = (
-		<button
-			className="backdrop-blur-md bg-black/60 m-1 sm:m-2 rounded-full transition duration-300
-            hover:shadow-[0_0_100px_rgba(255,255,255,100)] hover:bg-white hover:text-black px-4 py-3 flex items-center"
-			onClick={scrollToGames}
-			type="button"
-		>
-			{'VIEW AVAILABLE GAMES'}
-			<span className="ml-2 text-2xl">{'↓'}</span>
-		</button>
-	)
-
 	return (
 		<>
 			<div className="fixed inset-0">
 				{tournamentInProgress ? <HaloAggressive /> : <HaloCalm />}
 			</div>
 			<div className="relative">
-				<main className="flex flex-col min-h-screen items-center">
+				<main className="flex flex-col h-screen overflow-hidden items-center">
 					<Header />
 					<div className="text-center flex flex-col items-center gap-8 flex-grow justify-center">
 						<TimerSection tournamentInProgress={tournamentInProgress} />
 						{tournamentButton}
 						{resultsLink}
 					</div>
-					{gamesScrollButton}
 				</main>
-				<div ref={gamesSectionRef} className="relative">
-					<GamesSection />
-				</div>
 			</div>
 		</>
 	)

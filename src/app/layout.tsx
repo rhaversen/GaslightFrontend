@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 		capable: true
 	},
 	icons: {
-		icon: '/favicon.ico'
+		icon: '/icon.svg'
 	}
 }
 
