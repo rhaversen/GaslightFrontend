@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+	<defs>
+		<linearGradient id="brace" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#60a5fa"/>
+			<stop offset=".55" stop-color="#3b82f6"/>
+			<stop offset="1" stop-color="#1d4ed8"/>
+		</linearGradient>
+		<linearGradient id="slash" x1="0" y1="1" x2="1" y2="0">
+			<stop offset="0" stop-color="#22d3ee"/>
+			<stop offset="1" stop-color="#fb923c"/>
+		</linearGradient>
+		<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#0a0c10"/>
+			<stop offset="1" stop-color="#111827"/>
+		</linearGradient>
+	</defs>
+	<rect width="64" height="64" rx="14" fill="url(#bg)"/>
+	<!-- braces: template delimiters -->
+	<g fill="none" stroke="url(#brace)" stroke-width="5" stroke-linecap="round">
+		<path d="M22 12 H18 Q14 12 14 16 V26 Q14 30 10 32 Q14 34 14 38 V48 Q14 52 18 52 H22"/>
+		<path d="M42 12 H46 Q50 12 50 16 V26 Q50 30 54 32 Q50 34 50 38 V48 Q50 52 46 52 H42"/>
+	</g>
+	<!-- slash: code/comment marker -->
+	<path d="M39 13 L25 51" fill="none" stroke="url(#slash)" stroke-width="6" stroke-linecap="round"/>
+	<!-- glow accents on the slash tips -->
+	<circle cx="39" cy="13" r="2" fill="#fb923c"/>
+	<circle cx="25" cy="51" r="2" fill="#22d3ee"/>
+</svg>
