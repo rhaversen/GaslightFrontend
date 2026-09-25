@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios'
 import React, { type ReactElement, useCallback, useEffect, useState } from 'react'
 
 const ErrorWindow = ({
@@ -7,7 +6,7 @@ const ErrorWindow = ({
 }: {
 	error: unknown
 	onClose: () => void
-}): ReactElement<any> => {
+}): ReactElement => {
 	const renderDelay = 50
 	const deRenderDelay = 200
 	const timeOut = 5000 + renderDelay
@@ -20,12 +19,10 @@ const ErrorWindow = ({
 		if (error === undefined || error === null) { return '' }
 		if (typeof error === 'string') { return error }
 		if (typeof error === 'object') {
-			if (error instanceof AxiosError) {
-				if (error.response?.data !== undefined && error.response?.data !== '') { return error.response.data.error }
-				if (error.message !== undefined && error.message !== '') { return error.message }
-				return JSON.stringify(error)
-			}
-			if (error instanceof Error) { return error.message }
+			const response = (error as { response?: { data?: { error?: unknown } } }).response
+			const responseError = response?.data?.error
+			if (typeof responseError === 'string' && responseError !== '') { return responseError }
+			if (error instanceof Error && error.message !== '') { return error.message }
 		}
 		return JSON.stringify(error)
 	})()

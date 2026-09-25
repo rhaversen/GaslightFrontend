@@ -25,7 +25,7 @@ export function CurrentUserDisplay ({
 					<div className="border-t border-indigo-500/20 pt-2">
 						<div className="mb-3">
 							<span className="text-indigo-200 text-sm">{'Submission:'}</span>{' '}
-							<Link href={`/strategies/${standing.submission}`}>
+							<Link href={`/explore?focus=strategy/${standing.submission}`}>
 								<span className="text-gray-300 text-sm font-medium hover:text-sky-200 transition-colors">
 									{standing.submissionName}
 								</span>
@@ -50,14 +50,14 @@ export function CurrentUserDisplay ({
 			) : (
 				isLoggedIn ? (
 					<div className="text-gray-400 text-sm">
-						{'You have not submitted to this tournament.\r'}
+						{'You have not submitted to this tournament.'}
 					</div>
 				) : (
 					<div className="text-gray-400 text-sm">
 						<Link href="/login" className="text-sky-400 hover:text-sky-300 transition-colors">
 							{'Login'}
 						</Link>
-						{' to view your position.\r'}
+						{' to view your position.'}
 					</div>
 				)
 			)}

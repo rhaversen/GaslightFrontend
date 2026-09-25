@@ -1,19 +1,17 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useEffect, useState, use } from 'react'
 
+import { gamesApi, submissionsApi } from '@/api'
 import EvaluationResults from '@/components/EvaluationResults'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import MonacoEditor from '@/components/MonacoEditor'
 import { useUser } from '@/contexts/UserProvider'
-import { GameType, type SubmissionType } from '@/types/backendDataTypes'
+import { type SubmissionType } from '@/types/backendDataTypes'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-export default function Page (props: { params: Promise<{ strategyId: string }> }): ReactElement<any> {
+export default function Page (props: { params: Promise<{ strategyId: string }> }): ReactElement {
 	const params = use(props.params)
 	const router = useRouter()
 	const { currentUser } = useUser()
@@ -30,20 +28,14 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 		const fetchData = async (): Promise<void> => {
 			setIsLoading(true)
 			try {
-				const response = await axios.get<SubmissionType>(
-					`${API_URL}/v1/submissions/${params.strategyId}`,
-					{ withCredentials: true }
-				)
-				setStrategy(response.data)
-				setOriginalStrategy(response.data)
+				const strategyData = await submissionsApi.get(params.strategyId)
+				setStrategy(strategyData)
+				setOriginalStrategy(strategyData)
 				setHasChanges(false)
 
 				// Fetch game data using game ID from strategy
-				const gameResponse = await axios.get<GameType>(
-					`${API_URL}/v1/games/${response.data.game}`,
-					{ withCredentials: true }
-				)
-				setGameApiTypes(gameResponse.data.apiType)
+				const game = await gamesApi.get(strategyData.game)
+				setGameApiTypes(game.apiType)
 			} catch (error) {
 				console.error('Error fetching data:', error)
 			} finally {
@@ -122,15 +114,14 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 		if (strategy == null) { return }
 		setIsSubmitting(true)
 
-		axios.patch<SubmissionType>(
-			`${API_URL}/v1/submissions/${params.strategyId}`,
-			strategy,
-			{ withCredentials: true }
-		).then(response => {
-			setStrategy(response.data)
-			setOriginalStrategy(response.data)
+		submissionsApi.update(params.strategyId, {
+			title: strategy.title,
+			code: strategy.code ?? undefined
+		}).then(updatedStrategy => {
+			setStrategy(updatedStrategy)
+			setOriginalStrategy(updatedStrategy)
 			setHasChanges(false)
-		}).catch(error => {
+		}).catch((error: unknown) => {
 			console.error('Error updating strategy:', error)
 		}).finally(() => {
 			setIsSubmitting(false)
@@ -143,10 +134,8 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 		}
 
 		try {
-			await axios.delete(`${API_URL}/v1/submissions/${params.strategyId}`, {
-				withCredentials: true
-			})
-			router.push(`/users/${currentUser?._id}/strategies`)
+			await submissionsApi.delete(params.strategyId)
+			router.push(`/explore?focus=user/${currentUser?._id ?? ''}`)
 		} catch (error) {
 			console.error('Error deleting strategy:', error)
 		}
@@ -155,11 +144,7 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 	const handleEvaluate = async (): Promise<void> => {
 		setIsEvaluating(true)
 		try {
-			const { data: updatedStrategy } = await axios.post<SubmissionType>(
-				`${API_URL}/v1/submissions/${params.strategyId}/evaluate`,
-				{},
-				{ withCredentials: true }
-			)
+			const updatedStrategy = await submissionsApi.evaluate(params.strategyId)
 			if (strategy != null) {
 				setStrategy({
 					...strategy,
@@ -190,7 +175,7 @@ export default function Page (props: { params: Promise<{ strategyId: string }> }
 		<main className="container mx-auto max-w-4xl p-2">
 			<div className="flex flex-wrap items-center justify-between gap-4 m-8">
 				<Link
-					href={`/users/${currentUser?._id}/strategies`}
+					href={`/explore?focus=user/${currentUser?._id ?? ''}`}
 					onClick={handleNavigateAway}
 					className="text-gray-600 hover:text-gray-900 transition-all hover:scale-105"
 				>

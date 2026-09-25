@@ -1,8 +1,8 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import React, { createContext, type ReactNode, type ReactElement, useContext } from 'react'
 
+import { authApi } from '@/api'
 import { type UserType } from '@/types/backendDataTypes'
 
 interface UserContextType {
@@ -21,15 +21,12 @@ const UserContext = createContext<UserContextType>({
 
 export const useUser = (): UserContextType => useContext(UserContext)
 
-// Modify fetchUser to catch errors and return null if failed.
+// The auth endpoint 401s for guests — that is the "not logged in" state, not
+// an error, so it resolves to null.
 const fetchUser = async (): Promise<UserType | null> => {
 	try {
-		const { data } = await axios.get<UserType>(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/user`, {
-			withCredentials: true
-		})
-		return data
-	} catch (e) {
-		console.warn('Error fetching user:', e)
+		return await authApi.me()
+	} catch {
 		return null
 	}
 }

@@ -3,11 +3,16 @@ import * as THREE from 'three'
 import HALO from 'vanta/dist/vanta.halo.min.js'
 import NET from 'vanta/dist/vanta.net.min.js'
 
-export const HaloCalm = (): ReactElement<any> => {
+// Vanta returns an effect object whose only contract we rely on is destroy()
+interface VantaEffect {
+	destroy: () => void
+}
+
+export const HaloCalm = (): ReactElement => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
-		let vantaEffect: any = null
+		let vantaEffect: VantaEffect | null = null
 		if (vantaRef.current !== null) {
 			vantaEffect = HALO({
 				el: vantaRef.current,
@@ -25,18 +30,18 @@ export const HaloCalm = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) { vantaEffect.destroy() }
+			vantaEffect?.destroy()
 		}
 	}, [])
 
 	return <div ref={vantaRef} className="w-full h-full" />
 }
 
-export const HaloAggressive = (): ReactElement<any> => {
+export const HaloAggressive = (): ReactElement => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
-		let vantaEffect: any = null
+		let vantaEffect: VantaEffect | null = null
 		if (vantaRef.current !== null) {
 			vantaEffect = HALO({
 				el: vantaRef.current,
@@ -54,18 +59,18 @@ export const HaloAggressive = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) { vantaEffect.destroy() }
+			vantaEffect?.destroy()
 		}
 	}, [])
 
 	return <div ref={vantaRef} className="w-full h-full" />
 }
 
-export const Net = (): ReactElement<any> => {
+export const Net = (): ReactElement => {
 	const vantaRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
-		let vantaEffect: any = null
+		let vantaEffect: VantaEffect | null = null
 		if (vantaRef.current !== null) {
 			vantaEffect = NET({
 				el: vantaRef.current,
@@ -87,7 +92,7 @@ export const Net = (): ReactElement<any> => {
 		}
 
 		return () => {
-			if (vantaEffect !== null) { vantaEffect.destroy() }
+			vantaEffect?.destroy()
 		}
 	}, [])
 
