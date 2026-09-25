@@ -1,11 +1,11 @@
 'use client'
 
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useCallback } from 'react'
 
+import { tournamentsApi } from '@/api'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
-import { GameType, TournamentType } from '@/types/backendDataTypes'
+import { type GameType, type TournamentType, type UserType } from '@/types/backendDataTypes'
 
 import { TournamentCard as RegularTournamentCard } from './TournamentCard'
 
@@ -32,11 +32,10 @@ const LazyTournamentCard = dynamic(
 
 interface SingleGameTournamentsProps {
 	game: GameType,
-	API_URL: string | undefined,
-	currentUser: any
+	currentUser: UserType | null
 }
 
-export default function SingleGameTournaments ({ game, API_URL, currentUser }: SingleGameTournamentsProps) {
+export default function SingleGameTournaments ({ game, currentUser }: SingleGameTournamentsProps) {
 	const [latestTournament, setLatestTournament] = useState<TournamentType[]>([])
 	const [otherTournaments, setOtherTournaments] = useState<TournamentType[]>([])
 	const [latestLoading, setLatestLoading] = useState(true)
@@ -48,18 +47,16 @@ export default function SingleGameTournaments ({ game, API_URL, currentUser }: S
 		const fetchLatestTournament = async () => {
 			try {
 				setLatestLoading(true)
-				const response = await axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-					params: {
-						game: game._id,
-						limit: LATEST_LIMIT,
-						limitStandings: LATEST_STANDINGS,
-						sortFieldStandings: 'placement',
-						sortDirectionStandings: 'asc',
-						userIdStanding: currentUser?._id ?? null,
-						getStandings: true
-					}
+				const data = await tournamentsApi.list({
+					game: game._id,
+					limit: LATEST_LIMIT,
+					limitStandings: LATEST_STANDINGS,
+					sortFieldStandings: 'placement',
+					sortDirectionStandings: 'asc',
+					userIdStanding: currentUser?._id,
+					getStandings: true
 				})
-				setLatestTournament(response.data)
+				setLatestTournament(data)
 			} catch (error) {
 				console.error('Error fetching latest tournament:', error)
 				setLatestTournament([])
@@ -67,35 +64,33 @@ export default function SingleGameTournaments ({ game, API_URL, currentUser }: S
 				setLatestLoading(false)
 			}
 		}
-		fetchLatestTournament()
-	}, [API_URL, currentUser?._id, game])
+		void fetchLatestTournament()
+	}, [currentUser?._id, game])
 
 	useEffect(() => {
 		const fetchPaginatedTournaments = async () => {
 			setOthersLoading(true)
 			try {
-				const response = await axios.get<TournamentType[]>(`${API_URL}/v1/tournaments`, {
-					params: {
-						game: game._id,
-						skip: LATEST_LIMIT + ((page - 1) * TOURNAMENTS_PER_PAGE),
-						limit: TOURNAMENTS_PER_PAGE,
-						limitStandings: OTHER_STANDINGS,
-						sortFieldStandings: 'placement',
-						sortDirectionStandings: 'asc',
-						userIdStanding: currentUser?._id ?? null,
-						getStandings: true
-					}
+				const data = await tournamentsApi.list({
+					game: game._id,
+					skip: LATEST_LIMIT + ((page - 1) * TOURNAMENTS_PER_PAGE),
+					limit: TOURNAMENTS_PER_PAGE,
+					limitStandings: OTHER_STANDINGS,
+					sortFieldStandings: 'placement',
+					sortDirectionStandings: 'asc',
+					userIdStanding: currentUser?._id,
+					getStandings: true
 				})
-				setOtherTournaments(prev => page === 1 ? response.data : [...prev, ...response.data])
-				setHasMore(response.data.length === TOURNAMENTS_PER_PAGE)
+				setOtherTournaments(prev => page === 1 ? data : [...prev, ...data])
+				setHasMore(data.length === TOURNAMENTS_PER_PAGE)
 			} catch (error) {
 				console.error('Error fetching paginated tournaments:', error)
 			} finally {
 				setOthersLoading(false)
 			}
 		}
-		fetchPaginatedTournaments()
-	}, [API_URL, currentUser?._id, game, page])
+		void fetchPaginatedTournaments()
+	}, [currentUser?._id, game, page])
 
 	const loadMore = useCallback(() => {
 		setPage(prev => prev + 1)

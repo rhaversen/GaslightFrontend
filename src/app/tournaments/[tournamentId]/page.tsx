@@ -1,10 +1,10 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { type ReactElement, useEffect, useState, use, useCallback } from 'react'
 
+import { tournamentsApi } from '@/api'
 import LoadingPlaceholder from '@/components/LoadingPlaceholder'
 import { useUser } from '@/contexts/UserProvider'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
@@ -17,7 +17,6 @@ import { StatsDisplay } from '../components/StatsDisplay'
 
 import { TournamentList } from './components/TournamentList'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
 const STANDINGS_PER_PAGE = 10
 
 export default function Page (props: { params: Promise<{ tournamentId: string }> }): ReactElement {
@@ -53,14 +52,12 @@ export default function Page (props: { params: Promise<{ tournamentId: string }>
 	// Fetch tournament with only user standing
 	useEffect(() => {
 		setTournamentLoading(true)
-		axios.get(`${API_URL}/v1/tournaments/${params.tournamentId}`, {
-			params: {
-				userIdStanding: currentUser?._id,
-				getStandings: false
-			}
+		tournamentsApi.get(params.tournamentId, {
+			getStandings: false,
+			userIdStanding: currentUser?._id
 		})
-			.then(response => setTournament(response.data))
-			.catch(error => {
+			.then(tournamentData => setTournament(tournamentData))
+			.catch((error: unknown) => {
 				console.error('Error fetching tournament:', error)
 				router.push('/tournaments')
 			})
@@ -70,32 +67,30 @@ export default function Page (props: { params: Promise<{ tournamentId: string }>
 	// Fetch statistics
 	useEffect(() => {
 		setStatisticsLoading(true)
-		axios.get<TournamentStatistics>(`${API_URL}/v1/tournaments/${params.tournamentId}/statistics`)
-			.then(response => setStatistics(response.data))
-			.catch(error => console.error('Error fetching statistics:', error))
+		tournamentsApi.statistics(params.tournamentId)
+			.then(statisticsData => setStatistics(statisticsData))
+			.catch((error: unknown) => console.error('Error fetching statistics:', error))
 			.finally(() => setStatisticsLoading(false))
 	}, [params.tournamentId])
 
 	// Fetch paginated standings
 	useEffect(() => {
 		setStandingsLoading(true)
-		axios.get(`${API_URL}/v1/tournaments/${params.tournamentId}/standings`, {
-			params: {
-				limitStandings: STANDINGS_PER_PAGE,
-				skipStandings: (page - 1) * STANDINGS_PER_PAGE,
-				sortFieldStandings: sortField,
-				sortDirectionStandings: sortDirection
-			}
+		tournamentsApi.standings(params.tournamentId, {
+			limitStandings: STANDINGS_PER_PAGE,
+			skipStandings: (page - 1) * STANDINGS_PER_PAGE,
+			sortFieldStandings: sortField,
+			sortDirectionStandings: sortDirection
 		})
-			.then(response => {
+			.then(standingsData => {
 				setStandings(prev =>
 					page === 1
-						? response.data // Replace all data on first page
-						: [...prev, ...response.data] // Append for subsequent pages
+						? standingsData // Replace all data on first page
+						: [...prev, ...standingsData] // Append for subsequent pages
 				)
-				setHasMore(response.data.length === STANDINGS_PER_PAGE)
+				setHasMore(standingsData.length === STANDINGS_PER_PAGE)
 			})
-			.catch(error => console.error('Error fetching standings:', error))
+			.catch((error: unknown) => console.error('Error fetching standings:', error))
 			.finally(() => setStandingsLoading(false))
 	}, [params.tournamentId, page, sortField, sortDirection]) // Dependencies trigger refetchUser
 
@@ -257,14 +252,14 @@ export default function Page (props: { params: Promise<{ tournamentId: string }>
 											<span className="text-xl font-medium text-gray-300">{'#'}{standing.placement}</span>
 										</div>
 										<Link
-											href={`/users/${standing.user}`}
+											href={`/explore?focus=user/${standing.user}`}
 											className="text-gray-400 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.userName}
 										>
 											{standing.userName}
 										</Link>
 										<Link
-											href={`/strategies/${standing.submission}`}
+											href={`/explore?focus=strategy/${standing.submission}`}
 											className="text-gray-300 hover:text-sky-300 transition-colors truncate pl-2"
 											title={standing.submissionName}
 										>

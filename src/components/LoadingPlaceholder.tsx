@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 
-const LoadingPlaceholder = ({ variant = 'light' }: { variant?: 'light' | 'dark' }): ReactElement<any> => {
+const LoadingPlaceholder = ({ variant = 'light' }: { variant?: 'light' | 'dark' }): ReactElement => {
 	const bgColors = {
 		light: 'bg-gray-200',
 		dark: 'bg-gray-700'

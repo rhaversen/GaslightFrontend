@@ -1,19 +1,18 @@
 'use client'
 
-import axios from 'axios'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 
+import { gamesApi } from '@/api'
 import { useUser } from '@/contexts/UserProvider'
 import { HomeIcon } from '@/lib/icons'
-import { GameType } from '@/types/backendDataTypes'
+import { type GameType } from '@/types/backendDataTypes'
 
 import LatestTournaments from './components/LatestTournaments'
 import SingleGameTournaments from './components/SingleGameTournaments'
 
 function TournamentsContent () {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const searchParams = useSearchParams()
 	const router = useRouter()
 	const { currentUser } = useUser()
@@ -22,16 +21,16 @@ function TournamentsContent () {
 
 	// Fetch available games
 	useEffect(() => {
-		axios.get<GameType[]>(`${API_URL}/v1/games`)
-			.then(response => {
-				setGames(response.data)
-				if (selectedGame && !response.data.find(g => g._id === selectedGame)) {
+		gamesApi.list()
+			.then(data => {
+				setGames(data)
+				if (selectedGame && !data.find(g => g._id === selectedGame)) {
 					setSelectedGame('')
 					router.replace('/tournaments')
 				}
 			})
-			.catch(error => console.error('Error fetching games:', error))
-	}, [API_URL, router, selectedGame])
+			.catch(error => { console.error('Error fetching games:', error) })
+	}, [router, selectedGame])
 
 	const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const gameId = event.target.value
@@ -55,7 +54,7 @@ function TournamentsContent () {
 						<HomeIcon />
 					</Link>
 					<h1 className="text-4xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">
-						{'Tournaments\r'}
+						{'Tournaments'}
 					</h1>
 				</div>
 				<div className="w-full sm:w-auto sm:ml-auto">
@@ -79,13 +78,11 @@ function TournamentsContent () {
 			{selectedGame && games.length > 0 ? (
 				<SingleGameTournaments
 					game={games.find(g => g._id === selectedGame)!}
-					API_URL={API_URL}
 					currentUser={currentUser}
 				/>
 			) : (
 				<LatestTournaments
 					games={games}
-					API_URL={API_URL}
 					currentUser={currentUser}
 				/>
 			)}

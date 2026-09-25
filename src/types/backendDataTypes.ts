@@ -123,6 +123,21 @@ export interface TournamentStatistics {
 	outlierValues: number[]
 }
 
+/**
+ * Status of the daily tournament cycle. Tournaments fire at UTC midnight; the
+ * running flag is derived by the backend from whether a tournament exists for
+ * the current UTC day.
+ */
+export interface TournamentCycleStatus {
+	tournamentInProgress: boolean
+	latestTournamentId: string | null
+	latestTournamentStartedAt: Date | null
+	/** ISO timestamp of the next UTC midnight */
+	nextTournamentAt: string
+	/** ISO timestamp of the server's now, for client clock-skew tolerance */
+	now: string
+}
+
 export interface TournamentType {
 	/** ID of the tournament */
 	_id: string
@@ -167,10 +182,10 @@ export interface GameType {
 	apiType: string
 	/** Example strategy for the game */
 	exampleStrategy: string
-	/** Amount of players in a game */
-	batchSize: number
-	/** Amount of submissions in latest tournament */
-	submissionCount: number
+	/** Smallest table the game can run with */
+	minPlayers: number
+	/** Largest table the game supports */
+	maxPlayers: number
 
 	// Timestamps
 	createdAt: Date

@@ -1,12 +1,12 @@
-import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { tournamentsApi } from '@/api'
 import { formatDate } from '@/lib/dateUtils'
 import { ChevronDownIcon, ChevronUpIcon } from '@/lib/icons'
 import { formatDuration } from '@/lib/timeUtils'
-import { TournamentStanding, TournamentType } from '@/types/backendDataTypes'
+import { TournamentType } from '@/types/backendDataTypes'
 
 import { CurrentUserDisplay } from './CurrentUserDisplay'
 import { DisqualificationsDisplay } from './DisqualificationsDisplay'
@@ -28,7 +28,6 @@ interface TournamentCardProps {
 }
 
 export const TournamentCard = ({ tournament, currentUserId, defaultExpanded = false, badge }: TournamentCardProps) => {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 	const [hasLoadedAdditional, setHasLoadedAdditional] = useState(defaultExpanded)
 	const [allStandings, setAllStandings] = useState(tournament.standings)
@@ -41,15 +40,13 @@ export const TournamentCard = ({ tournament, currentUserId, defaultExpanded = fa
 		if (hasLoadedAdditional) { return }
 		setIsLoadingStandings(true)
 		try {
-			const response = await axios.get<TournamentStanding[]>(`${API_URL}/v1/tournaments/${tournament._id}/standings`, {
-				params: {
-					limitStandings: OTHER_STANDINGS,
-					skipStandings: TOP_PLACES,
-					sortFieldStandings: 'placement',
-					sortDirectionStandings: 'asc'
-				}
+			const additionalStandings = await tournamentsApi.standings(tournament._id, {
+				limitStandings: OTHER_STANDINGS,
+				skipStandings: TOP_PLACES,
+				sortFieldStandings: 'placement',
+				sortDirectionStandings: 'asc'
 			})
-			setAllStandings([...tournament.standings, ...response.data])
+			setAllStandings([...tournament.standings, ...additionalStandings])
 			setHasLoadedAdditional(true)
 		} catch (error) {
 			console.error('Error fetching additional standings:', error)
